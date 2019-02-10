@@ -48,7 +48,7 @@ public class BiasLayerTest extends LayerTestBase {
 
   @NotNull
   private BiasLayer getBiasLayer() {
-    BiasLayer biasLayer = new BiasLayer(new int[]{3, 3});
+    BiasLayer biasLayer = new BiasLayer(3, 3);
     biasLayer.getWeights().get("bias").setByCoord(c->Math.random());
     return biasLayer;
   }

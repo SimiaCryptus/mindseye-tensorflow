@@ -221,7 +221,7 @@ public class TFUtil {
               if (type == DataType.DT_DOUBLE) {
                 tensor.addAllDoubleVal(Arrays.stream(value.getData()).mapToObj(x -> x).collect(Collectors.toList()));
               } else if (type == DataType.DT_FLOAT) {
-                tensor.addAllFloatVal(Arrays.stream(value.getData()).mapToObj(x -> (Float)(float)x).collect(Collectors.toList()));
+                tensor.addAllFloatVal(Arrays.stream(value.getData()).mapToObj(x -> (float)x).collect(Collectors.toList()));
               } else {
                 throw new UnsupportedOperationException(type.toString());
               }
