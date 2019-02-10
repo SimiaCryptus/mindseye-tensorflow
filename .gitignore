@@ -2,3 +2,6 @@
 target/
 ../.gitignore
 ../.gitignore
+*.gz
+reports/
+tensorboard/

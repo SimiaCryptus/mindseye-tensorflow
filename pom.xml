@@ -23,9 +23,9 @@
 
     <parent>
         <groupId>com.simiacryptus</groupId>
-        <artifactId>scala-parent</artifactId>
+        <artifactId>java-parent</artifactId>
         <version>1.6.0</version>
-        <relativePath>../scala-parent</relativePath>
+        <relativePath>../java-parent</relativePath>
     </parent>
 
     <artifactId>mindseye-tensorflow</artifactId>
@@ -58,21 +58,20 @@
         <dependency>
             <groupId>com.simiacryptus</groupId>
             <artifactId>mindseye-core</artifactId>
-            <version>1.6.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>chill_2.11</artifactId>
+            <groupId>com.simiacryptus</groupId>
+            <artifactId>mindseye-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>chill-java</artifactId>
+            <groupId>com.simiacryptus</groupId>
+            <artifactId>mindseye-java</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -90,165 +89,40 @@
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-ec2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-iam</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-ses</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-aws</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.simiacryptus</groupId>
             <artifactId>java-util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.simiacryptus</groupId>
-            <artifactId>aws-utilities</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
             <artifactId>tensorflow-model</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>mindseye-core</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>mindseye-cudnn</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>mindseye-aparapi</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>mindseye-research</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.simiacryptus</groupId>
-            <artifactId>sparkbook</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.mjversion}</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-xml_${scala.mjversion}</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>tensorflow</artifactId>
-            <version>1.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>libtensorflow_jni_gpu</artifactId>
-            <version>1.12.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.6.1</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>tensorflow-platform</artifactId>-->
-            <!--<version>1.12.0-1.4.4</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>tensorflow</artifactId>-->
-            <!--<version>1.12.0-1.4.4</version>-->
-            <!--<classifier>linux-x86_64-gpu</classifier>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>tensorflow</artifactId>-->
-            <!--<version>1.12.0-1.4.4</version>-->
-            <!--<classifier>macosx-x86_64-gpu</classifier>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>tensorflow</artifactId>-->
-            <!--<version>1.12.0-1.4.4</version>-->
-            <!--<classifier>windows-x86_64-gpu</classifier>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>cuda</artifactId>-->
-            <!--<version>10.0-7.4-1.4.4</version>-->
-            <!--<classifier>linux-x86_64-redist</classifier>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>cuda</artifactId>-->
-            <!--<version>10.0-7.4-1.4.4</version>-->
-            <!--<classifier>macosx-x86_64-redist</classifier>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco</groupId>-->
-            <!--<artifactId>javacpp</artifactId>-->
-            <!--<version>1.4.4</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco.javacpp-presets</groupId>-->
-            <!--<artifactId>cuda</artifactId>-->
-            <!--<version>10.0-7.4-1.4.4</version>-->
-            <!--<classifier>windows-x86_64-redist</classifier>-->
-        <!--</dependency>-->
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-plot</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

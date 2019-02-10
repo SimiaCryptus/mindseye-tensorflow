@@ -1,0 +1,4849 @@
+{
+  "nodes" : {
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_1" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_1",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/Variable/Adam_1/Initializer/zeros" : {
+      "name" : "layer2/biases/Variable/Adam_1/Initializer/zeros",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_2" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_2",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/histogram" : {
+      "name" : "layer1/biases/summaries/histogram",
+      "op" : "HistogramSummary",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/histogram/tag", "layer1/biases/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Reshape_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 59,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/Sum_1", "train/gradients/layer1/Wx_plus_b/add_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/mean_1/tags" : {
+      "name" : "layer2/weights/summaries/mean_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/biases/summaries/range_2" : {
+      "name" : "layer1/biases/summaries/range_2",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/range_2/start", "layer1/biases/summaries/Rank_2", "layer1/biases/summaries/range_2/delta" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range_1" : {
+      "name" : "layer1/biases/summaries/range_1",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/range_1/start", "layer1/biases/summaries/Rank_1", "layer1/biases/summaries/range_1/delta" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/Mul_1" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Mul_1",
+      "op" : "Mul",
+      "order" : 47,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "dropout/dropout/div", "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/Shape" : {
+      "name" : "dropout/dropout/Shape",
+      "op" : "Shape",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/activation" ],
+      "dataTypeString" : null
+    },
+    "layer2/Wx_plus_b/add" : {
+      "name" : "layer2/Wx_plus_b/add",
+      "op" : "Add",
+      "order" : 13,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/Wx_plus_b/MatMul", "layer2/biases/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/learning_rate" : {
+      "name" : "train/Adam/learning_rate",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy",
+      "op" : "SparseSoftmaxCrossEntropyWithLogits",
+      "order" : 15,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "layer2/activation", "input/y-input" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/stddev/sub" : {
+      "name" : "layer2/biases/summaries/stddev/sub",
+      "op" : "Sub",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/read", "layer2/biases/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater/y" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater/y",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/stddev/Square" : {
+      "name" : "layer1/weights/summaries/stddev/Square",
+      "op" : "Square",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/stddev/sub" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Shape" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Shape",
+      "op" : "Shape",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/activation" ],
+      "dataTypeString" : null
+    },
+    "accuracy/correct_prediction/ArgMax" : {
+      "name" : "accuracy/correct_prediction/ArgMax",
+      "op" : "ArgMax",
+      "order" : 15,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/activation", "accuracy/correct_prediction/ArgMax/dimension" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/beta2" : {
+      "name" : "train/Adam/beta2",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/Wx_plus_b/pre_activations" : {
+      "name" : "layer1/Wx_plus_b/pre_activations",
+      "op" : "HistogramSummary",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/Wx_plus_b/pre_activations/tag", "layer1/Wx_plus_b/add" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/beta1" : {
+      "name" : "train/Adam/beta1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/summaries/stddev/Square" : {
+      "name" : "layer1/biases/summaries/stddev/Square",
+      "op" : "Square",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/stddev/sub" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam_1/Initializer/zeros/Const" : {
+      "name" : "layer1/weights/Variable/Adam_1/Initializer/zeros/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/Adam/epsilon" : {
+      "name" : "train/Adam/epsilon",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/activations/tag" : {
+      "name" : "layer2/activations/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/rank" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Shape",
+      "op" : "Shape",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy", "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success", "^cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 31,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Tile", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape/shape" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam/read" : {
+      "name" : "layer2/weights/Variable/Adam/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 43,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/Reshape_1", "^train/gradients/layer2/Wx_plus_b/add_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Tile" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Tile",
+      "op" : "Tile",
+      "order" : 32,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range" : {
+      "name" : "layer1/biases/summaries/range",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/range/start", "layer1/biases/summaries/Rank", "layer1/biases/summaries/range/delta" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Const" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Const",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/summaries/mean_1/tags" : {
+      "name" : "layer2/biases/summaries/mean_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 64,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul_1", "^train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/tuple/group_deps" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 42,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/layer2/Wx_plus_b/add_grad/Reshape", "^train/gradients/layer2/Wx_plus_b/add_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/Rank" : {
+      "name" : "layer2/weights/summaries/Rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/summaries/Max" : {
+      "name" : "layer2/weights/summaries/Max",
+      "op" : "Max",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/read", "layer2/weights/summaries/range_1" ],
+      "dataTypeString" : null
+    },
+    "accuracy/correct_prediction/Equal" : {
+      "name" : "accuracy/correct_prediction/Equal",
+      "op" : "Equal",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "accuracy/correct_prediction/ArgMax", "input/y-input" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights",
+      "op" : "Mul",
+      "order" : 18,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Select", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Reshape_1" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 54,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Sum_1", "train/gradients/dropout/dropout/div_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/Rank_2" : {
+      "name" : "layer1/biases/summaries/Rank_2",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/Rank_1" : {
+      "name" : "layer1/biases/summaries/Rank_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/summaries/Rank_1" : {
+      "name" : "layer2/weights/summaries/Rank_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/beta1_power" : {
+      "name" : "train/beta1_power",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/max_1" : {
+      "name" : "layer1/weights/summaries/max_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/max_1/tags", "layer1/weights/summaries/Max" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/Rank_2" : {
+      "name" : "layer2/weights/summaries/Rank_2",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/Variable/Adam/Initializer/zeros" : {
+      "name" : "layer2/weights/Variable/Adam/Initializer/zeros",
+      "op" : "Fill",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam/Initializer/zeros/shape_as_tensor", "layer2/weights/Variable/Adam/Initializer/zeros/Const" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul",
+      "op" : "MatMul",
+      "order" : 44,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency", "layer2/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Neg" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Neg",
+      "op" : "Neg",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/activation" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Const" : {
+      "name" : "layer2/biases/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv",
+      "op" : "RealDiv",
+      "order" : 24,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/tuple/group_deps" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 60,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/layer1/Wx_plus_b/add_grad/Reshape", "^train/gradients/layer1/Wx_plus_b/add_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range/start" : {
+      "name" : "layer1/biases/summaries/range/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/summaries/stddev_1/tags" : {
+      "name" : "layer2/biases/summaries/stddev_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 51,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Reshape", "^train/gradients/dropout/dropout/mul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam_1/read" : {
+      "name" : "layer2/biases/Variable/Adam_1/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/Adam_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/Rank_2" : {
+      "name" : "layer2/biases/summaries/Rank_2",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/summaries/Rank_1" : {
+      "name" : "layer2/biases/summaries/Rank_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy_1/tags" : {
+      "name" : "cross_entropy_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/weights/summaries/Mean" : {
+      "name" : "layer1/weights/summaries/Mean",
+      "op" : "Mean",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/read", "layer1/weights/summaries/range" ],
+      "dataTypeString" : null
+    },
+    "train/beta2_power/Assign" : {
+      "name" : "train/beta2_power/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/beta2_power", "train/beta2_power/initial_value" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam" : {
+      "name" : "layer2/biases/Variable/Adam",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/beta1_power/read" : {
+      "name" : "train/beta1_power/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/beta1_power" ],
+      "dataTypeString" : null
+    },
+    "input/y-input" : {
+      "name" : "input/y-input",
+      "op" : "Placeholder",
+      "order" : 0,
+      "shape" : [ -1 ],
+      "dataSummary" : null,
+      "rootKeys" : [ "input/y-input" ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT64"
+    },
+    "train/gradients/Shape" : {
+      "name" : "train/gradients/Shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/histogram/tag" : {
+      "name" : "layer1/biases/summaries/histogram/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/biases/summaries/min_1" : {
+      "name" : "layer2/biases/summaries/min_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/min_1/tags", "layer2/biases/summaries/Min" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range_1/start" : {
+      "name" : "layer2/biases/summaries/range_1/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims",
+      "op" : "ExpandDims",
+      "order" : 38,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims/dim" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/mul" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/mul",
+      "op" : "Mul",
+      "order" : 39,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/PreventGradient" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam" : {
+      "name" : "layer1/weights/Variable/Adam",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 784, 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/summaries/max_1" : {
+      "name" : "layer1/biases/summaries/max_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/max_1/tags", "layer1/biases/summaries/Max" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range_1/start" : {
+      "name" : "layer1/biases/summaries/range_1/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/Variable/Assign" : {
+      "name" : "layer2/biases/Variable/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable", "layer2/biases/Const" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam/Initializer/zeros/shape_as_tensor" : {
+      "name" : "layer1/weights/Variable/Adam/Initializer/zeros/shape_as_tensor",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : 3.3685504E7,
+        "nanCount" : 0.0,
+        "max" : 2.68632064E8,
+        "infCount" : 0.0,
+        "sum" : 6.7371008E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/weights/Variable/Adam_1/Initializer/zeros" : {
+      "name" : "layer1/weights/Variable/Adam_1/Initializer/zeros",
+      "op" : "Fill",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor", "layer1/weights/Variable/Adam_1/Initializer/zeros/Const" ],
+      "dataTypeString" : null
+    },
+    "input_reshape/input/tag" : {
+      "name" : "input_reshape/input/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/biases/summaries/stddev/Const" : {
+      "name" : "layer2/biases/summaries/stddev/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "accuracy/accuracy/Const" : {
+      "name" : "accuracy/accuracy/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/Variable/read" : {
+      "name" : "layer2/weights/Variable/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Sum_1" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 53,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/mul", "train/gradients/dropout/dropout/div_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam/Initializer/zeros" : {
+      "name" : "layer2/biases/Variable/Adam/Initializer/zeros",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/Variable/Adam_1" : {
+      "name" : "layer2/biases/Variable/Adam_1",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/summaries/range/delta" : {
+      "name" : "layer1/biases/summaries/range/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/rank" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/rank",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "dropout/Placeholder" : {
+      "name" : "dropout/Placeholder",
+      "op" : "Placeholder",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder" ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/beta1_power/Assign" : {
+      "name" : "train/beta1_power/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/beta1_power", "train/beta1_power/initial_value" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/update_layer2/weights/Variable/ApplyAdam" : {
+      "name" : "train/Adam/update_layer2/weights/Variable/ApplyAdam",
+      "op" : "ApplyAdam",
+      "order" : 47,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "layer2/weights/Variable", "layer2/weights/Variable/Adam", "layer2/weights/Variable/Adam_1", "train/beta1_power/read", "train/beta2_power/read", "train/Adam/learning_rate", "train/Adam/beta1", "train/Adam/beta2", "train/Adam/epsilon", "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 23,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select_1", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/truncated_normal/mul" : {
+      "name" : "layer1/weights/truncated_normal/mul",
+      "op" : "Mul",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/truncated_normal/TruncatedNormal", "layer1/weights/truncated_normal/stddev" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/mean_1/tags" : {
+      "name" : "layer1/biases/summaries/mean_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/weights/truncated_normal/TruncatedNormal" : {
+      "name" : "layer2/weights/truncated_normal/TruncatedNormal",
+      "op" : "TruncatedNormal",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/truncated_normal/shape" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/dropout/dropout/div_grad/RealDiv" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/RealDiv",
+      "op" : "RealDiv",
+      "order" : 52,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency", "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/Assign" : {
+      "name" : "train/Adam/Assign",
+      "op" : "Assign",
+      "order" : 67,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/beta1_power", "train/Adam/mul" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable/Adam_1/Assign" : {
+      "name" : "layer1/biases/Variable/Adam_1/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/Adam_1", "layer1/biases/Variable/Adam_1/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam/Assign" : {
+      "name" : "layer2/biases/Variable/Adam/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/Adam", "layer2/biases/Variable/Adam/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range_1/start" : {
+      "name" : "layer1/weights/summaries/range_1/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum",
+      "op" : "Sum",
+      "order" : 17,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/tuple/group_deps" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 55,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/dropout/dropout/div_grad/Reshape", "^train/gradients/dropout/dropout/div_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/stddev_1/tags" : {
+      "name" : "layer1/weights/summaries/stddev_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul",
+      "op" : "Mul",
+      "order" : 33,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Tile", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable" : {
+      "name" : "layer2/biases/Variable",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/min_1/tags" : {
+      "name" : "layer1/biases/summaries/min_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/biases/Variable/Adam/Assign" : {
+      "name" : "layer1/biases/Variable/Adam/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/Adam", "layer1/biases/Variable/Adam/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/zeros_like" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/zeros_like",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Const" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Const",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/Variable/Adam_1/read" : {
+      "name" : "layer1/biases/Variable/Adam_1/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/Adam_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/histogram/tag" : {
+      "name" : "layer1/weights/summaries/histogram/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/weights/summaries/histogram" : {
+      "name" : "layer1/weights/summaries/histogram",
+      "op" : "HistogramSummary",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/histogram/tag", "layer1/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range_2/start" : {
+      "name" : "layer1/weights/summaries/range_2/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/stddev/Sqrt" : {
+      "name" : "layer1/biases/summaries/stddev/Sqrt",
+      "op" : "Sqrt",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/stddev/Mean" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_1",
+      "op" : "RealDiv",
+      "order" : 22,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Neg", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_2" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_2",
+      "op" : "RealDiv",
+      "order" : 23,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_1", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/truncated_normal/stddev" : {
+      "name" : "layer1/weights/truncated_normal/stddev",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/range_1/delta" : {
+      "name" : "layer1/weights/summaries/range_1/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/activations" : {
+      "name" : "layer2/activations",
+      "op" : "HistogramSummary",
+      "order" : 15,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/activations/tag", "layer2/activation" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/stddev/Sqrt" : {
+      "name" : "layer1/weights/summaries/stddev/Sqrt",
+      "op" : "Sqrt",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/stddev/Mean" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/mul" : {
+      "name" : "dropout/dropout/mul",
+      "op" : "Mul",
+      "order" : 11,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "dropout/dropout/div", "dropout/dropout/Floor" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/group_deps" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 45,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul", "^train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Shape_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Shape_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Reshape_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 41,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/Sum_1", "train/gradients/layer2/Wx_plus_b/add_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/stddev/Mean" : {
+      "name" : "layer2/weights/summaries/stddev/Mean",
+      "op" : "Mean",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/stddev/Square", "layer2/weights/summaries/stddev/Const" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range" : {
+      "name" : "layer2/biases/summaries/range",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/range/start", "layer2/biases/summaries/Rank", "layer2/biases/summaries/range/delta" ],
+      "dataTypeString" : null
+    },
+    "accuracy/correct_prediction/ArgMax/dimension" : {
+      "name" : "accuracy/correct_prediction/ArgMax/dimension",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "init" : {
+      "name" : "init",
+      "op" : "NoOp",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^layer1/biases/Variable/Adam/Assign", "^layer1/biases/Variable/Adam_1/Assign", "^layer1/biases/Variable/Assign", "^layer1/weights/Variable/Adam/Assign", "^layer1/weights/Variable/Adam_1/Assign", "^layer1/weights/Variable/Assign", "^layer2/biases/Variable/Adam/Assign", "^layer2/biases/Variable/Adam_1/Assign", "^layer2/biases/Variable/Assign", "^layer2/weights/Variable/Adam/Assign", "^layer2/weights/Variable/Adam_1/Assign", "^layer2/weights/Variable/Assign", "^train/beta1_power/Assign", "^train/beta2_power/Assign" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 61,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/Reshape", "^train/gradients/layer1/Wx_plus_b/add_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range_1/delta" : {
+      "name" : "layer1/biases/summaries/range_1/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/Mean" : {
+      "name" : "layer1/biases/summaries/Mean",
+      "op" : "Mean",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/read", "layer1/biases/summaries/range" ],
+      "dataTypeString" : null
+    },
+    "train/beta2_power/read" : {
+      "name" : "train/beta2_power/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/beta2_power" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/update_layer1/biases/Variable/ApplyAdam" : {
+      "name" : "train/Adam/update_layer1/biases/Variable/ApplyAdam",
+      "op" : "ApplyAdam",
+      "order" : 62,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "layer1/biases/Variable", "layer1/biases/Variable/Adam", "layer1/biases/Variable/Adam_1", "train/beta1_power/read", "train/beta2_power/read", "train/Adam/learning_rate", "train/Adam/beta1", "train/Adam/beta2", "train/Adam/epsilon", "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/activation" : {
+      "name" : "layer2/activation",
+      "op" : "Identity",
+      "order" : 14,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/Wx_plus_b/add" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims/dim" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/ExpandDims/dim",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/min_1" : {
+      "name" : "layer1/biases/summaries/min_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/min_1/tags", "layer1/biases/summaries/Min" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/random_uniform" : {
+      "name" : "dropout/dropout/random_uniform",
+      "op" : "Add",
+      "order" : 8,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "dropout/dropout/random_uniform/mul", "dropout/dropout/random_uniform/min" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/read" : {
+      "name" : "layer1/weights/Variable/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/random_uniform/max" : {
+      "name" : "dropout/dropout/random_uniform/max",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/Adam/mul" : {
+      "name" : "train/Adam/mul",
+      "op" : "Mul",
+      "order" : 66,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/beta1_power/read", "train/Adam/beta1", "^train/Adam/update_layer1/biases/Variable/ApplyAdam", "^train/Adam/update_layer1/weights/Variable/ApplyAdam", "^train/Adam/update_layer2/biases/Variable/ApplyAdam", "^train/Adam/update_layer2/weights/Variable/ApplyAdam" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range_2" : {
+      "name" : "layer2/biases/summaries/range_2",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/range_2/start", "layer2/biases/summaries/Rank_2", "layer2/biases/summaries/range_2/delta" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range_1" : {
+      "name" : "layer2/biases/summaries/range_1",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/range_1/start", "layer2/biases/summaries/Rank_1", "layer2/biases/summaries/range_1/delta" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/truncated_normal" : {
+      "name" : "layer2/weights/truncated_normal",
+      "op" : "Add",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/truncated_normal/mul", "layer2/weights/truncated_normal/mean" ],
+      "dataTypeString" : null
+    },
+    "layer2/Wx_plus_b/pre_activations" : {
+      "name" : "layer2/Wx_plus_b/pre_activations",
+      "op" : "HistogramSummary",
+      "order" : 14,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/Wx_plus_b/pre_activations/tag", "layer2/Wx_plus_b/add" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/group_deps" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 63,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul", "^train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 29,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape/shape" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/Min" : {
+      "name" : "layer2/weights/summaries/Min",
+      "op" : "Min",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/read", "layer2/weights/summaries/range_2" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape/shape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/grad_ys_0" : {
+      "name" : "train/gradients/grad_ys_0",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Shape" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Shape",
+      "op" : "Shape",
+      "order" : 13,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer2/Wx_plus_b/MatMul" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/Rank" : {
+      "name" : "layer2/biases/summaries/Rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like",
+      "op" : "Fill",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Shape", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Const" ],
+      "dataTypeString" : null
+    },
+    "input_reshape/Reshape" : {
+      "name" : "input_reshape/Reshape",
+      "op" : "Reshape",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "input/x-input", "input_reshape/Reshape/shape" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum",
+      "op" : "Sum",
+      "order" : 34,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/histogram/tag" : {
+      "name" : "layer2/biases/summaries/histogram/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/shape",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 46,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul_1", "^train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/Floor" : {
+      "name" : "dropout/dropout/Floor",
+      "op" : "Floor",
+      "order" : 10,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder", "input/x-input" ],
+      "inputKeys" : [ "dropout/dropout/add" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/stddev_1/tags" : {
+      "name" : "layer1/biases/summaries/stddev_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/weights/summaries/range_2/delta" : {
+      "name" : "layer1/weights/summaries/range_2/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/summaries/range_1" : {
+      "name" : "layer2/weights/summaries/range_1",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/range_1/start", "layer2/weights/summaries/Rank_1", "layer2/weights/summaries/range_1/delta" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range_2" : {
+      "name" : "layer2/weights/summaries/range_2",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/range_2/start", "layer2/weights/summaries/Rank_2", "layer2/weights/summaries/range_2/delta" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Const" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Const",
+      "op" : "Const",
+      "order" : 2,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success", "^cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/summaries/stddev/Square" : {
+      "name" : "layer2/biases/summaries/stddev/Square",
+      "op" : "Square",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/stddev/sub" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range_1/delta" : {
+      "name" : "layer2/biases/summaries/range_1/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/Rank" : {
+      "name" : "layer1/biases/summaries/Rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/Variable/Adam_1" : {
+      "name" : "layer2/weights/Variable/Adam_1",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500, 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/weights/Variable/Adam_1/Initializer/zeros/Const" : {
+      "name" : "layer2/weights/Variable/Adam_1/Initializer/zeros/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/rank" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Sum_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 40,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/mul", "train/gradients/layer2/Wx_plus_b/add_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range/delta" : {
+      "name" : "layer1/weights/summaries/range/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/activation" : {
+      "name" : "layer1/activation",
+      "op" : "Relu",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/Wx_plus_b/add" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Reshape" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 41,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/Sum", "train/gradients/layer2/Wx_plus_b/add_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "input_reshape/Reshape/shape" : {
+      "name" : "input_reshape/Reshape/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 4 ],
+      "dataSummary" : {
+        "finiteCount" : 4.0,
+        "min" : -1.0,
+        "avg" : 2.3907532775E8,
+        "nanCount" : 0.0,
+        "max" : 4.69762048E8,
+        "infCount" : 0.0,
+        "sum" : 9.56301311E8
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "input_reshape/input" : {
+      "name" : "input_reshape/input",
+      "op" : "ImageSummary",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "input_reshape/input/tag", "input_reshape/Reshape" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Tile" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Tile",
+      "op" : "Tile",
+      "order" : 30,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Reshape", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Const" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/shape",
+      "op" : "Shape",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater",
+      "op" : "Greater",
+      "order" : 20,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater/y" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select_1",
+      "op" : "Select",
+      "order" : 21,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/zeros_like", "train/gradients/Fill" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam_1/Assign" : {
+      "name" : "layer2/biases/Variable/Adam_1/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/Adam_1", "layer2/biases/Variable/Adam_1/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select",
+      "op" : "Select",
+      "order" : 21,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater", "train/gradients/Fill", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/zeros_like" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/min_1" : {
+      "name" : "layer2/weights/summaries/min_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/min_1/tags", "layer2/weights/summaries/Min" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/stddev/sub" : {
+      "name" : "layer1/biases/summaries/stddev/sub",
+      "op" : "Sub",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/read", "layer1/biases/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Shape",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/Shape", "train/gradients/layer1/Wx_plus_b/add_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range_2/delta" : {
+      "name" : "layer1/biases/summaries/range_2/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal",
+      "op" : "Equal",
+      "order" : 20,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal/y" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 28,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "accuracy_1" : {
+      "name" : "accuracy_1",
+      "op" : "ScalarSummary",
+      "order" : 19,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "accuracy_1/tags", "accuracy/accuracy/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/stddev/Mean" : {
+      "name" : "layer2/biases/summaries/stddev/Mean",
+      "op" : "Mean",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/stddev/Square", "layer2/biases/summaries/stddev/Const" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable/Adam/read" : {
+      "name" : "layer1/biases/Variable/Adam/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/Adam" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Reshape" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 59,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/Sum", "train/gradients/layer1/Wx_plus_b/add_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Shape_1" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Shape_1",
+      "op" : "Shape",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder" ],
+      "inputKeys" : [ "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/truncated_normal/mean" : {
+      "name" : "layer1/weights/truncated_normal/mean",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/Wx_plus_b/MatMul" : {
+      "name" : "layer2/Wx_plus_b/MatMul",
+      "op" : "MatMul",
+      "order" : 12,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "dropout/dropout/mul", "layer2/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Const" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Const",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/mean_1/tags" : {
+      "name" : "layer1/weights/summaries/mean_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal/y" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal/y",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/Variable/Adam_1" : {
+      "name" : "layer1/biases/Variable/Adam_1",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/mul" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/mul",
+      "op" : "Mul",
+      "order" : 24,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv_2" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/Mean" : {
+      "name" : "layer2/weights/summaries/Mean",
+      "op" : "Mean",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/read", "layer2/weights/summaries/range" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/max_1/tags" : {
+      "name" : "layer2/biases/summaries/max_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/weights/summaries/max_1/tags" : {
+      "name" : "layer2/weights/summaries/max_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "dropout/dropout_keep_probability/tags" : {
+      "name" : "dropout/dropout_keep_probability/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/biases/summaries/mean_1" : {
+      "name" : "layer2/biases/summaries/mean_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/mean_1/tags", "layer2/biases/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/Max" : {
+      "name" : "layer1/weights/summaries/Max",
+      "op" : "Max",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/read", "layer1/weights/summaries/range_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Const" : {
+      "name" : "layer1/biases/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/summaries/range_2/delta" : {
+      "name" : "layer2/biases/summaries/range_2/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/group_deps" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 27,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/max_1/tags" : {
+      "name" : "layer1/weights/summaries/max_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/weights/truncated_normal" : {
+      "name" : "layer1/weights/truncated_normal",
+      "op" : "Add",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/truncated_normal/mul", "layer1/weights/truncated_normal/mean" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/min_1/tags" : {
+      "name" : "layer1/weights/summaries/min_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "train/beta2_power/initial_value" : {
+      "name" : "train/beta2_power/initial_value",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "accuracy_1/tags" : {
+      "name" : "accuracy_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Shape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Shape",
+      "op" : "Shape",
+      "order" : 17,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/stddev/sub" : {
+      "name" : "layer2/weights/summaries/stddev/sub",
+      "op" : "Sub",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/read", "layer2/weights/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/stddev/Square" : {
+      "name" : "layer2/weights/summaries/stddev/Square",
+      "op" : "Square",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/stddev/sub" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam_1/Assign" : {
+      "name" : "layer1/weights/Variable/Adam_1/Assign",
+      "op" : "Assign",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam_1", "layer1/weights/Variable/Adam_1/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/add" : {
+      "name" : "dropout/dropout/add",
+      "op" : "Add",
+      "order" : 9,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder", "input/x-input" ],
+      "inputKeys" : [ "dropout/Placeholder", "dropout/dropout/random_uniform" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 26,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Const" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1_grad/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/biases/summaries/stddev/Sqrt" : {
+      "name" : "layer2/biases/summaries/stddev/Sqrt",
+      "op" : "Sqrt",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/stddev/Mean" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1",
+      "op" : "Sum",
+      "order" : 18,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const_2" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range" : {
+      "name" : "layer2/weights/summaries/range",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/range/start", "layer2/weights/summaries/Rank", "layer2/weights/summaries/range/delta" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable/read" : {
+      "name" : "layer1/biases/Variable/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/Shape_1" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Shape_1",
+      "op" : "Shape",
+      "order" : 11,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder", "input/x-input" ],
+      "inputKeys" : [ "dropout/dropout/Floor" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape",
+      "op" : "Shape",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select",
+      "op" : "Select",
+      "order" : 21,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal", "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Shape", "train/gradients/dropout/dropout/div_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/max_1" : {
+      "name" : "layer2/biases/summaries/max_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/max_1/tags", "layer2/biases/summaries/Max" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul",
+      "op" : "Mul",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const", "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/Fill" : {
+      "name" : "train/gradients/Fill",
+      "op" : "Fill",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "train/gradients/Shape", "train/gradients/grad_ys_0" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/Max" : {
+      "name" : "layer1/biases/summaries/Max",
+      "op" : "Max",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/read", "layer1/biases/summaries/range_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Sum" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Sum",
+      "op" : "Sum",
+      "order" : 58,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/activation_grad/ReluGrad", "train/gradients/layer1/Wx_plus_b/add_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/random_uniform/sub" : {
+      "name" : "dropout/dropout/random_uniform/sub",
+      "op" : "Sub",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "dropout/dropout/random_uniform/max", "dropout/dropout/random_uniform/min" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/stddev/Mean" : {
+      "name" : "layer1/biases/summaries/stddev/Mean",
+      "op" : "Mean",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/stddev/Square", "layer1/biases/summaries/stddev/Const" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 28,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape_1", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable" : {
+      "name" : "layer2/weights/Variable",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500, 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "dropout/dropout/random_uniform/min" : {
+      "name" : "dropout/dropout/random_uniform/min",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape/shape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Reshape/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/weights/summaries/stddev/Mean" : {
+      "name" : "layer1/weights/summaries/stddev/Mean",
+      "op" : "Mean",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/stddev/Square", "layer1/weights/summaries/stddev/Const" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/Sum" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Sum",
+      "op" : "Sum",
+      "order" : 48,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Mul", "train/gradients/dropout/dropout/mul_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Shape" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Shape",
+      "op" : "Shape",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/Wx_plus_b/MatMul" ],
+      "dataTypeString" : null
+    },
+    "train/beta2_power" : {
+      "name" : "train/beta2_power",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/summaries/Max" : {
+      "name" : "layer2/biases/summaries/Max",
+      "op" : "Max",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/read", "layer2/biases/summaries/range_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range/start" : {
+      "name" : "layer2/biases/summaries/range/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/summaries/range_2/delta" : {
+      "name" : "layer2/weights/summaries/range_2/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/Adam/update_layer2/biases/Variable/ApplyAdam" : {
+      "name" : "train/Adam/update_layer2/biases/Variable/ApplyAdam",
+      "op" : "ApplyAdam",
+      "order" : 44,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "layer2/biases/Variable", "layer2/biases/Variable/Adam", "layer2/biases/Variable/Adam_1", "train/beta1_power/read", "train/beta2_power/read", "train/Adam/learning_rate", "train/Adam/beta1", "train/Adam/beta2", "train/Adam/epsilon", "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam" : {
+      "name" : "layer2/weights/Variable/Adam",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500, 10 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/summaries/histogram" : {
+      "name" : "layer2/biases/summaries/histogram",
+      "op" : "HistogramSummary",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/histogram/tag", "layer2/biases/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 14,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/Shape", "train/gradients/layer2/Wx_plus_b/add_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor" : {
+      "name" : "layer1/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : 3.3685504E7,
+        "nanCount" : 0.0,
+        "max" : 2.68632064E8,
+        "infCount" : 0.0,
+        "sum" : 6.7371008E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/Variable/Adam/Initializer/zeros" : {
+      "name" : "layer1/biases/Variable/Adam/Initializer/zeros",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor" : {
+      "name" : "layer2/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : -1.6744448E7,
+        "nanCount" : 0.0,
+        "max" : 1.6777216E8,
+        "infCount" : 0.0,
+        "sum" : -3.3488896E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/truncated_normal/shape" : {
+      "name" : "layer2/weights/truncated_normal/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : -1.6744448E7,
+        "nanCount" : 0.0,
+        "max" : 1.6777216E8,
+        "infCount" : 0.0,
+        "sum" : -3.3488896E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/zeros_like" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/zeros_like",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/weights/Variable/Adam_1/read" : {
+      "name" : "layer2/weights/Variable/Adam_1/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/activations/tag" : {
+      "name" : "layer1/activations/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/group_deps" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 36,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 12,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Shape", "train/gradients/dropout/dropout/mul_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/mean_1" : {
+      "name" : "layer1/biases/summaries/mean_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/mean_1/tags", "layer1/biases/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success",
+      "op" : "NoOp",
+      "order" : 0,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/histogram" : {
+      "name" : "layer2/weights/summaries/histogram",
+      "op" : "HistogramSummary",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/histogram/tag", "layer2/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 56,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Reshape", "^train/gradients/dropout/dropout/div_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout_keep_probability" : {
+      "name" : "dropout/dropout_keep_probability",
+      "op" : "ScalarSummary",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "dropout/Placeholder" ],
+      "inputKeys" : [ "dropout/dropout_keep_probability/tags", "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/read" : {
+      "name" : "layer2/biases/Variable/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam_1/Assign" : {
+      "name" : "layer2/weights/Variable/Adam_1/Assign",
+      "op" : "Assign",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam_1", "layer2/weights/Variable/Adam_1/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present",
+      "op" : "Sum",
+      "order" : 19,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Const" ],
+      "dataTypeString" : null
+    },
+    "layer1/Wx_plus_b/pre_activations/tag" : {
+      "name" : "layer1/Wx_plus_b/pre_activations/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 37,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/stddev_1" : {
+      "name" : "layer1/biases/summaries/stddev_1",
+      "op" : "ScalarSummary",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/summaries/stddev_1/tags", "layer1/biases/summaries/stddev/Sqrt" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam_1" : {
+      "name" : "layer1/weights/Variable/Adam_1",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 784, 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/weights/summaries/histogram/tag" : {
+      "name" : "layer2/weights/summaries/histogram/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer1/weights/Variable/Assign" : {
+      "name" : "layer1/weights/Variable/Assign",
+      "op" : "Assign",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable", "layer1/weights/truncated_normal" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable/Adam_1/Initializer/zeros" : {
+      "name" : "layer1/biases/Variable/Adam_1/Initializer/zeros",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/static_scalar_check_success" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/static_scalar_check_success",
+      "op" : "NoOp",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range_2/start" : {
+      "name" : "layer2/weights/summaries/range_2/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Sum_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 58,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/activation_grad/ReluGrad", "train/gradients/layer1/Wx_plus_b/add_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/mean_1" : {
+      "name" : "layer2/weights/summaries/mean_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/mean_1/tags", "layer2/weights/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/mul" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/mul",
+      "op" : "Mul",
+      "order" : 52,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency", "train/gradients/dropout/dropout/div_grad/RealDiv_2" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/div" : {
+      "name" : "dropout/dropout/div",
+      "op" : "RealDiv",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "layer1/activation", "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/stddev_1" : {
+      "name" : "layer2/biases/summaries/stddev_1",
+      "op" : "ScalarSummary",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/summaries/stddev_1/tags", "layer2/biases/summaries/stddev/Sqrt" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/RealDiv_1" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/RealDiv_1",
+      "op" : "RealDiv",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Neg", "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/Mean" : {
+      "name" : "layer2/biases/summaries/Mean",
+      "op" : "Mean",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/read", "layer2/biases/summaries/range" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/stddev_1/tags" : {
+      "name" : "layer2/weights/summaries/stddev_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/dropout/dropout/div_grad/RealDiv_2" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/RealDiv_2",
+      "op" : "RealDiv",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/RealDiv_1", "dropout/Placeholder" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam/Assign" : {
+      "name" : "layer2/weights/Variable/Adam/Assign",
+      "op" : "Assign",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam", "layer2/weights/Variable/Adam/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/truncated_normal/mul" : {
+      "name" : "layer2/weights/truncated_normal/mul",
+      "op" : "Mul",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/truncated_normal/TruncatedNormal", "layer2/weights/truncated_normal/stddev" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 64,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul", "^train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/value" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/value",
+      "op" : "Select",
+      "order" : 23,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Greater", "cross_entropy/total/sparse_softmax_cross_entropy_loss/div", "cross_entropy/total/sparse_softmax_cross_entropy_loss/zeros_like" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/Min" : {
+      "name" : "layer1/weights/summaries/Min",
+      "op" : "Min",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/read", "layer1/weights/summaries/range_2" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/min_1" : {
+      "name" : "layer1/weights/summaries/min_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/min_1/tags", "layer1/weights/summaries/Min" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range" : {
+      "name" : "layer1/weights/summaries/range",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/range/start", "layer1/weights/summaries/Rank", "layer1/weights/summaries/range/delta" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 34,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul_1", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/Shape_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/Shape_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/truncated_normal/mean" : {
+      "name" : "layer2/weights/truncated_normal/mean",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/weights/summaries/range/delta" : {
+      "name" : "layer2/weights/summaries/range/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/PreventGradient" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/PreventGradient",
+      "op" : "PreventGradient",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy:1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam/read" : {
+      "name" : "layer1/weights/Variable/Adam/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/stddev/Sqrt" : {
+      "name" : "layer2/weights/summaries/stddev/Sqrt",
+      "op" : "Sqrt",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/stddev/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam/Initializer/zeros/shape_as_tensor" : {
+      "name" : "layer2/weights/Variable/Adam/Initializer/zeros/shape_as_tensor",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : -1.6744448E7,
+        "nanCount" : 0.0,
+        "max" : 1.6777216E8,
+        "infCount" : 0.0,
+        "sum" : -3.3488896E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/biases/summaries/stddev/Const" : {
+      "name" : "layer1/biases/summaries/stddev/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 1 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/beta1_power/initial_value" : {
+      "name" : "train/beta1_power/initial_value",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/dropout/dropout/mul_grad/Reshape" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 49,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Sum", "train/gradients/dropout/dropout/mul_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "layer1/activations" : {
+      "name" : "layer1/activations",
+      "op" : "HistogramSummary",
+      "order" : 5,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/activations/tag", "layer1/activation" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 43,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/add_grad/Reshape", "^train/gradients/layer2/Wx_plus_b/add_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/range_2/start" : {
+      "name" : "layer1/biases/summaries/range_2/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like",
+      "op" : "Fill",
+      "order" : 17,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Shape", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/ones_like/Const" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/max_1" : {
+      "name" : "layer2/weights/summaries/max_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/max_1/tags", "layer2/weights/summaries/Max" ],
+      "dataTypeString" : null
+    },
+    "layer2/Wx_plus_b/pre_activations/tag" : {
+      "name" : "layer2/Wx_plus_b/pre_activations/tag",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/summaries/stddev_1" : {
+      "name" : "layer2/weights/summaries/stddev_1",
+      "op" : "ScalarSummary",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/summaries/stddev_1/tags", "layer2/weights/summaries/stddev/Sqrt" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/truncated_normal/shape" : {
+      "name" : "layer1/weights/truncated_normal/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : -2.01261056E8,
+        "avg" : 3.3685504E7,
+        "nanCount" : 0.0,
+        "max" : 2.68632064E8,
+        "infCount" : 0.0,
+        "sum" : 6.7371008E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul",
+      "op" : "MatMul",
+      "order" : 62,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency", "layer1/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range_1/delta" : {
+      "name" : "layer2/weights/summaries/range_1/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/weights/summaries/stddev/sub" : {
+      "name" : "layer1/weights/summaries/stddev/sub",
+      "op" : "Sub",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/read", "layer1/weights/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer1/Wx_plus_b/MatMul" : {
+      "name" : "layer1/Wx_plus_b/MatMul",
+      "op" : "MatMul",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "input/x-input", "layer1/weights/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/div_grad/Reshape" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 54,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Sum", "train/gradients/dropout/dropout/div_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/Min" : {
+      "name" : "layer1/biases/summaries/Min",
+      "op" : "Min",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable/read", "layer1/biases/summaries/range_2" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range_1/start" : {
+      "name" : "layer2/weights/summaries/range_1/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/Variable/Adam_1/Initializer/zeros" : {
+      "name" : "layer2/weights/Variable/Adam_1/Initializer/zeros",
+      "op" : "Fill",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable/Adam_1/Initializer/zeros/shape_as_tensor", "layer2/weights/Variable/Adam_1/Initializer/zeros/Const" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/min_1/tags" : {
+      "name" : "layer2/weights/summaries/min_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/biases/summaries/min_1/tags" : {
+      "name" : "layer2/biases/summaries/min_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like/Shape",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/dropout/dropout/div_grad/Sum" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/Sum",
+      "op" : "Sum",
+      "order" : 53,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/RealDiv", "train/gradients/dropout/dropout/div_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/update_layer1/weights/Variable/ApplyAdam" : {
+      "name" : "train/Adam/update_layer1/weights/Variable/ApplyAdam",
+      "op" : "ApplyAdam",
+      "order" : 65,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "layer1/weights/Variable", "layer1/weights/Variable/Adam", "layer1/weights/Variable/Adam_1", "train/beta1_power/read", "train/beta2_power/read", "train/Adam/learning_rate", "train/Adam/beta1", "train/Adam/beta2", "train/Adam/epsilon", "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency_1" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/summaries/range/start" : {
+      "name" : "layer2/weights/summaries/range/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "input/x-input" : {
+      "name" : "input/x-input",
+      "op" : "Placeholder",
+      "order" : 0,
+      "shape" : [ -1, 784 ],
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer2/biases/summaries/range/delta" : {
+      "name" : "layer2/biases/summaries/range/delta",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/dropout/dropout/mul_grad/Reshape_1" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 49,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Sum_1", "train/gradients/dropout/dropout/mul_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 46,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul", "^train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/activation_grad/ReluGrad" : {
+      "name" : "train/gradients/layer1/activation_grad/ReluGrad",
+      "op" : "ReluGrad",
+      "order" : 57,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/tuple/control_dependency", "layer1/activation" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Neg" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Neg",
+      "op" : "Neg",
+      "order" : 19,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam_1/read" : {
+      "name" : "layer1/weights/Variable/Adam_1/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range/start" : {
+      "name" : "layer1/weights/summaries/range/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer2/weights/Variable/Assign" : {
+      "name" : "layer2/weights/Variable/Assign",
+      "op" : "Assign",
+      "order" : 4,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/weights/Variable", "layer2/weights/truncated_normal" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam/Initializer/zeros/Const" : {
+      "name" : "layer1/weights/Variable/Adam/Initializer/zeros/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/Rank" : {
+      "name" : "layer1/weights/summaries/Rank",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/dropout/dropout/div_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/dropout/dropout/div_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 56,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/div_grad/Reshape_1", "^train/gradients/dropout/dropout/div_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable/Adam/Assign" : {
+      "name" : "layer1/weights/Variable/Adam/Assign",
+      "op" : "Assign",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam", "layer1/weights/Variable/Adam/Initializer/zeros" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 61,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer1/Wx_plus_b/add_grad/Reshape_1", "^train/gradients/layer1/Wx_plus_b/add_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/Min" : {
+      "name" : "layer2/biases/summaries/Min",
+      "op" : "Min",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/read", "layer2/biases/summaries/range_2" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 26,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum_1", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "accuracy/accuracy/Mean" : {
+      "name" : "accuracy/accuracy/Mean",
+      "op" : "Mean",
+      "order" : 18,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "accuracy/accuracy/Cast", "accuracy/accuracy/Const" ],
+      "dataTypeString" : null
+    },
+    "train/Adam/mul_1" : {
+      "name" : "train/Adam/mul_1",
+      "op" : "Mul",
+      "order" : 66,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/beta2_power/read", "train/Adam/beta2", "^train/Adam/update_layer1/biases/Variable/ApplyAdam", "^train/Adam/update_layer1/weights/Variable/ApplyAdam", "^train/Adam/update_layer2/biases/Variable/ApplyAdam", "^train/Adam/update_layer2/weights/Variable/ApplyAdam" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/truncated_normal/stddev" : {
+      "name" : "layer2/weights/truncated_normal/stddev",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/shape",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 0 ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/div" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/div",
+      "op" : "RealDiv",
+      "order" : 22,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_1", "cross_entropy/total/sparse_softmax_cross_entropy_loss/Select" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/summaries/range_2/start" : {
+      "name" : "layer2/biases/summaries/range_2/start",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/gradients/layer2/Wx_plus_b/add_grad/Sum" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/add_grad/Sum",
+      "op" : "Sum",
+      "order" : 40,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy_grad/mul", "train/gradients/layer2/Wx_plus_b/add_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy_1" : {
+      "name" : "cross_entropy_1",
+      "op" : "ScalarSummary",
+      "order" : 24,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy_1/tags", "cross_entropy/total/sparse_softmax_cross_entropy_loss/value" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum",
+      "op" : "Sum",
+      "order" : 25,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/RealDiv", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/BroadcastGradientArgs" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/truncated_normal/TruncatedNormal" : {
+      "name" : "layer1/weights/truncated_normal/TruncatedNormal",
+      "op" : "TruncatedNormal",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/truncated_normal/shape" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal",
+      "op" : "Equal",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/Const", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal/y" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/stddev_1" : {
+      "name" : "layer1/weights/summaries/stddev_1",
+      "op" : "ScalarSummary",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/stddev_1/tags", "layer1/weights/summaries/stddev/Sqrt" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/zeros_like" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/zeros_like",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/biases/Variable/Assign" : {
+      "name" : "layer1/biases/Variable/Assign",
+      "op" : "Assign",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/biases/Variable", "layer1/biases/Const" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/random_uniform/RandomUniform" : {
+      "name" : "dropout/dropout/random_uniform/RandomUniform",
+      "op" : "RandomUniform",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "dropout/dropout/Shape" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "layer1/weights/summaries/Rank_2" : {
+      "name" : "layer1/weights/summaries/Rank_2",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/weights/summaries/Rank_1" : {
+      "name" : "layer1/weights/summaries/Rank_1",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/shape",
+      "op" : "Shape",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy", "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable/Adam" : {
+      "name" : "layer1/biases/Variable/Adam",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like",
+      "op" : "Fill",
+      "order" : 2,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Shape", "cross_entropy/total/sparse_softmax_cross_entropy_loss/ones_like/Const" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/mean_1" : {
+      "name" : "layer1/weights/summaries/mean_1",
+      "op" : "ScalarSummary",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/mean_1/tags", "layer1/weights/summaries/Mean" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/Variable" : {
+      "name" : "layer1/biases/Variable",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Select" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Select",
+      "op" : "Select",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/Equal", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/zeros_like", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/ones_like" ],
+      "dataTypeString" : null
+    },
+    "layer2/weights/Variable/Adam/Initializer/zeros/Const" : {
+      "name" : "layer2/weights/Variable/Adam/Initializer/zeros/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 51,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Reshape_1", "^train/gradients/dropout/dropout/mul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/Sum_1" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 48,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/dropout/dropout/mul_grad/Mul_1", "train/gradients/dropout/dropout/mul_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "layer1/Wx_plus_b/add" : {
+      "name" : "layer1/Wx_plus_b/add",
+      "op" : "Add",
+      "order" : 3,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "layer1/Wx_plus_b/MatMul", "layer1/biases/Variable/read" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency",
+      "op" : "Identity",
+      "order" : 23,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/Sum_1",
+      "op" : "Sum",
+      "order" : 25,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/mul", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/BroadcastGradientArgs:1" ],
+      "dataTypeString" : null
+    },
+    "train/Adam" : {
+      "name" : "train/Adam",
+      "op" : "NoOp",
+      "order" : 68,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/Adam/Assign", "^train/Adam/Assign_1", "^train/Adam/update_layer1/biases/Variable/ApplyAdam", "^train/Adam/update_layer1/weights/Variable/ApplyAdam", "^train/Adam/update_layer2/biases/Variable/ApplyAdam", "^train/Adam/update_layer2/weights/Variable/ApplyAdam" ],
+      "dataTypeString" : null
+    },
+    "layer1/biases/summaries/max_1/tags" : {
+      "name" : "layer1/biases/summaries/max_1/tags",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ ],
+      "dataSummary" : "",
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_STRING"
+    },
+    "layer2/weights/summaries/stddev/Const" : {
+      "name" : "layer2/weights/summaries/stddev/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : 0.0,
+        "avg" : 8388608.0,
+        "nanCount" : 0.0,
+        "max" : 1.6777216E7,
+        "infCount" : 0.0,
+        "sum" : 1.6777216E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "layer1/weights/Variable/Adam/Initializer/zeros" : {
+      "name" : "layer1/weights/Variable/Adam/Initializer/zeros",
+      "op" : "Fill",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/Variable/Adam/Initializer/zeros/shape_as_tensor", "layer1/weights/Variable/Adam/Initializer/zeros/Const" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul_1" : {
+      "name" : "train/gradients/layer2/Wx_plus_b/MatMul_grad/MatMul_1",
+      "op" : "MatMul",
+      "order" : 44,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "dropout/dropout/mul", "train/gradients/layer2/Wx_plus_b/add_grad/tuple/control_dependency" ],
+      "dataTypeString" : null
+    },
+    "layer2/biases/Variable/Adam/read" : {
+      "name" : "layer2/biases/Variable/Adam/read",
+      "op" : "Identity",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer2/biases/Variable/Adam" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/Shape" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/Shape",
+      "op" : "Shape",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/y-input" ],
+      "inputKeys" : [ "input/y-input" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape_1",
+      "op" : "Reshape",
+      "order" : 35,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum_1", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/stddev/Const" : {
+      "name" : "layer1/weights/summaries/stddev/Const",
+      "op" : "Const",
+      "order" : 0,
+      "shape" : [ 2 ],
+      "dataSummary" : {
+        "finiteCount" : 2.0,
+        "min" : 0.0,
+        "avg" : 8388608.0,
+        "nanCount" : 0.0,
+        "max" : 1.6777216E7,
+        "infCount" : 0.0,
+        "sum" : 1.6777216E7
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "train/Adam/Assign_1" : {
+      "name" : "train/Adam/Assign_1",
+      "op" : "Assign",
+      "order" : 67,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/beta2_power", "train/Adam/mul_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/zeros_like" : {
+      "name" : "train/gradients/zeros_like",
+      "op" : "ZerosLike",
+      "order" : 16,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy:1" ],
+      "dataTypeString" : null
+    },
+    "accuracy/accuracy/Cast" : {
+      "name" : "accuracy/accuracy/Cast",
+      "op" : "Cast",
+      "order" : 17,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "accuracy/correct_prediction/Equal" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/tuple/group_deps" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 50,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/dropout/dropout/mul_grad/Reshape", "^train/gradients/dropout/dropout/mul_grad/Reshape_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency_1",
+      "op" : "Identity",
+      "order" : 37,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape_1", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/group_deps" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/group_deps" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/group_deps",
+      "op" : "NoOp",
+      "order" : 22,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select", "^train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/Select_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/Variable" : {
+      "name" : "layer1/weights/Variable",
+      "op" : "VariableV2",
+      "order" : 0,
+      "shape" : [ 784, 500 ],
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Reshape",
+      "op" : "Reshape",
+      "order" : 35,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Sum", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape" ],
+      "dataTypeString" : null
+    },
+    "dropout/dropout/random_uniform/mul" : {
+      "name" : "dropout/dropout/random_uniform/mul",
+      "op" : "Mul",
+      "order" : 7,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input" ],
+      "inputKeys" : [ "dropout/dropout/random_uniform/RandomUniform", "dropout/dropout/random_uniform/sub" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/rank" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/rank",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_INT32"
+    },
+    "Merge/MergeSummary" : {
+      "name" : "Merge/MergeSummary",
+      "op" : "MergeSummary",
+      "order" : 25,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "input_reshape/input", "layer1/weights/summaries/mean_1", "layer1/weights/summaries/stddev_1", "layer1/weights/summaries/max_1", "layer1/weights/summaries/min_1", "layer1/weights/summaries/histogram", "layer1/biases/summaries/mean_1", "layer1/biases/summaries/stddev_1", "layer1/biases/summaries/max_1", "layer1/biases/summaries/min_1", "layer1/biases/summaries/histogram", "layer1/Wx_plus_b/pre_activations", "layer1/activations", "dropout/dropout_keep_probability", "layer2/weights/summaries/mean_1", "layer2/weights/summaries/stddev_1", "layer2/weights/summaries/max_1", "layer2/weights/summaries/min_1", "layer2/weights/summaries/histogram", "layer2/biases/summaries/mean_1", "layer2/biases/summaries/stddev_1", "layer2/biases/summaries/max_1", "layer2/biases/summaries/min_1", "layer2/biases/summaries/histogram", "layer2/Wx_plus_b/pre_activations", "layer2/activations", "cross_entropy_1", "accuracy_1" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range_2" : {
+      "name" : "layer1/weights/summaries/range_2",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/range_2/start", "layer1/weights/summaries/Rank_2", "layer1/weights/summaries/range_2/delta" ],
+      "dataTypeString" : null
+    },
+    "layer1/weights/summaries/range_1" : {
+      "name" : "layer1/weights/summaries/range_1",
+      "op" : "Range",
+      "order" : 1,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ ],
+      "inputKeys" : [ "layer1/weights/summaries/range_1/start", "layer1/weights/summaries/Rank_1", "layer1/weights/summaries/range_1/delta" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul_1" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Mul_1",
+      "op" : "Mul",
+      "order" : 33,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/xentropy", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Sum_grad/Tile" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/BroadcastGradientArgs" : {
+      "name" : "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/BroadcastGradientArgs",
+      "op" : "BroadcastGradientArgs",
+      "order" : 17,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/Shape_1" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/dropout/dropout/mul_grad/Shape" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Shape",
+      "op" : "Shape",
+      "order" : 6,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder" ],
+      "inputKeys" : [ "dropout/dropout/div" ],
+      "dataTypeString" : null
+    },
+    "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul_1" : {
+      "name" : "train/gradients/layer1/Wx_plus_b/MatMul_grad/MatMul_1",
+      "op" : "MatMul",
+      "order" : 62,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "input/x-input", "train/gradients/layer1/Wx_plus_b/add_grad/tuple/control_dependency" ],
+      "dataTypeString" : null
+    },
+    "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal/y" : {
+      "name" : "cross_entropy/total/sparse_softmax_cross_entropy_loss/Equal/y",
+      "op" : "Const",
+      "order" : 1,
+      "shape" : [ ],
+      "dataSummary" : {
+        "finiteCount" : 0.0,
+        "min" : "Infinity",
+        "avg" : 0.0,
+        "nanCount" : 0.0,
+        "max" : "-Infinity",
+        "infCount" : 0.0,
+        "sum" : 0.0
+      },
+      "rootKeys" : [ ],
+      "inputKeys" : [ "^cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success" ],
+      "dataTypeString" : "DT_FLOAT"
+    },
+    "train/gradients/dropout/dropout/mul_grad/Mul" : {
+      "name" : "train/gradients/dropout/dropout/mul_grad/Mul",
+      "op" : "Mul",
+      "order" : 47,
+      "shape" : null,
+      "dataSummary" : null,
+      "rootKeys" : [ "input/x-input", "dropout/Placeholder", "input/y-input" ],
+      "inputKeys" : [ "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/control_dependency", "dropout/dropout/Floor" ],
+      "dataTypeString" : null
+    }
+  },
+  "rootNodes" : [ "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/rank", "layer2/weights/Variable/Adam/read", "train/gradients/layer2/Wx_plus_b/add_grad/tuple/group_deps", "train/gradients/layer1/Wx_plus_b/add_grad/tuple/group_deps", "layer2/biases/Variable/Adam_1/read", "train/beta2_power/Assign", "layer2/biases/Variable/Assign", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/rank", "train/beta1_power/Assign", "train/Adam/update_layer2/weights/Variable/ApplyAdam", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/control_dependency_1", "train/Adam/Assign", "layer1/biases/Variable/Adam_1/Assign", "layer2/biases/Variable/Adam/Assign", "train/gradients/dropout/dropout/div_grad/tuple/group_deps", "layer1/biases/Variable/Adam/Assign", "layer1/biases/Variable/Adam_1/read", "train/gradients/layer2/Wx_plus_b/MatMul_grad/tuple/group_deps", "init", "train/Adam/update_layer1/biases/Variable/ApplyAdam", "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/group_deps", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/shape", "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/rank", "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/values/shape", "layer2/biases/Variable/Adam_1/Assign", "layer1/biases/Variable/Adam/read", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/group_deps", "layer1/weights/Variable/Adam_1/Assign", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/div_grad/tuple/control_dependency_1", "train/Adam/update_layer2/biases/Variable/ApplyAdam", "layer2/weights/Variable/Adam_1/read", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/group_deps", "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/static_scalar_check_success", "layer2/weights/Variable/Adam_1/Assign", "layer1/weights/Variable/Assign", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/static_scalar_check_success", "layer2/weights/Variable/Adam/Assign", "train/gradients/layer1/Wx_plus_b/MatMul_grad/tuple/control_dependency", "layer1/weights/Variable/Adam/read", "train/Adam/update_layer1/weights/Variable/ApplyAdam", "layer1/weights/Variable/Adam_1/read", "layer2/weights/Variable/Assign", "train/gradients/dropout/dropout/div_grad/tuple/control_dependency_1", "layer1/weights/Variable/Adam/Assign", "cross_entropy/total/sparse_softmax_cross_entropy_loss/assert_broadcastable/weights/shape", "layer1/biases/Variable/Assign", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/values/shape", "train/gradients/dropout/dropout/mul_grad/tuple/control_dependency_1", "train/Adam", "layer2/biases/Variable/Adam/read", "cross_entropy/total/sparse_softmax_cross_entropy_loss/xentropy/Shape", "train/Adam/Assign_1", "train/gradients/zeros_like", "train/gradients/dropout/dropout/mul_grad/tuple/group_deps", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/Mul_grad/tuple/control_dependency_1", "train/gradients/cross_entropy/total/sparse_softmax_cross_entropy_loss/value_grad/tuple/group_deps", "cross_entropy/total/sparse_softmax_cross_entropy_loss/num_present/broadcast_weights/assert_broadcastable/weights/rank", "Merge/MergeSummary" ]
+}
