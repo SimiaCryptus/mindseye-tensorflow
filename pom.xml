@@ -29,13 +29,11 @@
     </parent>
 
     <artifactId>mindseye-tensorflow</artifactId>
-    <description>Experiments with Image Analysis</description>
+    <description>TensorFlow Integration</description>
 
     <properties>
-        <github.project>mindseye-dataframes</github.project>
+        <github.project>mindseye-tensorflow</github.project>
         <github.path></github.path>
-        <scala.mjversion>2.11</scala.mjversion>
-        <scala.version>2.11.11</scala.version>
     </properties>
     <distributionManagement>
         <site>
