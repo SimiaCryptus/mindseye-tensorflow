@@ -121,7 +121,6 @@ public class MatMulLayer extends TFLayerBase {
                       ops.withName(getInputNodes().get(0)).placeholder(Double.class),
                       ops.constant(new long[]{-1, Tensor.length(intputDims)})
                   ),
-                  //MatMul.transposeA(true),
                   MatMul.transposeB(true)
               ),
               ops.constant(new int[]{1,0})

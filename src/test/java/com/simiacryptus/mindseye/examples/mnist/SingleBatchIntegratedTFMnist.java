@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.DataType;
 import org.tensorflow.framework.GraphDef;
+import org.tensorflow.op.core.MatMul;
 import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nonnull;
@@ -65,7 +66,7 @@ public class SingleBatchIntegratedTFMnist {
 
   @Test
   public void viewModelJson() throws Exception {
-    TFUtil.launchTensorboard(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"),p->p.waitFor());
+    TFUtil.launchTensorboard(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"), p -> p.waitFor());
   }
 
   public static class MnistDemo extends MnistDemoBase {
@@ -125,7 +126,7 @@ public class SingleBatchIntegratedTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setSingleBatch(true).setSummaryOut(statOutput);
+      return new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput);
     });
   }
 
@@ -133,7 +134,7 @@ public class SingleBatchIntegratedTFMnist {
   private static HashMap<String, Tensor> getVariables() {
     HashMap<String, Tensor> variables = new HashMap<>();
     variables.put(weights,
-        new Tensor(1, 10, 28 * 28)
+        new Tensor(10, 28 * 28)
             .setByCoord(c -> .001 * (Math.random() - 0.5)));
     variables.put(bias,
         new Tensor(1, 28, 28).setByCoord(c -> 0));
@@ -149,9 +150,9 @@ public class SingleBatchIntegratedTFMnist {
           "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
       ).contains(op)) return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
-//      if(node.getName().equalsIgnoreCase(input)) {
-//        nodeInstrumentation.setImage(28,28,1);
-//      }
+      if(node.getName().equalsIgnoreCase(input)) {
+        nodeInstrumentation.setImage(28,28,1);
+      }
       return nodeInstrumentation;
     });
     TensorflowUtil.validate(graphDef);
@@ -159,39 +160,41 @@ public class SingleBatchIntegratedTFMnist {
   }
 
   private static byte[] getGraphDef() {
-    byte[] bytes = TensorflowUtil.makeGraph(ops -> {
+    return TensorflowUtil.makeGraph(ops -> {
       ops.withName(output).softmax(
           ops.reshape(
-              ops.batchMatMul(
-                  ops.withName(weights).placeholder(
-                      Double.class,
-                      Placeholder.shape(Shape.make(1, 10, 28 * 28))
-                  ),
-                  ops.reshape(
-                      ops.add(
-                          ops.reshape(
-                              ops.withName(bias).placeholder(
-                                  Double.class,
-                                  Placeholder.shape(Shape.make(1, 28, 28))
-                              ),
-                              ops.constant(new long[]{1, 28, 28})
-                          ),
-                          ops.reshape(
-                              ops.withName(input).placeholder(
-                                  Double.class,
-                                  Placeholder.shape(Shape.make(-1, 28, 28))
-                              ),
-                              ops.constant(new long[]{1, 28, 28})
-                          )
+              ops.transpose(
+                  ops.matMul(
+                      ops.withName(weights).placeholder(
+                          Double.class,
+                          Placeholder.shape(Shape.make(10, 28 * 28))
                       ),
-                      ops.constant(new long[]{1, 28 * 28, 1})
-                  )
+                      ops.reshape(
+                          ops.add(
+                              ops.reshape(
+                                  ops.withName(bias).placeholder(
+                                      Double.class,
+                                      Placeholder.shape(Shape.make(1, 28, 28))
+                                  ),
+                                  ops.constant(new long[]{1, 28, 28})
+                              ),
+                              ops.reshape(
+                                  ops.withName(input).placeholder(
+                                      Double.class,
+                                      Placeholder.shape(Shape.make(-1, 28, 28))
+                                  ),
+                                  ops.constant(new long[]{-1, 28, 28})
+                              )
+                          ),
+                          ops.constant(new long[]{-1, 28 * 28})
+                      ),
+                      MatMul.transposeB(true)
+                  ),
+                  ops.constant(new int[]{1, 0})
               ),
               ops.constant(new long[]{-1, 10})
-          )
-      );
+          ));
     });
-    return bytes;
   }
 
 }
