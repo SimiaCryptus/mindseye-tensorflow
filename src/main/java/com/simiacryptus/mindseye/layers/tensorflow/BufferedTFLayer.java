@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
 import com.simiacryptus.tensorflow.TensorflowUtil;

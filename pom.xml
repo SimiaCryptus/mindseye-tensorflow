@@ -121,6 +121,24 @@
             <artifactId>smile-plot</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.simiacryptus</groupId>
+            <artifactId>mindseye-research</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.simiacryptus</groupId>
+            <artifactId>mindseye-research</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.simiacryptus</groupId>
+            <artifactId>mindseye-cudnn</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

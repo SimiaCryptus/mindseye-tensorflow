@@ -22,11 +22,13 @@ package com.simiacryptus.mindseye.examples.mnist;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
 import com.simiacryptus.mindseye.eval.Trainable;
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.lang.ReferenceCountingBase;
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
+import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.layers.java.EntropyLossLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayerBase;
+import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.SimpleLossNetwork;
 import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.Step;
@@ -58,6 +60,8 @@ import java.util.stream.IntStream;
 
 public abstract class MnistDemoBase {
   private static final Logger log = LoggerFactory.getLogger(MnistDemoBase.class);
+  protected int timeout = 60;
+
   @Test
   public void test() throws Exception {
     File tensorboardLocation = new File("tensorboard/tflayer_TFLayer").getAbsoluteFile();
@@ -135,20 +139,38 @@ public abstract class MnistDemoBase {
       EntropyLossLayer loss = new EntropyLossLayer();
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
       loss.freeRef();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 100);
       supervisedNetwork.freeRef();
       double result = new IterativeTrainer(trainable)
           .setMonitor(monitor)
           .setOrientation(new LBFGS())
-          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e-4))
-//          .setLineSearchFactory(n -> new QuadraticSearch().setCurrentRate(1e-4))
-          .setTimeout(60, TimeUnit.SECONDS)
+          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+          .setTimeout(timeout, TimeUnit.SECONDS)
           .setMaxIterations(200)
           .setIterationsPerSample(20)
           .runAndFree();
       trainable.freeRef();
       return result;
     });
+//    log.eval(() -> {
+//      EntropyLossLayer loss = new EntropyLossLayer();
+//      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
+//      loss.freeRef();
+//      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
+//      supervisedNetwork.freeRef();
+//      double result = new IterativeTrainer(trainable)
+//          .setMonitor(monitor)
+//          .setOrientation(new RecursiveSubspace()
+//              .setLineSearch(new ArmijoWolfeSearch().setAlpha(1e3))
+//          )
+//          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+//          .setTimeout(timeout, TimeUnit.SECONDS)
+//          .setMaxIterations(200)
+//          .setIterationsPerSample(20)
+//          .runAndFree();
+//      trainable.freeRef();
+//      return result;
+//    });
     if (!history.isEmpty()) {
       log.eval(() -> {
         @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())}).toArray(i -> new double[i][]));
@@ -156,6 +178,12 @@ public abstract class MnistDemoBase {
         plot.setAxisLabels("Iteration", "log10(Fitness)");
         plot.setSize(600, 400);
         return plot;
+      });
+    }
+
+    if (recognitionNetwork instanceof DAGNetwork) {
+      ((DAGNetwork) recognitionNetwork).visitLayers(layer -> {
+        if (layer instanceof StochasticComponent) ((StochasticComponent) layer).clearNoise();
       });
     }
 

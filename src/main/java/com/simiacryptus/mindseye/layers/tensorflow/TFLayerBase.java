@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
@@ -48,13 +49,13 @@ public abstract class TFLayerBase extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(TFLayer.class);
   public static TensorboardEventWriter eventWriter = null;
 
-  private final Map<String, com.simiacryptus.mindseye.lang.Tensor> weights = new HashMap<>();
+  private final Map<String, Tensor> weights = new HashMap<>();
 
   public TFLayerBase(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
     Set<String> dataKeys = getDataKeys(json);
     for (String key : dataKeys) {
-      this.getWeights().put(key, com.simiacryptus.mindseye.lang.Tensor.fromJson(json.get(key), rs));
+      this.getWeights().put(key, Tensor.fromJson(json.get(key), rs));
     }
   }
 

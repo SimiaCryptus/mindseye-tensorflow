@@ -21,7 +21,7 @@ package com.simiacryptus.mindseye.lang.tensorflow;
 
 import com.google.common.primitives.Floats;
 import com.simiacryptus.lang.UncheckedConsumer;
-import com.simiacryptus.mindseye.lang.RecycleBin;
+import com.simiacryptus.lang.ref.RecycleBin;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;
@@ -166,10 +166,10 @@ public class TFUtil {
   @NotNull
   public static TensorArray toTensorArray(double[] entireBuffer, int[] dims, int batches) {
     return TensorArray.wrap(IntStream.range(0, batches).mapToObj(i -> {
-      com.simiacryptus.mindseye.lang.Tensor tensor = new com.simiacryptus.mindseye.lang.Tensor(dims);
+      Tensor tensor = new Tensor(dims);
       System.arraycopy(entireBuffer, i * tensor.length(), tensor.getData(), 0, tensor.length());
       return tensor;
-    }).toArray(i -> new com.simiacryptus.mindseye.lang.Tensor[i]));
+    }).toArray(i -> new Tensor[i]));
   }
   @NotNull
   public static TensorArray toTensorArray(float[] entireBuffer, int[] dims, int batches) {
@@ -179,7 +179,7 @@ public class TFUtil {
         tensor.getData()[j] = entireBuffer[j + i*tensor.length()];
       }
       return tensor;
-    }).toArray(i -> new com.simiacryptus.mindseye.lang.Tensor[i]));
+    }).toArray(i -> new Tensor[i]));
   }
 
   public static void launchTensorboard(File logDir, UncheckedConsumer<Process> waiter) throws IOException, URISyntaxException {

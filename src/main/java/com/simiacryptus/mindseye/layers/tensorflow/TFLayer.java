@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.mindseye.lang.Tensor;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
@@ -46,7 +47,7 @@ public class TFLayer extends TFLayerBase {
     return this;
   }
 
-  public TFLayer(byte[] graphDef, Map<String, com.simiacryptus.mindseye.lang.Tensor> states, String output, String... input) {
+  public TFLayer(byte[] graphDef, Map<String, Tensor> states, String output, String... input) {
     super(states);
     this.setOutputNode(output);
     setInputNodes(Arrays.asList(input));
