@@ -178,13 +178,7 @@ public abstract class TFLayerBase extends LayerBase {
       for (int i = 0; i < inputs.length; i++) {
         org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
         TensorArray tensorArray = getTensorArray(tensor.shape(), tensor);
-        BiConsumer<DeltaSet<UUID>, TensorList> r = inputs[i].getAccumulator();
-        int prevRefs = tensorArray.currentRefCount();
-        r.accept(deltaBuffer, tensorArray);
-        int refDeltas = prevRefs - tensorArray.currentRefCount();
-        if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
-          throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
-        }
+        inputs[i].getAccumulator().accept(deltaBuffer, tensorArray);
         feedbacktensors.add(tensor);
       }
       for (int i = 0; i < stateNames.size(); i++) {

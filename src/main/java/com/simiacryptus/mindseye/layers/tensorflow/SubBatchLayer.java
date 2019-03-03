@@ -94,13 +94,7 @@ public class SubBatchLayer extends WrapperLayer {
           try {
             IntStream.range(0, deltaSignal.length()).forEach(batchIndex -> {
               TensorArray tensorArray = TensorArray.wrap(deltaSignal.get(batchIndex));
-              int prevRefs = tensorArray.currentRefCount();
-              Result r = batchResults[batchIndex];
-              r.getAccumulator().accept(deltaBuffer, tensorArray);
-              int refDeltas = prevRefs - tensorArray.currentRefCount();
-              if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
-                throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
-              }
+              batchResults[batchIndex].getAccumulator().accept(deltaBuffer, tensorArray);
             });
           } finally {
             deltaSignal.freeRef();
@@ -108,13 +102,7 @@ public class SubBatchLayer extends WrapperLayer {
           synchronized (passbackBuffer) {
             IntStream.range(0, inputs.length).forEach(inputIndex -> {
               TensorArray tensorArray = TensorArray.wrap(passbackBuffer[inputIndex]);
-              int prevRefs = tensorArray.currentRefCount();
-              Result r = inputs[inputIndex];
-              r.getAccumulator().accept(deltaBuffer, tensorArray);
-              int refDeltas = prevRefs - tensorArray.currentRefCount();
-              if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
-                throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
-              }
+              inputs[inputIndex].getAccumulator().accept(deltaBuffer, tensorArray);
             });
           }
           if(inner instanceof BufferedTFLayer) {
