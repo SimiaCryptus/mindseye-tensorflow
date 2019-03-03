@@ -25,6 +25,7 @@ import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
+import com.simiacryptus.mindseye.network.CountingResult;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -157,28 +159,32 @@ public abstract class TFLayerBase extends LayerBase {
     return new Result(resultData, ((deltaBuffer, deltaSignal) -> {
       ArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new ArrayList<>();
       Output<?>[] gradients = tfsession.getGradients();
-      {
-        double[] buffer = TFUtil.getDoubles(deltaSignal);
-        String deltaOperation = getOutputNode() + "_delta";
-        if(floatInputs(deltaOperation)) {
-          float[] floats = TFUtil.getFloats(buffer);
-          org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(outputShape, FloatBuffer.wrap(floats));
-          runner.feed(deltaOperation, tensor);
-          feedbacktensors.add(tensor);
-        } else {
-          org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(outputShape, DoubleBuffer.wrap(buffer));
-          runner.feed(deltaOperation, tensor);
-          feedbacktensors.add(tensor);
-        }
-        RecycleBin.DOUBLES.recycle(buffer, buffer.length);
+      double[] buffer = TFUtil.getDoubles(deltaSignal);
+      deltaSignal.freeRef();
+      String deltaOperation = getOutputNode() + "_delta";
+      if(floatInputs(deltaOperation)) {
+        float[] floats = TFUtil.getFloats(buffer);
+        org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(outputShape, FloatBuffer.wrap(floats));
+        runner.feed(deltaOperation, tensor);
+        feedbacktensors.add(tensor);
+      } else {
+        org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(outputShape, DoubleBuffer.wrap(buffer));
+        runner.feed(deltaOperation, tensor);
+        feedbacktensors.add(tensor);
       }
+      RecycleBin.DOUBLES.recycle(buffer, buffer.length);
       Arrays.stream(gradients).forEach(runner::fetch);
       Session.Run back = runner.runAndFetchMetadata();
       for (int i = 0; i < inputs.length; i++) {
         org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
         TensorArray tensorArray = getTensorArray(tensor.shape(), tensor);
-        inputs[i].getAccumulator().accept(deltaBuffer, tensorArray);
-        tensorArray.freeRef();
+        BiConsumer<DeltaSet<UUID>, TensorList> r = inputs[i].getAccumulator();
+        int prevRefs = tensorArray.currentRefCount();
+        r.accept(deltaBuffer, tensorArray);
+        int refDeltas = prevRefs - tensorArray.currentRefCount();
+        if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
+          throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
+        }
         feedbacktensors.add(tensor);
       }
       for (int i = 0; i < stateNames.size(); i++) {

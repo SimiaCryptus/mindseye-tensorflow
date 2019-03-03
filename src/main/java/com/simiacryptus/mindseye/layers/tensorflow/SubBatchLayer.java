@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.layers.WrapperLayer;
+import com.simiacryptus.mindseye.network.CountingResult;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -81,6 +82,7 @@ public class SubBatchLayer extends WrapperLayer {
             TensorArray.wrap(inputs[inputIndex].getData().get(batchIndex)),
             (deltaBuffer, deltaSignal) -> {
               passbackBuffer[inputIndex][batchIndex] = deltaSignal.get(0);
+              deltaSignal.freeRef();
             });
       }).toArray(x -> new Result[x]));
     }).toArray(i -> new Result[i]);
@@ -89,16 +91,30 @@ public class SubBatchLayer extends WrapperLayer {
     return new Result(
         resultData,
         (DeltaSet<UUID> deltaBuffer, TensorList deltaSignal) -> {
-          IntStream.range(0, deltaSignal.length()).forEach(batchIndex -> {
-            TensorArray tensorArray = TensorArray.wrap(deltaSignal.get(batchIndex));
-            batchResults[batchIndex].getAccumulator().accept(deltaBuffer, tensorArray);
-            tensorArray.freeRef();
-          });
+          try {
+            IntStream.range(0, deltaSignal.length()).forEach(batchIndex -> {
+              TensorArray tensorArray = TensorArray.wrap(deltaSignal.get(batchIndex));
+              int prevRefs = tensorArray.currentRefCount();
+              Result r = batchResults[batchIndex];
+              r.getAccumulator().accept(deltaBuffer, tensorArray);
+              int refDeltas = prevRefs - tensorArray.currentRefCount();
+              if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
+                throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
+              }
+            });
+          } finally {
+            deltaSignal.freeRef();
+          }
           synchronized (passbackBuffer) {
             IntStream.range(0, inputs.length).forEach(inputIndex -> {
               TensorArray tensorArray = TensorArray.wrap(passbackBuffer[inputIndex]);
-              inputs[inputIndex].getAccumulator().accept(deltaBuffer, tensorArray);
-              tensorArray.freeRef();
+              int prevRefs = tensorArray.currentRefCount();
+              Result r = inputs[inputIndex];
+              r.getAccumulator().accept(deltaBuffer, tensorArray);
+              int refDeltas = prevRefs - tensorArray.currentRefCount();
+              if (refDeltas != 1 && !r.getClass().equals(CountingResult.class)) {
+                throw new IllegalStateException(String.format("%s backprop finished with %s refs", r.getClass().toString(), refDeltas));
+              }
             });
           }
           if(inner instanceof BufferedTFLayer) {
