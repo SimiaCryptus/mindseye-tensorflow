@@ -23,7 +23,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LayerTestBase;
 import com.simiacryptus.mindseye.layers.cudnn.ActivationLayer;
 import com.simiacryptus.mindseye.layers.cudnn.PoolingLayer;
-import com.simiacryptus.mindseye.layers.cudnn.conv.ConvolutionLayer;
+import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class ConvJavaMnist {
+public class SimpleCudnnMnist {
 
   private static boolean tensorboard = false;
 
@@ -48,7 +48,7 @@ public class ConvJavaMnist {
 
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
-      timeout = 15*60;
+      timeout = 5*60;
       log.p("This is a very simple model that performs basic logistic regression. " +
           "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
@@ -98,37 +98,16 @@ public class ConvJavaMnist {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if(tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
 
-      int bands1 = 64;
-      pipeline.wrap(new ConvolutionLayer(5,5, 1, bands1)
-          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands1)).freeRef();
-      pipeline.wrap(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
-      pipeline.wrap(new ActivationLayer(ActivationLayer.Mode.RELU)).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("layerout1")).freeRef();
-
-      int bands2 = 32;
-      pipeline.wrap(new ConvolutionLayer(5,5, bands1, bands2)
-          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands2)).freeRef();
-      pipeline.wrap(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
-      pipeline.wrap(new ActivationLayer(ActivationLayer.Mode.RELU)).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("layerout2")).freeRef();
-
-      pipeline.wrap(new AssertDimensionsLayer(7,7, bands2)).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{7,7, bands2}, new int[]{1024})
-          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new BiasLayer(1024)).freeRef();
-      pipeline.wrap(new ReLuActivationLayer()).freeRef();
-      pipeline.wrap(BinaryNoiseLayer.maskLayer(0.6)).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("layerout3")).freeRef();
-
-      pipeline.wrap(new FullyConnectedLayer(new int[]{1024}, new int[]{10})
+      int bands1 = 5;
+      pipeline.wrap(new SimpleConvolutionLayer(5,5, 1 * bands1)
           .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
+      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{28,28, bands1}, new int[]{10})
+          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
       pipeline.wrap(new BiasLayer(10)).freeRef();
       pipeline.wrap(new SoftmaxLayer()).freeRef();
 
       if(tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
-      return StochasticSamplingSubnetLayer.wrap(pipeline, 5);
+      return pipeline;
     });
   }
 

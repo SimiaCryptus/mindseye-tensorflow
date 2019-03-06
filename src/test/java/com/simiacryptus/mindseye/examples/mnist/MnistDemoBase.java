@@ -19,11 +19,12 @@
 
 package com.simiacryptus.mindseye.examples.mnist;
 
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
 import com.simiacryptus.mindseye.eval.Trainable;
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
 import com.simiacryptus.mindseye.layers.StochasticComponent;
 import com.simiacryptus.mindseye.layers.java.EntropyLossLayer;
@@ -51,11 +52,13 @@ import smile.plot.ScatterPlot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public abstract class MnistDemoBase {
@@ -71,23 +74,25 @@ public abstract class MnistDemoBase {
       file.delete();
     });
     byte[] graphDef = getGraphDef();
-    if(null != graphDef) {
+    if (null != graphDef) {
       TFLayerBase.eventWriter = new TensorboardEventWriter(tensorboardLocation, GraphDef.parseFrom(graphDef));
     }
     File reportFile = new File(String.format("target/reports/%s/%s/test",
         getClass().getSimpleName(), new SimpleDateFormat("yyyyMMddHHmm").format(new Date())));
     MarkdownNotebookOutput log = new MarkdownNotebookOutput(reportFile, true);
-    try(CodeUtil.LogInterception ignored = CodeUtil.intercept(log, ReferenceCountingBase.class.getCanonicalName())) {
+    try (CodeUtil.LogInterception ignored = CodeUtil.intercept(log, ReferenceCountingBase.class.getCanonicalName())) {
       run(log);
     } finally {
       log.close();
     }
-    if(null != TFLayerBase.eventWriter) {
+    if (null != TFLayerBase.eventWriter) {
       TFLayerBase.eventWriter.close();
       TFLayerBase.eventWriter = null;
     }
-    if(null != graphDef) {
-      TFUtil.launchTensorboard(tensorboardLocation.getParentFile(), x -> x.waitFor(1, TimeUnit.HOURS));
+    if (null != graphDef) {
+      TFUtil.launchTensorboard(tensorboardLocation.getParentFile(), x -> {
+        JOptionPane.showConfirmDialog(null,"Press OK to exit");
+      });
     }
   }
 
@@ -128,7 +133,7 @@ public abstract class MnistDemoBase {
 
       @Override
       public void onStepComplete(final Step currentPoint) {
-        if(null != TFLayerBase.eventWriter) {
+        if (null != TFLayerBase.eventWriter) {
           TFLayerBase.eventWriter.setStep(currentPoint.iteration);
         }
         history.add(currentPoint);
@@ -139,7 +144,7 @@ public abstract class MnistDemoBase {
       EntropyLossLayer loss = new EntropyLossLayer();
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
       loss.freeRef();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 100);
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 500);
       supervisedNetwork.freeRef();
       double result = new IterativeTrainer(trainable)
           .setMonitor(monitor)
@@ -190,7 +195,7 @@ public abstract class MnistDemoBase {
     @Nonnull final String modelName = "model.json";
     log.p("Saved model as " + log.file(recognitionNetwork.getJson().toString(), modelName, modelName));
 
-    if(null != TFLayerBase.eventWriter) {
+    if (null != TFLayerBase.eventWriter) {
       try {
         TFLayerBase.eventWriter.close();
       } catch (IOException e) {
@@ -202,9 +207,23 @@ public abstract class MnistDemoBase {
     log.h1("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
     log.eval(() -> {
-      return MNIST.validationDataStream().mapToDouble(labeledObject ->
-          predict(recognitionNetwork, labeledObject)[0] == parse(labeledObject.label) ? 1 : 0)
-          .average().getAsDouble() * 100;
+      List<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(Collectors.toList());
+      Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
+      TensorList predictionData = recognitionNetwork.eval(tensors).getDataAndFree();
+      //Arrays.stream(tensors).flatMap(Arrays::stream).forEach(ReferenceCountingBase::freeRef);
+      List<int[]> predicitonList = IntStream.range(0, predictionData.length()).mapToObj(rowIndex -> {
+        Tensor predictionTensor = predictionData.get(rowIndex);
+        int[] prediction = IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(ii -> {
+          return -predictionTensor.getData()[ii];
+        })).mapToInt(x -> x).toArray();
+        predictionTensor.freeRef();
+        return prediction;
+      }).collect(Collectors.toList());
+      double result = IntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
+        return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
+      }).average().getAsDouble() * 100;
+      predictionData.freeRef();
+      return result;
     });
 
     log.p("Let's examine some incorrectly predicted results in more detail:");

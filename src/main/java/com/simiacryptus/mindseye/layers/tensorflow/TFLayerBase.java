@@ -110,7 +110,6 @@ public abstract class TFLayerBase extends LayerBase {
       runner.feed(k, doubleTensor);
       tensors.add(doubleTensor);
     });
-    List<int[]> inputDimensions = Arrays.stream(inputs).map(x -> x.getData().getDimensions()).collect(Collectors.toList());
     for (int i = 0; i < getInputNodes().size(); i++) {
       String inputNode = getInputNodes().get(i);
       TensorList data = inputs[i].getData();
@@ -134,7 +133,12 @@ public abstract class TFLayerBase extends LayerBase {
     } else {
       fwdFetches = 1;
     }
-    Session.Run fwd = runner.runAndFetchMetadata();
+    Session.Run fwd;
+    try {
+      fwd = runner.runAndFetchMetadata();
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
     TensorArray resultData;
     long[] outputShape;
     {
@@ -267,13 +271,13 @@ public abstract class TFLayerBase extends LayerBase {
       this.tfLayerBase = tfLayerBase;
       this.graph = new Graph();
       this.constantWeights = constantWeights;
-      GraphDef graphDef1 = tfLayerBase.getGraphDef();
-      TensorflowUtil.validate(graphDef1);
+      GraphDef graphDef = tfLayerBase.getGraphDef();
+      TensorflowUtil.validate(graphDef);
       if (constantWeights) {
-        graphDef1 = TFUtil.implantConstants(graphDef1, tfLayerBase.getWeights());
-        TensorflowUtil.validate(graphDef1);
+        graphDef = TFUtil.implantConstants(graphDef, tfLayerBase.getWeights());
+        TensorflowUtil.validate(graphDef);
       }
-      graph.importGraphDef(graphDef1.toByteArray());
+      graph.importGraphDef(graphDef.toByteArray());
       this.session = new Session(graph);
     }
 

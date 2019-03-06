@@ -50,7 +50,7 @@ import java.util.Random;
 import static com.simiacryptus.util.JsonUtil.toJson;
 
 
-public class SingleBatchIntegratedTFMnist {
+public class SimpleTFMnist {
 
   @Test
   public void dumpModelJson() throws Exception {
@@ -72,7 +72,7 @@ public class SingleBatchIntegratedTFMnist {
   public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
-      return SingleBatchIntegratedTFMnist.getGraphDef();
+      return SimpleTFMnist.getGraphDef();
     }
 
     @Override
@@ -113,10 +113,10 @@ public class SingleBatchIntegratedTFMnist {
   }
 
   public static final String input = "image";
-  public static final String weights = "weights";
+  public static final String weights = "fc1";
   public static final String bias = "bias";
   public static final String output = "softmax";
-  public static String statOutput = "output/summary";
+  public static String statOutput = null;
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
@@ -126,7 +126,7 @@ public class SingleBatchIntegratedTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput);
+      return new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput);
     });
   }
 
