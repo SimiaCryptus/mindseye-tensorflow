@@ -29,6 +29,7 @@ import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.FastRandom;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Operand;
 import org.tensorflow.Shape;
@@ -98,7 +99,7 @@ public class ConvTFMnist {
   public static final String bias2 = "bias2";
   public static final String bias3 = "bias3";
   public static final String output = "softmax";
-  public static String statOutput = null;//"output/summary";
+  public static String statOutput = "output/summary";
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
@@ -108,41 +109,36 @@ public class ConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      TFLayer tfLayer = new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput);
-
-      PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
-      stochasticTerminal.wrap(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5))).freeRef();
-      stochasticTerminal.wrap(new FullyConnectedLayer(new int[]{1024}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      stochasticTerminal.wrap(new BiasLayer(10)).freeRef();
-      stochasticTerminal.wrap(new SoftmaxLayer()).freeRef();
-
-      PipelineNetwork pipeline = new PipelineNetwork(1);
-      pipeline.wrap(tfLayer);
-      pipeline.wrap(StochasticSamplingSubnetLayer.wrap(stochasticTerminal, 5)).freeRef();
-
-      return pipeline;
+      return stochasticClassificationLayer(
+          new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput),
+          Math.pow(0.5, 1.0),
+          5,
+          0.001);
     });
+  }
+
+  @NotNull
+  public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
+    PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
+    stochasticTerminal.wrap(BinaryNoiseLayer.maskLayer(density)).freeRef();
+    stochasticTerminal.wrap(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).randomize(initialWeight)).freeRef();
+    stochasticTerminal.wrap(new BiasLayer(10)).freeRef();
+    stochasticTerminal.wrap(new SoftmaxLayer()).freeRef();
+    PipelineNetwork pipeline = new PipelineNetwork(1);
+    pipeline.wrap(inner);
+    pipeline.wrap(StochasticSamplingSubnetLayer.wrap(stochasticTerminal, samples)).freeRef();
+    return pipeline;
   }
 
   @NotNull
   private static HashMap<String, Tensor> getVariables() {
     HashMap<String, Tensor> variables = new HashMap<>();
-    variables.put(conv1,
-        new Tensor(5, 5, 1, 32)
-            .setByCoord(c -> .001 * (Math.random() - 0.45)));
-    variables.put(conv2,
-        new Tensor(5, 5, 32, 64)
-            .setByCoord(c -> .001 * (Math.random() - 0.45)));
-    variables.put(bias1,
-        new Tensor(1, 1, 1, 32));
-    variables.put(bias2,
-        new Tensor(1, 1, 1, 64));
-    variables.put(bias3,
-        new Tensor(1, 1024));
-    variables.put(fc1,
-        new Tensor(1024, 7 * 7 * 64)
-            .setByCoord(c -> .001 * (Math.random() - 0.45)));
+    variables.put(conv1, new Tensor(5, 5, 1, 32).randomize(.001));
+    variables.put(conv2, new Tensor(5, 5, 32, 64).randomize(.001));
+    variables.put(bias1, new Tensor(1, 1, 1, 32));
+    variables.put(bias2, new Tensor(1, 1, 1, 64));
+    variables.put(bias3, new Tensor(1, 1024));
+    variables.put(fc1, new Tensor(1024, 7 * 7 * 64).randomize(.001));
     return variables;
   }
 
@@ -152,12 +148,12 @@ public class ConvTFMnist {
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
       if (!Arrays.asList(
-          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
+          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D"
       ).contains(op)) return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
-      if (node.getName().equalsIgnoreCase(input)) {
-        nodeInstrumentation.setImage(28, 28, 1);
-      }
+//      if (node.getName().equalsIgnoreCase(input)) {
+//        nodeInstrumentation.setImage(28, 28, 1);
+//      }
       return nodeInstrumentation;
     });
     TensorflowUtil.validate(graphDef);

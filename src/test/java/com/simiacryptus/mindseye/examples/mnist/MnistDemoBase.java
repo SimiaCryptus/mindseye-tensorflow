@@ -35,6 +35,7 @@ import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.Step;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
+import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
@@ -144,12 +145,13 @@ public abstract class MnistDemoBase {
       EntropyLossLayer loss = new EntropyLossLayer();
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
       loss.freeRef();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 500);
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 1000);
       supervisedNetwork.freeRef();
       double result = new IterativeTrainer(trainable)
           .setMonitor(monitor)
           .setOrientation(new LBFGS())
-          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+//          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+          .setLineSearchFactory(n -> new QuadraticSearch())
           .setTimeout(timeout, TimeUnit.SECONDS)
           .setMaxIterations(200)
           .setIterationsPerSample(20)

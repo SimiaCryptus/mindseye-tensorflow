@@ -126,11 +126,13 @@ public class TFUtil {
     }
   }
 
-  public static DoubleStream flattenDoubles(Object floats) {
-    if (floats instanceof double[]) {
-      return Arrays.stream((double[]) floats);
+  public static DoubleStream flattenDoubles(Object obj) {
+    if (obj instanceof double[]) {
+      return Arrays.stream((double[]) obj);
+    } else if (obj instanceof Double) {
+      return DoubleStream.of((double) obj);
     } else {
-      return Arrays.stream((Object[]) floats).flatMapToDouble(x -> flattenDoubles(x));
+      return Arrays.stream((Object[]) obj).flatMapToDouble(TFUtil::flattenDoubles);
     }
   }
   public static Stream<Float> flattenFloats(Object floats) {
