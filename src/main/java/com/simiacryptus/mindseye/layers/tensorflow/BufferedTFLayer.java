@@ -57,17 +57,10 @@ public class BufferedTFLayer extends LayerBase {
       ArrayList<Tensor<Number>> copy = new ArrayList<>(v);
       v.clear();
       try(Tensor<Number> tensor = TensorflowUtil.add(copy.stream())) {
-        if(tensor.dataType() == DataType.DOUBLE) {
-          double[] doubles = TFIO.getDoubles(tensor.expect(Double.class));
-          uuidDelta.addInPlace(doubles);
-          RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-          uuidDelta.freeRef();
-        } else {
-          double[] doubles = Util.getDoubles(TFIO.getFloats(tensor.expect(Float.class)));
-          uuidDelta.addInPlace(doubles);
-          RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-          uuidDelta.freeRef();
-        }
+        com.simiacryptus.mindseye.lang.Tensor t = TFIO.getTensor(tensor.expect(Double.class));
+        uuidDelta.addInPlace(t.getData());
+        t.freeRef();
+        uuidDelta.freeRef();
       }
     });
   }

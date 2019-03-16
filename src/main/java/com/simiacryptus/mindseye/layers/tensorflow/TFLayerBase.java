@@ -28,7 +28,6 @@ import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.tensorflow.TensorflowUtil;
-import com.simiacryptus.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public abstract class TFLayerBase extends LayerBase {
@@ -143,7 +141,7 @@ public abstract class TFLayerBase extends LayerBase {
     TensorArray resultData;
     {
       org.tensorflow.Tensor<?> tensor = fwd.outputs.get(0);
-      resultData = TFIO.getTensorArray(tensor);
+      resultData = TFIO.getTensorList(tensor);
       tensors.add(tensor);
     }
     if (summaryOut) {
@@ -177,7 +175,7 @@ public abstract class TFLayerBase extends LayerBase {
       Session.Run back = runner.runAndFetchMetadata();
       for (int i = 0; i < inputs.length; i++) {
         org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
-        inputs[i].getAccumulator().accept(deltaBuffer, TFIO.getTensorArray(tensor));
+        inputs[i].getAccumulator().accept(deltaBuffer, TFIO.getTensorList(tensor));
         feedbacktensors.add(tensor);
       }
       for (int i = 0; i < stateNames.size(); i++) {
@@ -250,19 +248,10 @@ public abstract class TFLayerBase extends LayerBase {
 
     public void incrementWeights(DeltaSet<UUID> deltaBuffer, String weightNodeName, org.tensorflow.Tensor<Number> tensor) {
       Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
-      double[] doubles;
-      if(tensor.dataType() == DataType.DOUBLE) {
-        doubles = TFIO.getDoubles(tensor.expect(Double.class));
-      } else {
-        doubles = Util.getDoubles(TFIO.getFloats(tensor.expect(Float.class)));
-      }
-      Tensor inverted = new Tensor(doubles, Tensor.reverse(tensor.shape()))
-          //.invertDimensionsAndFree()
-          ;
-      uuidDelta.addInPlace(inverted.getData());
-      inverted.freeRef();
+      Tensor t = TFIO.getTensor(tensor.expect(Double.class));
+      uuidDelta.addInPlace(t.getData());
+      t.freeRef();
       uuidDelta.freeRef();
-      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
     }
 
     public Output<?>[] getGradients() {

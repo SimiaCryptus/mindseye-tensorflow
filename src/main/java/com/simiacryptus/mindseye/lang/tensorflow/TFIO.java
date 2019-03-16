@@ -137,16 +137,6 @@ public class TFIO {
     return buffer;
   }
 
-  public static TensorArray getTensorArray(org.tensorflow.Tensor<?> tensor) {
-    if (tensor.dataType() == DataType.DOUBLE) {
-      return getTensorArray_Double(tensor.expect(Double.class), tensor.shape());
-    } else if (tensor.dataType() == DataType.FLOAT) {
-      return getTensorArray_Float(tensor.expect(Float.class), tensor.shape());
-    } else {
-      throw new IllegalArgumentException(tensor.dataType().toString());
-    }
-  }
-
   private static TensorArray getTensorArray_Float(org.tensorflow.Tensor<Float> tensor, long[] shape) {
     float[] doubles = getFloats(tensor);
     int[] dims = Arrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
@@ -162,6 +152,16 @@ public class TFIO {
     }).toArray(i -> new Tensor[i]));
     RecycleBin.FLOATS.recycle(doubles, doubles.length);
     return resultData;
+  }
+
+  private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, long[] shape) {
+    float[] doubles = getFloats(tensor);
+    Tensor returnValue = new Tensor(Arrays.stream(shape).mapToInt(x -> (int) x).toArray());
+    for (int j = 0; j < returnValue.length(); j++) {
+      returnValue.getData()[j] = doubles[j];
+    }
+    RecycleBin.FLOATS.recycle(doubles, doubles.length);
+    return returnValue;
   }
 
   private static TensorArray getTensorArray_Double(org.tensorflow.Tensor<Double> tensor, long[] shape) {
@@ -182,79 +182,85 @@ public class TFIO {
     return resultData;
   }
 
-  public static double[] getDoubles(org.tensorflow.Tensor<Double> result) {
+  private static Tensor getTensor_Double(org.tensorflow.Tensor<Double> tensor, long[] shape) {
+    double[] doubles = getDoubles(tensor);
+    int[] dims = Arrays.stream(shape).mapToInt(x -> (int) x).toArray();
+    Tensor returnValue = new Tensor(dims);
+    System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
+    RecycleBin.DOUBLES.recycle(doubles, doubles.length);
+    return returnValue;
+  }
+
+  private static double[] getDoubles(org.tensorflow.Tensor<Double> result) {
     Object deepArray = result.copyTo(createDoubleArray(result.shape()));
     double[] doubles = flattenDoubles(deepArray).toArray();
     free(deepArray);
     return doubles;
   }
 
-  public static float[] getFloats(org.tensorflow.Tensor<Float> result) {
+  private static float[] getFloats(org.tensorflow.Tensor<Float> result) {
     Object deepArray = result.copyTo(createFloatArray(result.shape()));
     double[] doubles = flattenFloats(deepArray).mapToDouble(x -> x).toArray();
     free(deepArray);
     return Util.getFloats(doubles);
   }
 
+  public static TensorArray getTensorList(org.tensorflow.Tensor<?> tensor) {
+    if (tensor.dataType() == DataType.DOUBLE) {
+      return getTensorArray_Double(tensor.expect(Double.class), tensor.shape());
+    } else if (tensor.dataType() == DataType.FLOAT) {
+      return getTensorArray_Float(tensor.expect(Float.class), tensor.shape());
+    } else {
+      throw new IllegalArgumentException(tensor.dataType().toString());
+    }
+  }
 
-  @NotNull
-  private static org.tensorflow.Tensor<Float> getFloatTensor(double[] data, long[] shape) {
-    return org.tensorflow.Tensor.create(shape, FloatBuffer.wrap(Util.getFloats(data)));
+  public static Tensor getTensor(org.tensorflow.Tensor<?> tensor) {
+    if (tensor.dataType() == DataType.DOUBLE) {
+      return getTensor_Double(tensor.expect(Double.class), tensor.shape());
+    } else if (tensor.dataType() == DataType.FLOAT) {
+      return getTensor_Float(tensor.expect(Float.class), tensor.shape());
+    } else {
+      throw new IllegalArgumentException(tensor.dataType().toString());
+    }
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(Tensor data) {
-    @NotNull org.tensorflow.Tensor<Float> tensor;
     double[] buffer = data.getData();
-    tensor = getFloatTensor(buffer, toLong(data.getDimensions()));
+    @NotNull org.tensorflow.@NotNull Tensor<Float> tensor = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), FloatBuffer.wrap(Util.getFloats(buffer)));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
-  }
-
-  private static long[] toLong(int[] ints) {
-    long[] longs = new long[ints.length];
-    for (int i = 0; i < ints.length; i++) {
-      longs[i] = ints[i];
-    }
-    return longs;
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(TensorList data) {
-    @NotNull org.tensorflow.Tensor<Float> tensor;
     double[] buffer = getDoubles(data);
     long[] shape = LongStream.concat(
         LongStream.of(data.length()),
         Arrays.stream(data.getDimensions()).mapToLong(x -> x)
     ).toArray();
-    tensor = getFloatTensor(buffer, shape);
+    @NotNull org.tensorflow.@NotNull Tensor<Float> tensor = org.tensorflow.Tensor.create(shape, FloatBuffer.wrap(Util.getFloats(buffer)));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
-  }
-
-  private static org.tensorflow.Tensor<Double> getDoubleTensor(double[] data, long[] shape) {
-    return org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(data));
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(Tensor data) {
-    org.tensorflow.Tensor<Double> tensor;
     double[] buffer = data.getData();
-    tensor = getDoubleTensor(buffer, toLong(data.getDimensions()));
+    org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), DoubleBuffer.wrap(buffer));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
   }
 
-
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(TensorList data) {
-    org.tensorflow.Tensor<Double> tensor;
     double[] buffer = getDoubles(data);
     long[] shape = LongStream.concat(
         LongStream.of(data.length()),
         Arrays.stream(data.getDimensions()).mapToLong(x -> x)
     ).toArray();
-    tensor = getDoubleTensor(buffer, shape);
+    org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(buffer));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
   }
