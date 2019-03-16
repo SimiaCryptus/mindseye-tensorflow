@@ -135,7 +135,7 @@ public class MatMulLayer extends TFLayerBase {
       throw new RuntimeException(e);
     }
   }
-
+  
   @Override
   public String getSummaryOut() {
     return null;

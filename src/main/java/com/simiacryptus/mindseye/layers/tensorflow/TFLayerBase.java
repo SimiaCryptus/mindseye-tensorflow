@@ -24,10 +24,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
-import com.simiacryptus.mindseye.network.CountingResult;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +40,7 @@ import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -86,7 +84,7 @@ public abstract class TFLayerBase extends LayerBase {
   @Override
   public Result evalAndFree(Result... inputs) {
     if (isSingleBatch() && Arrays.stream(inputs).anyMatch(x -> x.getData().length() > 1)) return new SubBatchLayer(this).evalAndFree(inputs);
-    TFSession tfsession = new TFSession(this, false);
+    TFSession tfsession = new TFSession(false);
     Result result = evalAndFree(tfsession, inputs);
     tfsession.freeRef();
     return result;
@@ -103,26 +101,29 @@ public abstract class TFLayerBase extends LayerBase {
     Session.Runner runner = tfsession.session.runner();
     ArrayList<org.tensorflow.Tensor<?>> tensors = new ArrayList<>();
     getWeights().values().forEach(ReferenceCountingBase::addRef);
-    if (!tfsession.constantWeights) getWeights().forEach((k, v) -> {
-      long[] shape = Arrays.stream(v.getDimensions()).mapToLong(x -> x).toArray();
-      double[] data = v.getData();
-      org.tensorflow.Tensor<? extends Number> doubleTensor = prepareInput(k, shape, data);
-      runner.feed(k, doubleTensor);
-      tensors.add(doubleTensor);
+    if (!tfsession.constantWeights) getWeights().forEach((nodeName, data) -> {
+      long[] shape = Arrays.stream(data.getDimensions()).mapToLong(x -> x).toArray();
+      org.tensorflow.@NotNull Tensor<? extends Number> tensor;
+      if(floatInputs(nodeName)) {
+        tensor = TFIO.getFloatTensor(data);
+      } else {
+        tensor = TFIO.getDoubleTensor(data);
+      }
+      runner.feed(nodeName, tensor);
+      tensors.add(tensor);
     });
     for (int i = 0; i < getInputNodes().size(); i++) {
       String inputNode = getInputNodes().get(i);
       TensorList data = inputs[i].getData();
-      double[] buffer = TFUtil.getDoubles(data);
-      long[] shape = LongStream.concat(
-          LongStream.of(data.length()),
-          Arrays.stream(data.getDimensions()).mapToLong(x -> x)
-      ).toArray();
-      org.tensorflow.Tensor<? extends Number> doubleTensor = prepareInput(inputNode, shape, buffer);
+      org.tensorflow.@NotNull Tensor<? extends Number> tensor;
+      if(floatInputs(inputNode)) {
+        tensor = TFIO.getFloatTensor(data);
+      } else {
+        tensor = TFIO.getDoubleTensor(data);
+      }
       data.freeRef();
-      runner.feed(inputNode, doubleTensor);
-      tensors.add(doubleTensor);
-      RecycleBin.DOUBLES.recycle(buffer, buffer.length);
+      runner.feed(inputNode, tensor);
+      tensors.add(tensor);
     }
     runner.fetch(getOutputNode());
     boolean summaryOut = null != eventWriter && null != getSummaryOut() && !getSummaryOut().isEmpty();
@@ -140,11 +141,9 @@ public abstract class TFLayerBase extends LayerBase {
       throw e;
     }
     TensorArray resultData;
-    long[] outputShape;
     {
       org.tensorflow.Tensor<?> tensor = fwd.outputs.get(0);
-      outputShape = tensor.shape();
-      resultData = getTensorArray(outputShape, tensor);
+      resultData = TFIO.getTensorArray(tensor);
       tensors.add(tensor);
     }
     if (summaryOut) {
@@ -163,32 +162,30 @@ public abstract class TFLayerBase extends LayerBase {
     return new Result(resultData, ((deltaBuffer, deltaSignal) -> {
       ArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new ArrayList<>();
       Output<?>[] gradients = tfsession.getGradients();
-      double[] buffer = TFUtil.getDoubles(deltaSignal);
-      deltaSignal.freeRef();
       String deltaOperation = getOutputNode() + "_delta";
       if(floatInputs(deltaOperation)) {
-        float[] floats = TFUtil.getFloats(buffer);
-        org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(outputShape, FloatBuffer.wrap(floats));
+        org.tensorflow.Tensor<Float> tensor = TFIO.getFloatTensor(deltaSignal);
         runner.feed(deltaOperation, tensor);
         feedbacktensors.add(tensor);
       } else {
-        org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(outputShape, DoubleBuffer.wrap(buffer));
+        org.tensorflow.Tensor<Double> tensor = TFIO.getDoubleTensor(deltaSignal);
         runner.feed(deltaOperation, tensor);
         feedbacktensors.add(tensor);
       }
-      RecycleBin.DOUBLES.recycle(buffer, buffer.length);
+      deltaSignal.freeRef();
       Arrays.stream(gradients).forEach(runner::fetch);
       Session.Run back = runner.runAndFetchMetadata();
       for (int i = 0; i < inputs.length; i++) {
         org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
-        TensorArray tensorArray = getTensorArray(tensor.shape(), tensor);
-        inputs[i].getAccumulator().accept(deltaBuffer, tensorArray);
+        inputs[i].getAccumulator().accept(deltaBuffer, TFIO.getTensorArray(tensor));
         feedbacktensors.add(tensor);
       }
       for (int i = 0; i < stateNames.size(); i++) {
-        String s = stateNames.get(i);
-        org.tensorflow.Tensor<Number> tensor = (org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size());
-        tfsession.incrementWeights(deltaBuffer, s, tensor);
+        tfsession.incrementWeights(
+            deltaBuffer,
+            stateNames.get(i),
+            (org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size())
+        );
       }
       feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
     })) {
@@ -201,34 +198,6 @@ public abstract class TFLayerBase extends LayerBase {
         super._free();
       }
     };
-  }
-
-  @NotNull
-  private TensorArray getTensorArray(long[] outputShape, org.tensorflow.Tensor<?> tensor) {
-    if(tensor.dataType() == DataType.DOUBLE) {
-      org.tensorflow.Tensor<Double> doubleTensor = tensor.expect(Double.class);
-      double[] doubles = TFUtil.doublesToDoubles(doubleTensor);
-      TensorArray resultData = TFUtil.toTensorArray(outputShape, doubles);
-      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-      return resultData;
-    } else if(tensor.dataType() == DataType.FLOAT) {
-      org.tensorflow.Tensor<Float> doubleTensor = tensor.expect(Float.class);
-      float[] doubles = TFUtil.floatsToDoubles(doubleTensor);
-      TensorArray resultData = TFUtil.toTensorArray(outputShape, doubles);
-      RecycleBin.FLOATS.recycle(doubles, doubles.length);
-      return resultData;
-    } else {
-      throw new IllegalArgumentException(tensor.dataType().toString());
-    }
-  }
-
-  @NotNull
-  public final org.tensorflow.Tensor<? extends Number> prepareInput(String key, long[] shape, double[] data) {
-    if(floatInputs(key)) {
-      return org.tensorflow.Tensor.create(shape, FloatBuffer.wrap(TFUtil.getFloats(data)));
-    } else {
-      return org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(data));
-    }
   }
 
   protected boolean floatInputs(String key) {
@@ -261,56 +230,56 @@ public abstract class TFLayerBase extends LayerBase {
   protected abstract boolean isSingleBatch();
 
   class TFSession extends ReferenceCountingBase {
-    private TFLayerBase tfLayerBase;
     public final Graph graph;
     public final Singleton<Output<?>[]> outputSingleton = new Singleton<>();
     public final Session session;
     public final boolean constantWeights;
 
-    public TFSession(TFLayerBase tfLayerBase, boolean constantWeights) {
-      this.tfLayerBase = tfLayerBase;
+    public TFSession(boolean constantWeights) {
       this.graph = new Graph();
       this.constantWeights = constantWeights;
-      GraphDef graphDef = tfLayerBase.getGraphDef();
+      GraphDef graphDef = getGraphDef();
       TensorflowUtil.validate(graphDef);
       if (constantWeights) {
-        graphDef = TFUtil.implantConstants(graphDef, tfLayerBase.getWeights());
+        graphDef = TFUtil.implantConstants(graphDef, getWeights());
         TensorflowUtil.validate(graphDef);
       }
       graph.importGraphDef(graphDef.toByteArray());
       this.session = new Session(graph);
     }
 
-    public void incrementWeights(DeltaSet<UUID> deltaBuffer, String s, org.tensorflow.Tensor<Number> tensor) {
-      Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((tfLayerBase.getId() + "_" + s).getBytes()), tfLayerBase.getWeights().get(s));
+    public void incrementWeights(DeltaSet<UUID> deltaBuffer, String weightNodeName, org.tensorflow.Tensor<Number> tensor) {
+      Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
+      double[] doubles;
       if(tensor.dataType() == DataType.DOUBLE) {
-        double[] doubles = TFUtil.doublesToDoubles(tensor.expect(Double.class));
-        uuidDelta.addInPlace(doubles);
-        uuidDelta.freeRef();
-        RecycleBin.DOUBLES.recycle(doubles, doubles.length);
+        doubles = TFIO.getDoubles(tensor.expect(Double.class));
       } else {
-        double[] doubles = TFUtil.toDoubles(TFUtil.floatsToDoubles(tensor.expect(Float.class)));
-        uuidDelta.addInPlace(doubles);
-        uuidDelta.freeRef();
-        RecycleBin.DOUBLES.recycle(doubles, doubles.length);
+        doubles = Util.getDoubles(TFIO.getFloats(tensor.expect(Float.class)));
       }
+      Tensor inverted = new Tensor(doubles, Tensor.reverse(tensor.shape()))
+          //.invertDimensionsAndFree()
+          ;
+      uuidDelta.addInPlace(inverted.getData());
+      inverted.freeRef();
+      uuidDelta.freeRef();
+      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
     }
 
     public Output<?>[] getGradients() {
       return outputSingleton.getOrInit(() -> {
-        List<String> stateNames = tfLayerBase.getWeights().keySet().stream().collect(Collectors.toList());
+        List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
         Ops ops = Ops.create(graph);
-        String deltaOpName = tfLayerBase.getOutputNode() + "_delta";
+        String deltaOpName = getOutputNode() + "_delta";
         Class<? extends Number> dtype = floatInputs(deltaOpName)?Float.class:Double.class;
         ops.withName(deltaOpName).placeholder(
             dtype,
             Placeholder.shape(Shape.unknown())
         );
         return graph.addGradients("gradient", new Output[]{
-                TensorflowUtil.find(graph, tfLayerBase.getOutputNode()).output(0)
+                TensorflowUtil.find(graph, getOutputNode()).output(0)
             },
             Stream.concat(
-                tfLayerBase.getInputNodes().stream(),
+                getInputNodes().stream(),
                 stateNames.stream()
             ).map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
             new Output[]{

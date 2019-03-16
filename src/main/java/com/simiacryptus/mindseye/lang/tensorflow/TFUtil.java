@@ -19,11 +19,9 @@
 
 package com.simiacryptus.mindseye.lang.tensorflow;
 
-import com.google.common.primitives.Floats;
 import com.simiacryptus.lang.UncheckedConsumer;
 import com.simiacryptus.lang.ref.RecycleBin;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
@@ -38,151 +36,9 @@ import java.nio.DoubleBuffer;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
 
 public class TFUtil {
-
-  public static double[] doublesToDoubles(org.tensorflow.Tensor<Double> result) {
-    Object deepArray = result.copyTo(createDoubleArray(result.shape()));
-    double[] doubles = flattenDoubles(deepArray).toArray();
-    free(deepArray);
-    return doubles;
-  }
-
-  public static float[] floatsToDoubles(org.tensorflow.Tensor<Float> result) {
-    Object deepArray = result.copyTo(createFloatArray(result.shape()));
-    double[] doubles = flattenFloats(deepArray).mapToDouble(x->x).toArray();
-    free(deepArray);
-    return getFloats(doubles);
-  }
-
-  private static void free(Object obj) {
-    if (obj instanceof double[]) {
-      double[] doubles = (double[]) obj;
-      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-    } else if (obj instanceof float[]) {
-      float[] floats = (float[]) obj;
-      RecycleBin.FLOATS.recycle(floats, floats.length);
-    } else {
-      Arrays.stream((Object[]) obj).forEach(x -> free(x));
-    }
-
-  }
-
-  public static Object createFloatArray(long[] shape) {
-    if (shape.length == 1) {
-      return RecycleBin.FLOATS.obtain(shape[0]);
-    } else if (shape.length == 2) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> new float[(int) shape[1]])
-          .toArray(s -> new float[s][]);
-    } else if (shape.length == 3) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> IntStream.range(0, (int) shape[1])
-              .mapToObj(j -> new float[(int) shape[2]])
-              .toArray(s -> new float[s][]))
-          .toArray(s -> new float[s][][]);
-    } else if (shape.length == 4) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> IntStream.range(0, (int) shape[1])
-              .mapToObj(j -> IntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> new float[(int) shape[3]])
-                  .toArray(s -> new float[s][]))
-              .toArray(s -> new float[s][][]))
-          .toArray(s -> new float[s][][][]);
-    } else {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> createFloatArray(Arrays.stream(shape).skip(1).toArray()))
-          .toArray(s -> new Object[s]);
-    }
-  }
-  public static Object createDoubleArray(long[] shape) {
-    if (shape.length == 1) {
-      return RecycleBin.DOUBLES.obtain(shape[0]);
-    } else if (shape.length == 2) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> new double[(int) shape[1]])
-          .toArray(s -> new double[s][]);
-    } else if (shape.length == 3) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> IntStream.range(0, (int) shape[1])
-              .mapToObj(j -> new double[(int) shape[2]])
-              .toArray(s -> new double[s][]))
-          .toArray(s -> new double[s][][]);
-    } else if (shape.length == 4) {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> IntStream.range(0, (int) shape[1])
-              .mapToObj(j -> IntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> new double[(int) shape[3]])
-                  .toArray(s -> new double[s][]))
-              .toArray(s -> new double[s][][]))
-          .toArray(s -> new double[s][][][]);
-    } else {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> createDoubleArray(Arrays.stream(shape).skip(1).toArray()))
-          .toArray(s -> new Object[s]);
-    }
-  }
-
-  public static DoubleStream flattenDoubles(Object obj) {
-    if (obj instanceof double[]) {
-      return Arrays.stream((double[]) obj);
-    } else if (obj instanceof Double) {
-      return DoubleStream.of((double) obj);
-    } else {
-      return Arrays.stream((Object[]) obj).flatMapToDouble(TFUtil::flattenDoubles);
-    }
-  }
-  public static Stream<Float> flattenFloats(Object floats) {
-    if (floats instanceof float[]) {
-      float[] array = (float[]) floats;
-      return Floats.asList(array).stream();
-    } else {
-      return Arrays.stream((Object[]) floats).flatMap(x -> flattenFloats(x));
-    }
-  }
-
-  @NotNull
-  public static TensorArray toTensorArray(long[] shape, float[] entireBuffer) {
-    int[] dims = Arrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
-    int batches = (int) shape[0];
-    return toTensorArray(entireBuffer, dims, batches);
-  }
-
-  @NotNull
-  public static TensorArray toTensorArray(long[] shape, double[] entireBuffer) {
-    int rank = shape.length - 1;
-    int[] dims = Arrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
-    int batches = (int) shape[0];
-    return toTensorArray(entireBuffer, dims, batches);
-  }
-
-  @NotNull
-  public static TensorArray toTensorArray(double[] entireBuffer, int[] dims) {
-    int batches = entireBuffer.length / Arrays.stream(dims).reduce((a, b) -> a * b).getAsInt();
-    return toTensorArray(entireBuffer, dims, batches);
-  }
-
-  @NotNull
-  public static TensorArray toTensorArray(double[] entireBuffer, int[] dims, int batches) {
-    return TensorArray.wrap(IntStream.range(0, batches).mapToObj(i -> {
-      Tensor tensor = new Tensor(dims);
-      System.arraycopy(entireBuffer, i * tensor.length(), tensor.getData(), 0, tensor.length());
-      return tensor;
-    }).toArray(i -> new Tensor[i]));
-  }
-  @NotNull
-  public static TensorArray toTensorArray(float[] entireBuffer, int[] dims, int batches) {
-    return TensorArray.wrap(IntStream.range(0, batches).mapToObj(i -> {
-      Tensor tensor = new Tensor(dims);
-      for (int j = 0; j < tensor.length(); j++) {
-        tensor.getData()[j] = entireBuffer[j + i*tensor.length()];
-      }
-      return tensor;
-    }).toArray(i -> new Tensor[i]));
-  }
 
   public static void launchTensorboard(File logDir, UncheckedConsumer<Process> waiter) throws IOException, URISyntaxException {
     Process tensorboard = new ProcessBuilder().command(
@@ -201,16 +57,6 @@ public class TFUtil {
     } finally {
       if (tensorboard.isAlive()) tensorboard.destroyForcibly();
     }
-  }
-
-  public static double[] getDoubles(TensorList data) {
-    double[] buffer = RecycleBin.DOUBLES.obtain(data.length() * Tensor.length(data.getDimensions()));
-    DoubleBuffer inputBuffer = DoubleBuffer.wrap(buffer);
-    data.stream().forEach(t -> {
-      inputBuffer.put(t.getData());
-      t.freeRef();
-    });
-    return buffer;
   }
 
   @NotNull
@@ -243,19 +89,4 @@ public class TFUtil {
     return graphDef;
   }
 
-  public static float[] getFloats(double[] buffer) {
-    float[] floats = new float[buffer.length];
-    for (int i = 0; i < buffer.length; i++) {
-      floats[i] = (float) buffer[i];
-    }
-    return floats;
-  }
-
-  public static double[] toDoubles(float[] floats) {
-    double[] doubles = new double[floats.length];
-    for (int i = 0; i < floats.length; i++) {
-      doubles[i] = floats[i];
-    }
-    return doubles;
-  }
 }

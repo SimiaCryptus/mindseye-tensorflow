@@ -22,8 +22,9 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
-import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
+import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
 
@@ -38,10 +39,10 @@ public class BufferedTFLayer extends LayerBase {
   BufferedTFLayer(TFLayerBase tfLayerBase) {
     this.tfLayerBase = tfLayerBase;
     this.parent = tfLayerBase;
-    this.tfsession = tfLayerBase.new TFSession(tfLayerBase, true) {
+    this.tfsession = tfLayerBase.new TFSession(true) {
       @Override
-      public void incrementWeights(DeltaSet<UUID> deltaBuffer, String s, org.tensorflow.Tensor<Number> doubleTensor) {
-        deltas.computeIfAbsent(s, k->new ArrayList<>()).add(doubleTensor);
+      public void incrementWeights(DeltaSet<UUID> deltaBuffer, String weightNodeName, org.tensorflow.Tensor<Number> doubleTensor) {
+        deltas.computeIfAbsent(weightNodeName, k->new ArrayList<>()).add(doubleTensor);
       }
     };
   }
@@ -57,12 +58,12 @@ public class BufferedTFLayer extends LayerBase {
       v.clear();
       try(Tensor<Number> tensor = TensorflowUtil.add(copy.stream())) {
         if(tensor.dataType() == DataType.DOUBLE) {
-          double[] doubles = TFUtil.doublesToDoubles(tensor.expect(Double.class));
+          double[] doubles = TFIO.getDoubles(tensor.expect(Double.class));
           uuidDelta.addInPlace(doubles);
           RecycleBin.DOUBLES.recycle(doubles, doubles.length);
           uuidDelta.freeRef();
         } else {
-          double[] doubles = TFUtil.toDoubles(TFUtil.floatsToDoubles(tensor.expect(Float.class)));
+          double[] doubles = Util.getDoubles(TFIO.getFloats(tensor.expect(Float.class)));
           uuidDelta.addInPlace(doubles);
           RecycleBin.DOUBLES.recycle(doubles, doubles.length);
           uuidDelta.freeRef();

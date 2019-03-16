@@ -31,6 +31,8 @@ import java.util.*;
 
 public class Conv2DLayer extends TFLayerBase {
 
+  private final String padding = "VALID";
+
   public boolean isSingleBatch() {
     return false;
   }
@@ -41,7 +43,7 @@ public class Conv2DLayer extends TFLayerBase {
 
   private static Map<String, Tensor> defaultStates(int[] intputDims) {
     HashMap<String, Tensor> map = new HashMap<>();
-    map.put("kernel", new Tensor(intputDims).setByCoord(c->{
+    map.put("kernel", new Tensor(intputDims).setByCoord(c -> {
       return 0;
     }));
     return map;
@@ -67,12 +69,27 @@ public class Conv2DLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
+      
       ops.withName(getOutputNode()).conv2D(
           ops.withName(getInputNodes().get(0)).placeholder(Double.class),
           ops.withName("kernel").placeholder(Double.class),
-          Arrays.asList(1L,1L,1L,1L),
-          "SAME"
+          Arrays.asList(1L, 1L, 1L, 1L),
+          padding
       );
+
+//      ops.withName(getOutputNode()).transpose(
+//          ops.conv2D(
+//              ops.transpose(
+//                  ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+//                  ops.constant(new int[]{0,3,2,1})
+//              ),
+//              ops.withName("kernel").placeholder(Double.class),
+//              Arrays.asList(1L, 1L, 1L, 1L),
+//              padding
+//          ),
+//          ops.constant(new int[]{0,3,2,1})
+//      );
+
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);

@@ -27,6 +27,7 @@
   "com.simiacryptus.mindseye.examples.mnist.SimpleTFMnist" : { },
   "com.simiacryptus.mindseye.examples.mnist.SimpleTFMnist.LayerTest" : { },
   "com.simiacryptus.mindseye.examples.mnist.SimpleTFMnist.MnistDemo" : { },
+  "com.simiacryptus.mindseye.lang.tensorflow.TFIO" : { },
   "com.simiacryptus.mindseye.lang.tensorflow.TFUtil" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.BiasAddLayer" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.BiasAddLayerTest" : { },
