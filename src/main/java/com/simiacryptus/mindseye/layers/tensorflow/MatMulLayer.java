@@ -19,11 +19,11 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -76,8 +76,8 @@ public class MatMulLayer extends TFLayerBase {
 
   public MatMulLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    intputDims = toIntArray(json.get("inputDims").getAsJsonArray());
-    outputDims = toIntArray(json.get("outputDims").getAsJsonArray());
+    intputDims = JsonUtil.toIntArray(json.get("inputDims").getAsJsonArray());
+    outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
   }
 
   @Override
@@ -90,23 +90,9 @@ public class MatMulLayer extends TFLayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
-    json.add("inputDims", toIntArray(intputDims));
-    json.add("outputDims", toIntArray(outputDims));
+    json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
+    json.add("outputDims", JsonUtil.toIntArray(getOutputDims()));
     return json;
-  }
-
-  public static int[] toIntArray(JsonArray array) {
-    int[] ints = new int[array.size()];
-    for (int i = 0; i < ints.length; i++) {
-      ints[i] = array.get(i).getAsInt();
-    }
-    return ints;
-  }
-
-  public static JsonArray toIntArray(int[] array) {
-    JsonArray jsonElements = new JsonArray();
-    Arrays.stream(array).forEach(jsonElements::add);
-    return jsonElements;
   }
 
   @Override
@@ -119,7 +105,7 @@ public class MatMulLayer extends TFLayerBase {
                   ops.withName("weights").placeholder(Double.class),
                   ops.reshape(
                       ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-                      ops.constant(new long[]{-1, Tensor.length(intputDims)})
+                      ops.constant(new long[]{-1, Tensor.length(getIntputDims())})
                   ),
                   MatMul.transposeB(true)
               ),
@@ -127,7 +113,7 @@ public class MatMulLayer extends TFLayerBase {
           ),
           ops.constant(IntStream.concat(
               IntStream.of(-1),
-              Arrays.stream(outputDims)
+              Arrays.stream(getOutputDims())
           ).toArray())
       );
       return GraphDef.parseFrom(graph.toGraphDef());
@@ -150,5 +136,18 @@ public class MatMulLayer extends TFLayerBase {
   public List<String> getInputNodes() {
     return Arrays.asList("input");
   }
+
+  public int[] getIntputDims() {
+    return intputDims;
+  }
+
+  public int[] getOutputDims() {
+    return outputDims;
+  }
+
+//  @Override
+//  public boolean invertWeights() {
+//    return false;
+//  }
 
 }

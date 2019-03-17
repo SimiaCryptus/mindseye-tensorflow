@@ -68,7 +68,8 @@
             <groupId>com.simiacryptus</groupId>
             <artifactId>mindseye-java</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -137,7 +138,8 @@
             <groupId>com.simiacryptus</groupId>
             <artifactId>mindseye-cudnn</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

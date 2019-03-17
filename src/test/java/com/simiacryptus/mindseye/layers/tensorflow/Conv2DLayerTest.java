@@ -19,17 +19,13 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.lang.SerialPrecision;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import com.simiacryptus.mindseye.util.TFConverter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 
@@ -44,35 +40,8 @@ public class Conv2DLayerTest extends LayerTestBase {
   }
 
   @Override
-  public SimpleConvolutionLayer getReferenceLayer() {
-    return getSimpleConvolutionLayer(layer.getWeights().get("kernel"));
-  }
-
-  @NotNull
-  public static SimpleConvolutionLayer getSimpleConvolutionLayer(Tensor sourceKernel) {
-    int[] kernelDims = sourceKernel.getDimensions();
-    SimpleConvolutionLayer simpleConvolutionLayer = new SimpleConvolutionLayer(kernelDims[0], kernelDims[1], kernelDims[2] * kernelDims[3]).setPaddingXY(0, 0);
-    Tensor targetKernel = sourceKernel.copy();
-    int[] sourceDims = sourceKernel.getDimensions();
-    sourceKernel.coordStream(false).forEach(c -> {
-      int[] sourceCoords = c.getCoords();
-      targetKernel.set(
-          sourceDims[0] - (1 + sourceCoords[0]),
-          sourceDims[1] - (1 + sourceCoords[1]),
-          sourceCoords[2],
-          sourceCoords[3],
-          sourceKernel.get(c)
-      );
-    });
-    simpleConvolutionLayer.kernel.set(targetKernel);
-    targetKernel.freeRef();
-    return simpleConvolutionLayer;
-  }
-
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
+  public Layer getReferenceLayer() {
+    return TFConverter.getSimpleConvolutionLayer(layer.getWeights().get("kernel"));
   }
 
   private final Conv2DLayer layer = getLayer();

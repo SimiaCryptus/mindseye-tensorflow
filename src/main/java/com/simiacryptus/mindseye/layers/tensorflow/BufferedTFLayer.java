@@ -20,12 +20,9 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
-import com.simiacryptus.lang.ref.*;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.tensorflow.TensorflowUtil;
-import com.simiacryptus.util.Util;
-import org.tensorflow.DataType;
 import org.tensorflow.Tensor;
 
 import javax.annotation.Nullable;
@@ -40,7 +37,6 @@ public class BufferedTFLayer extends LayerBase {
     this.tfLayerBase = tfLayerBase;
     this.parent = tfLayerBase;
     this.tfsession = tfLayerBase.new TFSession(true) {
-      @Override
       public void incrementWeights(DeltaSet<UUID> deltaBuffer, String weightNodeName, org.tensorflow.Tensor<Number> doubleTensor) {
         deltas.computeIfAbsent(weightNodeName, k->new ArrayList<>()).add(doubleTensor);
       }

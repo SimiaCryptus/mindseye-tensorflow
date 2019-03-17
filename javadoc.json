@@ -55,6 +55,7 @@
   "com.simiacryptus.mindseye.layers.tensorflow.SubBatchLayerTest" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.SummaryLayerTest" : { },
+  "com.simiacryptus.mindseye.layers.tensorflow.TFConverter" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.TFLayer" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.TFLayerBase" : { },
   "com.simiacryptus.mindseye.layers.tensorflow.TFLayerBase.TFSession" : { }

@@ -100,12 +100,11 @@ public abstract class TFLayerBase extends LayerBase {
     ArrayList<org.tensorflow.Tensor<?>> tensors = new ArrayList<>();
     getWeights().values().forEach(ReferenceCountingBase::addRef);
     if (!tfsession.constantWeights) getWeights().forEach((nodeName, data) -> {
-      long[] shape = Arrays.stream(data.getDimensions()).mapToLong(x -> x).toArray();
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
       if(floatInputs(nodeName)) {
-        tensor = TFIO.getFloatTensor(data);
+        tensor = TFIO.getFloatTensor(data, invertWeights());
       } else {
-        tensor = TFIO.getDoubleTensor(data);
+        tensor = TFIO.getDoubleTensor(data, invertWeights());
       }
       runner.feed(nodeName, tensor);
       tensors.add(tensor);
@@ -179,11 +178,12 @@ public abstract class TFLayerBase extends LayerBase {
         feedbacktensors.add(tensor);
       }
       for (int i = 0; i < stateNames.size(); i++) {
-        tfsession.incrementWeights(
-            deltaBuffer,
-            stateNames.get(i),
-            (org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size())
-        );
+        String weightNodeName = stateNames.get(i);
+        Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
+        Tensor t = TFIO.getTensor(((org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size())).expect(Double.class), invertWeights());
+        uuidDelta.addInPlace(t.getData());
+        t.freeRef();
+        uuidDelta.freeRef();
       }
       feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
     })) {
@@ -227,6 +227,10 @@ public abstract class TFLayerBase extends LayerBase {
 
   protected abstract boolean isSingleBatch();
 
+  public boolean invertWeights() {
+    return true;
+  }
+
   class TFSession extends ReferenceCountingBase {
     public final Graph graph;
     public final Singleton<Output<?>[]> outputSingleton = new Singleton<>();
@@ -244,14 +248,6 @@ public abstract class TFLayerBase extends LayerBase {
       }
       graph.importGraphDef(graphDef.toByteArray());
       this.session = new Session(graph);
-    }
-
-    public void incrementWeights(DeltaSet<UUID> deltaBuffer, String weightNodeName, org.tensorflow.Tensor<Number> tensor) {
-      Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
-      Tensor t = TFIO.getTensor(tensor.expect(Double.class));
-      uuidDelta.addInPlace(t.getData());
-      t.freeRef();
-      uuidDelta.freeRef();
     }
 
     public Output<?>[] getGradients() {

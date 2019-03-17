@@ -20,9 +20,7 @@
 package com.simiacryptus.mindseye.lang.tensorflow;
 
 import com.simiacryptus.lang.UncheckedConsumer;
-import com.simiacryptus.lang.ref.RecycleBin;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.*;
@@ -32,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.DoubleBuffer;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;

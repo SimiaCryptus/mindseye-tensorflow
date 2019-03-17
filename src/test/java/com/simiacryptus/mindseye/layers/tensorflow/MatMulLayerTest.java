@@ -20,31 +20,43 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import com.simiacryptus.mindseye.util.TFConverter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
+
+import static com.simiacryptus.mindseye.lang.Tensor.reverse;
 
 
 public class MatMulLayerTest extends LayerTestBase {
+
+  private final int[] inputDim = {2, 2};
+
+//  @Override
+//  public Tensor[] randomize(@Nonnull int[][] inputDims) {
+//    Random random = new Random();
+//    return Arrays.stream(inputDims).map(dim -> {
+//      Tensor tensor = new Tensor(dim);
+//      tensor.set(random.nextInt(tensor.length()), 1);
+//      return tensor;
+//    }).toArray(i -> new Tensor[i]);
+//  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {3, 3}
+        inputDim
     };
   }
 
-  @Nullable
   @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return FullyConnectedLayer.class;
+  public Layer getReferenceLayer() {
+    return TFConverter.getFCLayer(matMulLayer);
   }
 
-  private final MatMulLayer matMulLayer = new MatMulLayer(new int[]{3, 3}, new int[]{2});
+  private final MatMulLayer matMulLayer = new MatMulLayer(inputDim, new int[]{2});
 
   @Nonnull
   @Override
