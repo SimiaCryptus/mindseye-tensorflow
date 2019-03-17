@@ -31,12 +31,11 @@ import org.tensorflow.DataType;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public class TFIO {
+
+  private static final boolean INVERT_RANKS = true;
 
   private static void free(Object obj) {
     if (obj instanceof double[]) {
@@ -128,12 +127,17 @@ public class TFIO {
   private static double[] getDoubles(TensorList data) {
     double[] buffer = RecycleBin.DOUBLES.obtain(data.length() * Tensor.length(data.getDimensions()));
     DoubleBuffer inputBuffer = DoubleBuffer.wrap(buffer);
-    data.stream().forEach(t -> {
-      inputBuffer.put(t
-          //.invertDimensions()
-          .getData());
-      t.freeRef();
-    });
+    if(INVERT_RANKS) {
+      data.stream().map(Tensor::invertDimensionsAndFree).forEach(t -> {
+        inputBuffer.put(t.getData());
+        t.freeRef();
+      });
+    } else {
+      data.stream().forEach(t -> {
+        inputBuffer.put(t.getData());
+        t.freeRef();
+      });
+    }
     return buffer;
   }
 
@@ -142,13 +146,19 @@ public class TFIO {
     int[] dims = Arrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
     TensorArray resultData = TensorArray.wrap(IntStream.range(0, batches).mapToObj(i -> {
-      Tensor returnValue = new Tensor(dims);
-      for (int j = 0; j < returnValue.length(); j++) {
-        returnValue.getData()[j] = doubles[j + i * returnValue.length()];
+      if(INVERT_RANKS) {
+        Tensor returnValue = new Tensor(Tensor.reverse(dims));
+        for (int j = 0; j < returnValue.length(); j++) {
+          returnValue.getData()[j] = doubles[j + i * returnValue.length()];
+        }
+        return returnValue.invertDimensionsAndFree();
+      } else {
+        Tensor returnValue = new Tensor(dims);
+        for (int j = 0; j < returnValue.length(); j++) {
+          returnValue.getData()[j] = doubles[j + i * returnValue.length()];
+        }
+        return returnValue;
       }
-      return returnValue
-          //.invertDimensionsAndFree()
-          ;
     }).toArray(i -> new Tensor[i]));
     RecycleBin.FLOATS.recycle(doubles, doubles.length);
     return resultData;
@@ -156,12 +166,22 @@ public class TFIO {
 
   private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, long[] shape) {
     float[] doubles = getFloats(tensor);
-    Tensor returnValue = new Tensor(Arrays.stream(shape).mapToInt(x -> (int) x).toArray());
-    for (int j = 0; j < returnValue.length(); j++) {
-      returnValue.getData()[j] = doubles[j];
+    int[] dims = Arrays.stream(shape).mapToInt(x -> (int) x).toArray();
+    if(INVERT_RANKS) {
+      Tensor returnValue = new Tensor(Tensor.reverse(dims));
+      for (int j = 0; j < returnValue.length(); j++) {
+        returnValue.getData()[j] = doubles[j];
+      }
+      RecycleBin.FLOATS.recycle(doubles, doubles.length);
+      return returnValue.invertDimensionsAndFree();
+    } else {
+      Tensor returnValue = new Tensor(dims);
+      for (int j = 0; j < returnValue.length(); j++) {
+        returnValue.getData()[j] = doubles[j];
+      }
+      RecycleBin.FLOATS.recycle(doubles, doubles.length);
+      return returnValue;
     }
-    RecycleBin.FLOATS.recycle(doubles, doubles.length);
-    return returnValue;
   }
 
   private static TensorArray getTensorArray_Double(org.tensorflow.Tensor<Double> tensor, long[] shape) {
@@ -169,14 +189,15 @@ public class TFIO {
     int[] dims = Arrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
     TensorArray resultData = TensorArray.wrap(IntStream.range(0, batches).mapToObj(i -> {
-      Tensor returnValue = new Tensor(
-          //Tensor.reverse
-          (dims)
-      );
-      System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
-      return returnValue
-          //.invertDimensionsAndFree()
-          ;
+      if(INVERT_RANKS) {
+        Tensor returnValue = new Tensor(Tensor.reverse(dims));
+        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        return returnValue.invertDimensionsAndFree();
+      } else {
+        Tensor returnValue = new Tensor(dims);
+        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        return returnValue;
+      }
     }).toArray(i -> new Tensor[i]));
     RecycleBin.DOUBLES.recycle(doubles, doubles.length);
     return resultData;
@@ -185,10 +206,17 @@ public class TFIO {
   private static Tensor getTensor_Double(org.tensorflow.Tensor<Double> tensor, long[] shape) {
     double[] doubles = getDoubles(tensor);
     int[] dims = Arrays.stream(shape).mapToInt(x -> (int) x).toArray();
-    Tensor returnValue = new Tensor(dims);
-    System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
-    RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-    return returnValue;
+    if(INVERT_RANKS) {
+      Tensor returnValue = new Tensor(Tensor.reverse(dims));
+      System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
+      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
+      return returnValue.invertDimensionsAndFree();
+    } else {
+      Tensor returnValue = new Tensor(dims);
+      System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
+      RecycleBin.DOUBLES.recycle(doubles, doubles.length);
+      return returnValue;
+    }
   }
 
   private static double[] getDoubles(org.tensorflow.Tensor<Double> result) {
@@ -227,9 +255,17 @@ public class TFIO {
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(Tensor data) {
-    double[] buffer = data.getData();
+    Tensor invertDimensions;
+    double[] buffer;
+    if(INVERT_RANKS) {
+      invertDimensions = data.invertDimensions();
+      buffer = invertDimensions.getData();
+    } else {
+      invertDimensions = null;
+      buffer = data.getData();
+    }
     @NotNull org.tensorflow.@NotNull Tensor<Float> tensor = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), FloatBuffer.wrap(Util.getFloats(buffer)));
-    RecycleBin.DOUBLES.recycle(buffer, buffer.length);
+    if(null != invertDimensions) invertDimensions.freeRef();
     return tensor;
   }
 
@@ -247,9 +283,17 @@ public class TFIO {
 
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(Tensor data) {
-    double[] buffer = data.getData();
+    double[] buffer;
+    Tensor invertDimensions;
+    if(INVERT_RANKS) {
+      invertDimensions = data.invertDimensions();
+      buffer = invertDimensions.getData();
+    } else {
+      invertDimensions = null;
+      buffer = data.getData();
+    }
     org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), DoubleBuffer.wrap(buffer));
-    RecycleBin.DOUBLES.recycle(buffer, buffer.length);
+    if(null != invertDimensions) invertDimensions.freeRef();
     return tensor;
   }
 

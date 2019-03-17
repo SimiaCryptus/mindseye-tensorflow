@@ -44,39 +44,23 @@ public class Conv2DLayerTest extends LayerTestBase {
   }
 
   @Override
-  public Tensor[] randomize(@Nonnull int[][] inputDims) {
-    Random random = new Random();
-    return Arrays.stream(inputDims).map(dim -> {
-      Tensor tensor = new Tensor(dim);
-      tensor.set(random.nextInt(tensor.length()), 1);
-      //tensor.set(() -> random());
-      return tensor;
-    }).toArray(i -> new Tensor[i]);
+  public SimpleConvolutionLayer getReferenceLayer() {
+    return getSimpleConvolutionLayer(layer.getWeights().get("kernel"));
   }
 
-  @Override
-  public Layer getReferenceLayer() {
-//    if(1==1) return null;
-    Tensor kernel = layer.getWeights().get("kernel");
-    int[] kernelDims = kernel.getDimensions();
+  @NotNull
+  public static SimpleConvolutionLayer getSimpleConvolutionLayer(Tensor sourceKernel) {
+    int[] kernelDims = sourceKernel.getDimensions();
     SimpleConvolutionLayer simpleConvolutionLayer = new SimpleConvolutionLayer(kernelDims[0], kernelDims[1], kernelDims[2] * kernelDims[3]).setPaddingXY(0, 0);
-    Tensor targetKernel = kernel.reshapeCast(
-        kernelDims[1],
-        kernelDims[0],
-        kernelDims[3],
-        kernelDims[2]
-    );
-    Tensor sourceKernel = kernel; //.permuteDimensions(0,1,2,3);
+    Tensor targetKernel = sourceKernel.copy();
     int[] sourceDims = sourceKernel.getDimensions();
     sourceKernel.coordStream(false).forEach(c -> {
       int[] sourceCoords = c.getCoords();
       targetKernel.set(
-//          sourceDims[3] - (1+ sourceCoords[3]),
-          sourceDims[1] - (1 + sourceCoords[1]),
           sourceDims[0] - (1 + sourceCoords[0]),
-          sourceCoords[3],
+          sourceDims[1] - (1 + sourceCoords[1]),
           sourceCoords[2],
-//          sourceDims[2] - (1+sourceCoords[2]),
+          sourceCoords[3],
           sourceKernel.get(c)
       );
     });
@@ -95,13 +79,9 @@ public class Conv2DLayerTest extends LayerTestBase {
 
   @NotNull
   private Conv2DLayer getLayer() {
-    Conv2DLayer layer = new Conv2DLayer(1, 1, 2, 2);
+    Conv2DLayer layer = new Conv2DLayer(3, 3, 2, 2);
     Tensor kernel = layer.getWeights().get("kernel");
-    //kernel.setByCoord(c -> Math.random());
-    kernel.set(0, 0, 0, 0, 1.0);
-    kernel.set(0, 0, 1, 1, 1.0);
-//    kernel.set(kernel.invertDimensions());
-    //kernel.toJson(null,SerialPrecision.Double);
+    kernel.randomize(1.0);
     return layer;
   }
 
