@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.lang.tensorflow;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;
-import com.simiacryptus.util.FastRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,6 +34,18 @@ public class TFIOTest {
 
   private final double tol = 1e-4;
 
+  private static void assertEquals(Tensor a, Tensor b, double tol) {
+    assertArrayEquals(a.getDimensions(), b.getDimensions());
+    assertArrayEquals(a.getData(), b.getData(), tol);
+  }
+
+  private static void assertEquals(TensorList a, TensorList b, double tol) {
+    Assert.assertEquals(a.length(), b.length());
+    for (int i = 0; i < a.length(); i++) {
+      assertEquals(a.get(i), b.get(i), tol);
+    }
+  }
+
   @Test
   public void testTensor() {
     test(new Tensor(7).randomize(1.0));
@@ -46,9 +57,9 @@ public class TFIOTest {
   public void test(Tensor tensor) {
     org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
     org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x->x).toArray(), doubleTensor.shape());
+    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), doubleTensor.shape());
     assertEquals(tensor, TFIO.getTensor(doubleTensor), tol);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x->x).toArray(), floatTensor.shape());
+    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), floatTensor.shape());
     assertEquals(tensor, TFIO.getTensor(floatTensor), tol);
   }
 
@@ -67,22 +78,10 @@ public class TFIOTest {
     org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
     org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
     Assert.assertEquals(tensor.length(), doubleTensor.shape()[0]);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x->x).toArray(), Arrays.stream(doubleTensor.shape()).skip(1).toArray());
+    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), Arrays.stream(doubleTensor.shape()).skip(1).toArray());
     assertEquals(tensor, TFIO.getTensorList(doubleTensor), tol);
     Assert.assertEquals(tensor.length(), floatTensor.shape()[0]);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x->x).toArray(), Arrays.stream(floatTensor.shape()).skip(1).toArray());
+    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), Arrays.stream(floatTensor.shape()).skip(1).toArray());
     assertEquals(tensor, TFIO.getTensorList(floatTensor), tol);
-  }
-
-  private static void assertEquals(Tensor a, Tensor b, double tol) {
-    assertArrayEquals(a.getDimensions(), b.getDimensions());
-    assertArrayEquals(a.getData(), b.getData(), tol);
-  }
-
-  private static void assertEquals(TensorList a, TensorList b, double tol) {
-    Assert.assertEquals(a.length(), b.length());
-    for (int i = 0; i < a.length(); i++) {
-      assertEquals(a.get(i), b.get(i), tol);
-    }
   }
 }

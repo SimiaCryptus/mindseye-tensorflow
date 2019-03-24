@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,27 +31,26 @@ import java.util.Random;
 
 public class BiasAddLayerTest extends LayerTestBase {
 
+  private final Layer layer = getBiasLayer();
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {3, 3}
+        {2, 2, 3}
     };
   }
 
   @Nullable
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
-    //return com.simiacryptus.mindseye.layers.java.BiasLayer.class;
+    return ImgBandBiasLayer.class;
   }
-
-  private final Layer layer = getBiasLayer();
 
   @NotNull
   private BiasAddLayer getBiasLayer() {
     BiasAddLayer biasLayer = new BiasAddLayer(3);
-    biasLayer.getWeights().get("bias").setByCoord(c->Math.random());
+    biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
     return biasLayer;
   }
 

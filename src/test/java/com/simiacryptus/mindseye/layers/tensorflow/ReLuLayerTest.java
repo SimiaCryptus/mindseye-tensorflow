@@ -30,6 +30,8 @@ import java.util.Random;
 
 public class ReLuLayerTest extends LayerTestBase {
 
+  private final Layer layer = getBiasLayer();
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -43,8 +45,6 @@ public class ReLuLayerTest extends LayerTestBase {
   public Class<? extends Layer> getReferenceLayerClass() {
     return null;
   }
-
-  private final Layer layer = getBiasLayer();
 
   @NotNull
   private ReLuLayer getBiasLayer() {

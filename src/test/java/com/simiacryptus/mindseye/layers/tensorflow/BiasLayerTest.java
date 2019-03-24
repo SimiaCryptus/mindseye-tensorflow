@@ -30,6 +30,8 @@ import java.util.Random;
 
 public class BiasLayerTest extends LayerTestBase {
 
+  private final Layer layer = getBiasLayer();
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -44,12 +46,10 @@ public class BiasLayerTest extends LayerTestBase {
     return com.simiacryptus.mindseye.layers.java.BiasLayer.class;
   }
 
-  private final Layer layer = getBiasLayer();
-
   @NotNull
   private BiasLayer getBiasLayer() {
     BiasLayer biasLayer = new BiasLayer(3, 3);
-    biasLayer.getWeights().get("bias").setByCoord(c->Math.random());
+    biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
     return biasLayer;
   }
 

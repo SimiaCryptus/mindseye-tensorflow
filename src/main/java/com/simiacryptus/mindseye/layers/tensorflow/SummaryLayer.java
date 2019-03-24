@@ -35,13 +35,14 @@ public class SummaryLayer extends TFLayerBase {
 
   private String tag;
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public SummaryLayer(String name) {
     super(new HashMap<>());
     this.setTag(name);
+  }
+
+  public SummaryLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+    tag = json.get("tag").getAsString();
   }
 
   @Nonnull
@@ -49,9 +50,8 @@ public class SummaryLayer extends TFLayerBase {
     return new SummaryLayer(json, rs);
   }
 
-  public SummaryLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
-    tag = json.get("tag").getAsString();
+  public boolean isSingleBatch() {
+    return false;
   }
 
   @Override

@@ -29,7 +29,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
-import com.simiacryptus.util.FastRandom;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Operand;
 import org.tensorflow.Shape;
@@ -47,50 +46,6 @@ import java.util.Random;
 
 public class ConvTFMnist {
 
-  public static class MnistDemo extends MnistDemoBase {
-    @Override
-    protected byte[] getGraphDef() {
-      return ConvTFMnist.getGraphDef();
-    }
-
-    @Override
-    protected Layer buildModel(@Nonnull NotebookOutput log) {
-      timeout = 15*60;
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
-      return network(log);
-    }
-
-  }
-
-  public static class LayerTest extends LayerTestBase {
-
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return network();
-    }
-
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
   public static final String input = "image";
   public static final String fc1 = "fc1";
   public static final String conv1 = "conv1";
@@ -101,6 +56,10 @@ public class ConvTFMnist {
   public static final String output = "softmax";
   public static String statOutput = "output/summary";
 
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
       byte[] bytes;
@@ -110,7 +69,7 @@ public class ConvTFMnist {
         throw new RuntimeException(e);
       }
       return stochasticClassificationLayer(
-          new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput),
+          new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput),
           Math.pow(0.5, 1.0),
           5,
           0.001);
@@ -223,6 +182,46 @@ public class ConvTFMnist {
           ops.constant(new long[]{-1, 1024})
       );
     });
+  }
+
+  public static class MnistDemo extends MnistDemoBase {
+    @Override
+    protected byte[] getGraphDef() {
+      return ConvTFMnist.getGraphDef();
+    }
+
+    @Override
+    protected Layer buildModel(@Nonnull NotebookOutput log) {
+      timeout = 15 * 60;
+      log.p("This is a very simple model that performs basic logistic regression. " +
+          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      return network(log);
+    }
+
+  }
+
+  public static class LayerTest extends LayerTestBase {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {28, 28}
+      };
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends Layer> getReferenceLayerClass() {
+      return null;
+    }
+
+    @Nonnull
+    @Override
+    public Layer getLayer(final int[][] inputSize, Random random) {
+      return network();
+    }
+
   }
 
 }

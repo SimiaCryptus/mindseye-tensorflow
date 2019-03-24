@@ -19,8 +19,11 @@
 
 package com.simiacryptus.mindseye.lang.tensorflow;
 
+import com.google.common.primitives.Floats;
+import com.google.protobuf.ByteString;
 import com.simiacryptus.lang.UncheckedConsumer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.*;
@@ -30,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,21 +67,44 @@ public class TFUtil {
         TensorflowUtil.editNode(graphBuilder, key, (NodeDef.Builder node) -> {
               DataType type = node.getAttrMap().get("dtype").getType();
               TensorProto.Builder tensor = TensorProto.newBuilder();
-              if (type == DataType.DT_DOUBLE) {
-                tensor.addAllDoubleVal(Arrays.stream(value.getData()).mapToObj(x -> x).collect(Collectors.toList()));
-              } else if (type == DataType.DT_FLOAT) {
-                tensor.addAllFloatVal(Arrays.stream(value.getData()).mapToObj(x -> (float)x).collect(Collectors.toList()));
-              } else {
-                throw new UnsupportedOperationException(type.toString());
+              Tensor inverted = value.invertDimensions();
+              try {
+                double[] data = inverted.getData();
+//                double[] data = value.getData();
+                AttrValue shape = node.getAttrMap().get("shape");
+                if (null == shape || shape.getShape().getDimList().size() <= 0) {
+                  TensorShapeProto.Builder shapeBuilder = TensorShapeProto.newBuilder();
+                  for (int i : value.getDimensions()) {
+                    shapeBuilder.addDim(TensorShapeProto.Dim.newBuilder().setSize(i).build());
+                  }
+                  tensor.setTensorShape(shapeBuilder.build());
+                } else {
+                  tensor.setTensorShape(shape.getShape());
+                }
+                if (type == DataType.DT_DOUBLE) {
+                  tensor.setDtype(type);
+                  ByteBuffer bytes = GraphModel.putDoubles(data);
+                  ByteString byteString = ByteString.copyFrom(bytes);
+                  tensor.setTensorContent(byteString);
+                  //                tensor.addAllDoubleVal(Arrays.stream(data).mapToObj(x -> x).collect(Collectors.toList()));
+                } else if (type == DataType.DT_FLOAT) {
+                  tensor.setDtype(type);
+                  float[] floats = Floats.toArray(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
+                  ByteString byteString = ByteString.copyFrom(GraphModel.putFloats(floats));
+                  tensor.setTensorContent(byteString);
+                  //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
+                } else {
+                  throw new UnsupportedOperationException(type.toString());
+                }
+                return node
+                    .removeAttr("shape")
+                    .putAttr("value", AttrValue.newBuilder()
+                        .setTensor(tensor.build())
+                        .build())
+                    .setOp("Const");
+              } finally {
+                inverted.freeRef();
               }
-              tensor.setDtype(type);
-              tensor.setTensorShape(node.getAttrMap().get("shape").getShape());
-              return node
-                  .removeAttr("shape")
-                  .putAttr("value", AttrValue.newBuilder()
-                      .setTensor(tensor.build())
-                      .build())
-                  .setOp("Const");
             }
         );
       });

@@ -31,17 +31,17 @@ import java.util.*;
 
 public class BiasAddLayer extends TFLayerBase {
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public BiasAddLayer(int... intputDims) {
     super(defaultStates(intputDims));
   }
 
+  public BiasAddLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+  }
+
   private static Map<String, Tensor> defaultStates(int[] intputDims) {
     HashMap<String, Tensor> map = new HashMap<>();
-    map.put("bias", new Tensor(intputDims).setByCoord(c->{
+    map.put("bias", new Tensor(intputDims).setByCoord(c -> {
       return 0;
     }));
     return map;
@@ -52,8 +52,8 @@ public class BiasAddLayer extends TFLayerBase {
     return new BiasAddLayer(json, rs);
   }
 
-  public BiasAddLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  public boolean isSingleBatch() {
+    return false;
   }
 
   @Override

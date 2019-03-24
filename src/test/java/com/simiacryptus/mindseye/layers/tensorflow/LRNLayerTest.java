@@ -30,25 +30,29 @@ import java.util.Random;
 
 public class LRNLayerTest extends LayerTestBase {
 
+  private final Layer layer = createLayer();
+
+  public LRNLayerTest() {
+    validateDifferentials = false;
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
-        {3, 3, 1}
+        {2, 3, 20}
     };
   }
 
   @Nullable
   @Override
   public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
+    return com.simiacryptus.mindseye.layers.cudnn.LRNLayer.class;
   }
 
-  private final Layer layer = getBiasLayer();
-
   @NotNull
-  private Layer getBiasLayer() {
-    return new LRNLayer();
+  private Layer createLayer() {
+    return new LRNLayer().setRadius(2);
   }
 
   @Nonnull

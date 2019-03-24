@@ -40,21 +40,23 @@ public class MatMulLayer extends TFLayerBase {
   private final int[] intputDims;
   private final int[] outputDims;
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public MatMulLayer(int[] intputDims, int[] outputDims) {
     super(defaultStates(intputDims, outputDims));
     this.intputDims = intputDims;
     this.outputDims = outputDims;
   }
 
+  public MatMulLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+    intputDims = JsonUtil.toIntArray(json.get("inputDims").getAsJsonArray());
+    outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
+  }
+
   private static Map<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
     HashMap<String, Tensor> map = new HashMap<>();
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
-    map.put("weights", new Tensor(outs, inputs).setByCoord(c->{
+    map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
       final double ratio = Math.sqrt(6. / (inputs + outs + 1));
       final double fate = Util.R.get().nextDouble();
       final double v = (1 - 2 * fate) * ratio;
@@ -64,20 +66,18 @@ public class MatMulLayer extends TFLayerBase {
   }
 
   @Nonnull
-  public MatMulLayer set(@Nonnull final DoubleSupplier f) {
-    Arrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
-    return this;
-  }
-
-  @Nonnull
   public static MatMulLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MatMulLayer(json, rs);
   }
 
-  public MatMulLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
-    intputDims = JsonUtil.toIntArray(json.get("inputDims").getAsJsonArray());
-    outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
+  public boolean isSingleBatch() {
+    return false;
+  }
+
+  @Nonnull
+  public MatMulLayer set(@Nonnull final DoubleSupplier f) {
+    Arrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
+    return this;
   }
 
   @Override
@@ -109,7 +109,7 @@ public class MatMulLayer extends TFLayerBase {
                   ),
                   MatMul.transposeB(true)
               ),
-              ops.constant(new int[]{1,0})
+              ops.constant(new int[]{1, 0})
           ),
           ops.constant(IntStream.concat(
               IntStream.of(-1),

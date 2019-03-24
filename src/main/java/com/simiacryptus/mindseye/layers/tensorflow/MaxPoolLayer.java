@@ -31,12 +31,12 @@ import java.util.*;
 
 public class MaxPoolLayer extends TFLayerBase {
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public MaxPoolLayer() {
     super(defaultStates());
+  }
+
+  public MaxPoolLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
   }
 
   private static Map<String, Tensor> defaultStates() {
@@ -49,8 +49,8 @@ public class MaxPoolLayer extends TFLayerBase {
     return new MaxPoolLayer(json, rs);
   }
 
-  public MaxPoolLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  public boolean isSingleBatch() {
+    return false;
   }
 
   @Override

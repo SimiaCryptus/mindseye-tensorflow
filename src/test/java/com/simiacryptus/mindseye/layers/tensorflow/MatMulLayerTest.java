@@ -26,14 +26,12 @@ import com.simiacryptus.mindseye.util.TFConverter;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static com.simiacryptus.mindseye.lang.Tensor.reverse;
-
 
 public class MatMulLayerTest extends LayerTestBase {
 
   private final int[] inputDim = {2, 2};
 
-//  @Override
+  //  @Override
 //  public Tensor[] randomize(@Nonnull int[][] inputDims) {
 //    Random random = new Random();
 //    return Arrays.stream(inputDims).map(dim -> {
@@ -42,6 +40,7 @@ public class MatMulLayerTest extends LayerTestBase {
 //      return tensor;
 //    }).toArray(i -> new Tensor[i]);
 //  }
+  private final MatMulLayer matMulLayer = new MatMulLayer(inputDim, new int[]{2});
 
   @Nonnull
   @Override
@@ -53,10 +52,8 @@ public class MatMulLayerTest extends LayerTestBase {
 
   @Override
   public Layer getReferenceLayer() {
-    return TFConverter.getFCLayer(matMulLayer);
+    return new TFConverter().getFCLayer(matMulLayer);
   }
-
-  private final MatMulLayer matMulLayer = new MatMulLayer(inputDim, new int[]{2});
 
   @Nonnull
   @Override

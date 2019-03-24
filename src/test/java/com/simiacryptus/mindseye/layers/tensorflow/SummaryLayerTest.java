@@ -29,6 +29,8 @@ import java.util.Random;
 
 public class SummaryLayerTest extends LayerTestBase {
 
+  private final Layer layer = new SummaryLayer("foo");
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -42,8 +44,6 @@ public class SummaryLayerTest extends LayerTestBase {
   public Class<? extends Layer> getReferenceLayerClass() {
     return null;
   }
-
-  private final Layer layer = new SummaryLayer("foo");
 
   @Nonnull
   @Override

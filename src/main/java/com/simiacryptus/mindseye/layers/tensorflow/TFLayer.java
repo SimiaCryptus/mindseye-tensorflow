@@ -33,25 +33,29 @@ public class TFLayer extends TFLayerBase {
 
   private final byte[] graphDef;
   private boolean isFloat = false;
-  private boolean singleBatch = false;
   private String outputNode;
   private List<String> inputNodes;
   private String summaryOut = "";
-
-  public boolean isSingleBatch() {
-    return singleBatch;
-  }
-
-  public TFLayer setSingleBatch(boolean singleBatch) {
-    this.singleBatch = singleBatch;
-    return this;
-  }
 
   public TFLayer(byte[] graphDef, Map<String, Tensor> states, String output, String... input) {
     super(states);
     this.setOutputNode(output);
     setInputNodes(Arrays.asList(input));
     this.graphDef = graphDef;
+  }
+
+  public TFLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+    graphDef = Base64.getDecoder().decode(json.get("graphDef").getAsString());
+    setFloat(json.get("isFloat").getAsBoolean());
+    setOutputNode(json.get("output").getAsString());
+    JsonArray jsonArray = json.get("input").getAsJsonArray();
+    ArrayList<String> inputNodes = new ArrayList<>();
+    for (int i = 0; i < jsonArray.size(); i++) {
+      inputNodes.add(jsonArray.get(i).getAsString());
+    }
+    setInputNodes(inputNodes);
+    setSummaryOut(json.get("summaryOut").getAsString());
   }
 
   @Nonnull
@@ -63,7 +67,6 @@ public class TFLayer extends TFLayerBase {
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("graphDef", Base64.getEncoder().encodeToString(graphDef));
-    json.addProperty("singleBatch", isSingleBatch());
     JsonArray array = new JsonArray();
     getWeights().keySet().forEach(array::add);
     json.add("dataKeys", array);
@@ -79,21 +82,6 @@ public class TFLayer extends TFLayerBase {
   @Override
   protected boolean floatInputs(String key) {
     return isFloat();
-  }
-
-  public TFLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json,rs);
-    graphDef = Base64.getDecoder().decode(json.get("graphDef").getAsString());
-    setSingleBatch(json.get("singleBatch").getAsBoolean());
-    setFloat(json.get("isFloat").getAsBoolean());
-    setOutputNode(json.get("output").getAsString());
-    JsonArray jsonArray = json.get("input").getAsJsonArray();
-    ArrayList<String> inputNodes = new ArrayList<>();
-    for (int i = 0; i < jsonArray.size(); i++) {
-      inputNodes.add(jsonArray.get(i).getAsString());
-    }
-    setInputNodes(inputNodes);
-    setSummaryOut(json.get("summaryOut").getAsString());
   }
 
   @Override
@@ -114,17 +102,18 @@ public class TFLayer extends TFLayerBase {
       throw new RuntimeException(e);
     }
   }
+
   public String getOutputNode() {
     return outputNode;
-  }
-
-  public List<String> getInputNodes() {
-    return inputNodes;
   }
 
   public TFLayer setOutputNode(String outputNode) {
     this.outputNode = outputNode;
     return this;
+  }
+
+  public List<String> getInputNodes() {
+    return inputNodes;
   }
 
   public TFLayer setInputNodes(List<String> inputNodes) {

@@ -44,54 +44,15 @@ import java.util.Random;
 
 public class FloatTFMnist {
 
-  public static class MnistDemo extends MnistDemoBase {
-    @Override
-    protected byte[] getGraphDef() {
-      return FloatTFMnist.getGraphDef();
-    }
-
-    @Override
-    protected Layer buildModel(@Nonnull NotebookOutput log) {
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
-      return network(log);
-    }
-
-  }
-
-  public static class LayerTest extends LayerTestBase {
-
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return network();
-    }
-
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
   public static final String input = "image";
   public static final String weights = "fc1";
   public static final String bias = "bias";
   public static final String output = "softmax";
   public static String statOutput = null; //"output/summary";
+
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
@@ -101,7 +62,7 @@ public class FloatTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setFloat(true).setSummaryOut(statOutput);
+      return new TFLayer(bytes, getVariables(), output, input).setFloat(true).setSummaryOut(statOutput);
     });
   }
 
@@ -125,8 +86,8 @@ public class FloatTFMnist {
           "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
       ).contains(op)) return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_FLOAT));
-      if(node.getName().equalsIgnoreCase(input)) {
-        nodeInstrumentation.setImage(28,28,1);
+      if (node.getName().equalsIgnoreCase(input)) {
+        nodeInstrumentation.setImage(28, 28, 1);
       }
       return nodeInstrumentation;
     });
@@ -171,6 +132,45 @@ public class FloatTFMnist {
           ));
     });
     return bytes;
+  }
+
+  public static class MnistDemo extends MnistDemoBase {
+    @Override
+    protected byte[] getGraphDef() {
+      return FloatTFMnist.getGraphDef();
+    }
+
+    @Override
+    protected Layer buildModel(@Nonnull NotebookOutput log) {
+      log.p("This is a very simple model that performs basic logistic regression. " +
+          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      return network(log);
+    }
+
+  }
+
+  public static class LayerTest extends LayerTestBase {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {28, 28}
+      };
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends Layer> getReferenceLayerClass() {
+      return null;
+    }
+
+    @Nonnull
+    @Override
+    public Layer getLayer(final int[][] inputSize, Random random) {
+      return network();
+    }
+
   }
 
 }

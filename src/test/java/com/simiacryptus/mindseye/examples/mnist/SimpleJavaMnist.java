@@ -39,6 +39,25 @@ public class SimpleJavaMnist {
 
   private static boolean tensorboard = false;
 
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
+  public static Layer network(NotebookOutput log) {
+    return log.eval(() -> {
+      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      if (tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
+      pipeline.wrap(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
+          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
+      if (tensorboard) pipeline.wrap(new SummaryLayer("multiply")).freeRef();
+      pipeline.wrap(new BiasLayer(10)).freeRef();
+      if (tensorboard) pipeline.wrap(new SummaryLayer("bias")).freeRef();
+      pipeline.wrap(new SoftmaxLayer()).freeRef();
+      if (tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
+      return pipeline;
+    });
+  }
+
   public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -80,25 +99,6 @@ public class SimpleJavaMnist {
     public void run(@Nonnull NotebookOutput log) {
       super.run(log);
     }
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
-  public static Layer network(NotebookOutput log) {
-    return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
-      pipeline.wrap(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("multiply")).freeRef();
-      pipeline.wrap(new BiasLayer(10)).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("bias")).freeRef();
-      pipeline.wrap(new SoftmaxLayer()).freeRef();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
-      return pipeline;
-    });
   }
 
 }

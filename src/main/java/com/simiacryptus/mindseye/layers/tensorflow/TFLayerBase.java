@@ -21,7 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.lang.ref.*;
+import com.simiacryptus.lang.ref.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
@@ -57,11 +57,15 @@ public abstract class TFLayerBase extends LayerBase {
     }
   }
 
-  protected abstract Set<String> getDataKeys(JsonObject json);
-
   public TFLayerBase(Map<String, Tensor> states) {
     this.getWeights().putAll(states);
   }
+
+  public @NotNull GraphDef constGraph() {
+    return TFUtil.implantConstants(getGraphDef(), getWeights());
+  }
+
+  protected abstract Set<String> getDataKeys(JsonObject json);
 
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -81,16 +85,10 @@ public abstract class TFLayerBase extends LayerBase {
   @Nullable
   @Override
   public Result evalAndFree(Result... inputs) {
-    if (isSingleBatch() && Arrays.stream(inputs).anyMatch(x -> x.getData().length() > 1)) return new SubBatchLayer(this).evalAndFree(inputs);
-    TFSession tfsession = new TFSession(false);
+    TFSession tfsession = new TFSession();
     Result result = evalAndFree(tfsession, inputs);
     tfsession.freeRef();
     return result;
-  }
-
-  @NotNull
-  public BufferedTFLayer constShadow() {
-    return new BufferedTFLayer(this);
   }
 
   @NotNull Result evalAndFree(TFSession tfsession, Result... inputs) {
@@ -99,9 +97,9 @@ public abstract class TFLayerBase extends LayerBase {
     Session.Runner runner = tfsession.session.runner();
     ArrayList<org.tensorflow.Tensor<?>> tensors = new ArrayList<>();
     getWeights().values().forEach(ReferenceCountingBase::addRef);
-    if (!tfsession.constantWeights) getWeights().forEach((nodeName, data) -> {
+    getWeights().forEach((nodeName, data) -> {
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
-      if(floatInputs(nodeName)) {
+      if (floatInputs(nodeName)) {
         tensor = TFIO.getFloatTensor(data, invertWeights());
       } else {
         tensor = TFIO.getDoubleTensor(data, invertWeights());
@@ -113,7 +111,7 @@ public abstract class TFLayerBase extends LayerBase {
       String inputNode = getInputNodes().get(i);
       TensorList data = inputs[i].getData();
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
-      if(floatInputs(inputNode)) {
+      if (floatInputs(inputNode)) {
         tensor = TFIO.getFloatTensor(data);
       } else {
         tensor = TFIO.getDoubleTensor(data);
@@ -160,7 +158,7 @@ public abstract class TFLayerBase extends LayerBase {
       ArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new ArrayList<>();
       Output<?>[] gradients = tfsession.getGradients();
       String deltaOperation = getOutputNode() + "_delta";
-      if(floatInputs(deltaOperation)) {
+      if (floatInputs(deltaOperation)) {
         org.tensorflow.Tensor<Float> tensor = TFIO.getFloatTensor(deltaSignal);
         runner.feed(deltaOperation, tensor);
         feedbacktensors.add(tensor);
@@ -180,7 +178,13 @@ public abstract class TFLayerBase extends LayerBase {
       for (int i = 0; i < stateNames.size(); i++) {
         String weightNodeName = stateNames.get(i);
         Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
-        Tensor t = TFIO.getTensor(((org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size())).expect(Double.class), invertWeights());
+        org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size());
+        Tensor t;
+        if (numberTensor.dataType() == DataType.FLOAT) {
+          t = TFIO.getTensor(numberTensor.expect(Float.class), invertWeights());
+        } else {
+          t = TFIO.getTensor(numberTensor.expect(Double.class), invertWeights());
+        }
         uuidDelta.addInPlace(t.getData());
         t.freeRef();
         uuidDelta.freeRef();
@@ -225,27 +229,23 @@ public abstract class TFLayerBase extends LayerBase {
     return weights;
   }
 
-  protected abstract boolean isSingleBatch();
-
   public boolean invertWeights() {
     return true;
+  }
+
+  public @NotNull GraphDef getConstGraph(GraphDef graphDef) {
+    return TFUtil.implantConstants(graphDef, getWeights());
   }
 
   class TFSession extends ReferenceCountingBase {
     public final Graph graph;
     public final Singleton<Output<?>[]> outputSingleton = new Singleton<>();
     public final Session session;
-    public final boolean constantWeights;
 
-    public TFSession(boolean constantWeights) {
+    public TFSession() {
       this.graph = new Graph();
-      this.constantWeights = constantWeights;
       GraphDef graphDef = getGraphDef();
       TensorflowUtil.validate(graphDef);
-      if (constantWeights) {
-        graphDef = TFUtil.implantConstants(graphDef, getWeights());
-        TensorflowUtil.validate(graphDef);
-      }
       graph.importGraphDef(graphDef.toByteArray());
       this.session = new Session(graph);
     }
@@ -255,7 +255,7 @@ public abstract class TFLayerBase extends LayerBase {
         List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
         Ops ops = Ops.create(graph);
         String deltaOpName = getOutputNode() + "_delta";
-        Class<? extends Number> dtype = floatInputs(deltaOpName)?Float.class:Double.class;
+        Class<? extends Number> dtype = floatInputs(deltaOpName) ? Float.class : Double.class;
         ops.withName(deltaOpName).placeholder(
             dtype,
             Placeholder.shape(Shape.unknown())

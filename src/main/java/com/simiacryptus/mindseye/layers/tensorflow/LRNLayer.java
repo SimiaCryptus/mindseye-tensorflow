@@ -21,32 +21,32 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.DataSerializer;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
+import org.tensorflow.op.core.LRN;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
 public class LRNLayer extends TFLayerBase {
 
-  public boolean isSingleBatch() {
-    return false;
-  }
+  private long radius = 5L;
+  private float beta = .5f;
+  private float alpha = 1.0f;
+  private float bias = 1.0f;
 
   public LRNLayer() {
-    super(defaultStates());
+    super(new HashMap<>());
   }
 
-  @Override
-  protected boolean floatInputs(String key) {
-    return true;
-  }
-
-  private static Map<String, Tensor> defaultStates() {
-    HashMap<String, Tensor> map = new HashMap<>();
-    return map;
+  public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+    setRadius((json.get("width").getAsInt() - 1) / 2);
+    setAlpha((float) (json.get("alpha").getAsDouble() / getF1()));
+    setBeta((float) json.get("beta").getAsDouble());
+    setBias((float) json.get("k").getAsDouble());
   }
 
   @Nonnull
@@ -54,14 +54,32 @@ public class LRNLayer extends TFLayerBase {
     return new LRNLayer(json, rs);
   }
 
-  public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  public boolean isSingleBatch() {
+    return false;
+  }
+
+  @Override
+  protected boolean floatInputs(String key) {
+    return true;
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.addProperty("width", getRadius() * 2 + 1);
+    json.addProperty("alpha", getAlpha() * getF1());
+    json.addProperty("beta", getBeta());
+    json.addProperty("k", getBias());
+    return json;
+  }
+
+  public double getF1() {
+    return getRadius() * 2 + 1;
   }
 
   @Override
   protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    return hashSet;
+    return new HashSet<>();
   }
 
   @Override
@@ -69,7 +87,8 @@ public class LRNLayer extends TFLayerBase {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).lRN(
-          ops.withName(getInputNodes().get(0)).placeholder(Float.class)
+          ops.withName(getInputNodes().get(0)).placeholder(Float.class),
+          LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias())
       );
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
@@ -92,4 +111,39 @@ public class LRNLayer extends TFLayerBase {
     return Arrays.asList("input");
   }
 
+  public long getRadius() {
+    return radius;
+  }
+
+  public LRNLayer setRadius(long radius) {
+    this.radius = radius;
+    return this;
+  }
+
+  public float getBeta() {
+    return beta;
+  }
+
+  public LRNLayer setBeta(float beta) {
+    this.beta = beta;
+    return this;
+  }
+
+  public float getAlpha() {
+    return alpha;
+  }
+
+  public LRNLayer setAlpha(float alpha) {
+    this.alpha = alpha;
+    return this;
+  }
+
+  public float getBias() {
+    return bias;
+  }
+
+  public LRNLayer setBias(float bias) {
+    this.bias = bias;
+    return this;
+  }
 }

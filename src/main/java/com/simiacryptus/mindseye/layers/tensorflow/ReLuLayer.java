@@ -31,12 +31,12 @@ import java.util.*;
 
 public class ReLuLayer extends TFLayerBase {
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public ReLuLayer() {
     super(defaultStates());
+  }
+
+  public ReLuLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
   }
 
   private static Map<String, Tensor> defaultStates() {
@@ -49,8 +49,8 @@ public class ReLuLayer extends TFLayerBase {
     return new ReLuLayer(json, rs);
   }
 
-  public ReLuLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  public boolean isSingleBatch() {
+    return false;
   }
 
   @Override

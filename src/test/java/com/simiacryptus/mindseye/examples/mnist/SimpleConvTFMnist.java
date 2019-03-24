@@ -52,72 +52,16 @@ import static com.simiacryptus.util.JsonUtil.toJson;
 
 public class SimpleConvTFMnist {
 
-  @Test
-  public void dumpModelJson() throws Exception {
-    byte[] protobufBinaryData = FileUtils.readFileToByteArray(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
-    GraphModel model = new GraphModel(protobufBinaryData);
-    //System.out.println("Protobuf: " + model.graphDef);
-    CharSequence json = toJson(model);
-    File file = new File("model.json");
-    FileUtils.write(file, json, "UTF-8");
-    Desktop.getDesktop().open(file);
-    System.out.println("Model: " + json);
-  }
-
-  @Test
-  public void viewModelJson() throws Exception {
-    TFUtil.launchTensorboard(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"), p -> p.waitFor());
-  }
-
-  public static class MnistDemo extends MnistDemoBase {
-    @Override
-    protected byte[] getGraphDef() {
-      return SimpleConvTFMnist.getGraphDef();
-    }
-
-    @Override
-    protected Layer buildModel(@Nonnull NotebookOutput log) {
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
-      return network(log);
-    }
-
-  }
-
-  public static class LayerTest extends LayerTestBase {
-
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return network();
-    }
-
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
   public static final String input = "image";
   public static final String weights = "fc1";
   public static final String weights_conv1 = "conv1";
   public static final String bias = "bias";
   public static final String output = "softmax";
   public static String statOutput = null;//"output/summary";
+
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
@@ -127,7 +71,7 @@ public class SimpleConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setSingleBatch(false).setSummaryOut(statOutput);
+      return new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput);
     });
   }
 
@@ -202,6 +146,62 @@ public class SimpleConvTFMnist {
           )
       );
     });
+  }
+
+  @Test
+  public void dumpModelJson() throws Exception {
+    byte[] protobufBinaryData = FileUtils.readFileToByteArray(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
+    GraphModel model = new GraphModel(protobufBinaryData);
+    //System.out.println("Protobuf: " + model.graphDef);
+    CharSequence json = toJson(model);
+    File file = new File("model.json");
+    FileUtils.write(file, json, "UTF-8");
+    Desktop.getDesktop().open(file);
+    System.out.println("Model: " + json);
+  }
+
+  @Test
+  public void viewModelJson() throws Exception {
+    TFUtil.launchTensorboard(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"), p -> p.waitFor());
+  }
+
+  public static class MnistDemo extends MnistDemoBase {
+    @Override
+    protected byte[] getGraphDef() {
+      return SimpleConvTFMnist.getGraphDef();
+    }
+
+    @Override
+    protected Layer buildModel(@Nonnull NotebookOutput log) {
+      log.p("This is a very simple model that performs basic logistic regression. " +
+          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      return network(log);
+    }
+
+  }
+
+  public static class LayerTest extends LayerTestBase {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {28, 28}
+      };
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends Layer> getReferenceLayerClass() {
+      return null;
+    }
+
+    @Nonnull
+    @Override
+    public Layer getLayer(final int[][] inputSize, Random random) {
+      return network();
+    }
+
   }
 
 }

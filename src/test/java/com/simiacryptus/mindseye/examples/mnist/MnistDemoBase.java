@@ -34,7 +34,6 @@ import com.simiacryptus.mindseye.network.SimpleLossNetwork;
 import com.simiacryptus.mindseye.opt.IterativeTrainer;
 import com.simiacryptus.mindseye.opt.Step;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
-import com.simiacryptus.mindseye.opt.line.ArmijoWolfeSearch;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
 import com.simiacryptus.mindseye.test.data.MNIST;
@@ -92,7 +91,7 @@ public abstract class MnistDemoBase {
     }
     if (null != graphDef) {
       TFUtil.launchTensorboard(tensorboardLocation.getParentFile(), x -> {
-        JOptionPane.showConfirmDialog(null,"Press OK to exit");
+        JOptionPane.showConfirmDialog(null, "Press OK to exit");
       });
     }
   }

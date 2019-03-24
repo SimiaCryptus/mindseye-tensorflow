@@ -29,6 +29,8 @@ import java.util.Random;
 
 public class SoftmaxLayerTest extends LayerTestBase {
 
+  private final Layer layer = new SoftmaxLayer();
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -42,8 +44,6 @@ public class SoftmaxLayerTest extends LayerTestBase {
   public Class<? extends Layer> getReferenceLayerClass() {
     return com.simiacryptus.mindseye.layers.java.SoftmaxLayer.class;
   }
-
-  private final Layer layer = new SoftmaxLayer();
 
   @Nonnull
   @Override

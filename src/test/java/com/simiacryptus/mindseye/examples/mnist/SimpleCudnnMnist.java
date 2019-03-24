@@ -21,10 +21,10 @@ package com.simiacryptus.mindseye.examples.mnist;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LayerTestBase;
-import com.simiacryptus.mindseye.layers.cudnn.ActivationLayer;
-import com.simiacryptus.mindseye.layers.cudnn.PoolingLayer;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
-import com.simiacryptus.mindseye.layers.java.*;
+import com.simiacryptus.mindseye.layers.java.BiasLayer;
+import com.simiacryptus.mindseye.layers.java.EntropyLossLayer;
+import com.simiacryptus.mindseye.layers.java.SoftmaxLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
@@ -40,6 +40,28 @@ public class SimpleCudnnMnist {
 
   private static boolean tensorboard = false;
 
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
+  public static Layer network(NotebookOutput log) {
+    return log.eval(() -> {
+      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      if (tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
+
+      int bands1 = 5;
+      pipeline.wrap(new SimpleConvolutionLayer(5, 5, 1 * bands1)
+          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
+      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{28, 28, bands1}, new int[]{10})
+          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
+      pipeline.wrap(new BiasLayer(10)).freeRef();
+      pipeline.wrap(new SoftmaxLayer()).freeRef();
+
+      if (tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
+      return pipeline;
+    });
+  }
+
   public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -48,7 +70,7 @@ public class SimpleCudnnMnist {
 
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
-      timeout = 5*60;
+      timeout = 5 * 60;
       log.p("This is a very simple model that performs basic logistic regression. " +
           "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
@@ -87,28 +109,6 @@ public class SimpleCudnnMnist {
     public void run(@Nonnull NotebookOutput log) {
       super.run(log);
     }
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
-  public static Layer network(NotebookOutput log) {
-    return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
-      if(tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
-
-      int bands1 = 5;
-      pipeline.wrap(new SimpleConvolutionLayer(5,5, 1 * bands1)
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{28,28, bands1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new BiasLayer(10)).freeRef();
-      pipeline.wrap(new SoftmaxLayer()).freeRef();
-
-      if(tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
-      return pipeline;
-    });
   }
 
 }

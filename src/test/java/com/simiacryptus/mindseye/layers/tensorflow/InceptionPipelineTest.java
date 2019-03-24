@@ -22,8 +22,13 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
-import com.simiacryptus.mindseye.test.unit.SingleDerivativeTester;
+import com.simiacryptus.mindseye.util.TFConverter;
+import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
+import com.simiacryptus.util.JsonUtil;
+import org.jetbrains.annotations.NotNull;
+import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +39,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-public class InceptionPipelineTest {
+public abstract class InceptionPipelineTest extends LayerTestBase {
+  private static final List<TFLayer> layers = getLayers();
+
+  public InceptionPipelineTest() {
+    validateDifferentials = false;
+    testTraining = false;
+    this.testingBatchSize = 5;
+  }
 
   public static List<TFLayer> getLayers() {
     final ImageNetworkPipeline inception5h = ImageNetworkPipeline.inception5h();
@@ -45,15 +57,46 @@ public class InceptionPipelineTest {
         i == 0 ? "input" : inception5h.nodeIds().get(i - 1)
     ).setFloat(true)).collect(Collectors.toList());
   }
-  private static final List<TFLayer> layers = getLayers();
 
-  public static class Layer0 extends LayerTestBase {
+  @Override
+  public void run(@Nonnull NotebookOutput log) {
+    log.eval(() -> {
+      TFLayer tfLayer = tfLayer();
+      GraphDef graphDef = tfLayer.constGraph();
+      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
+      return JsonUtil.toJson(graphModel);
+    });
+    super.run(log);
+  }
 
-    @Override
-    public SingleDerivativeTester getDerivativeTester() {
-      return null;
-    }
+  @Nonnull
+  @Override
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    TFLayer tfLayer = tfLayer();
+    return new TFConverter().convert(tfLayer);
+  }
 
+  @Nullable
+  @Override
+  public Layer getReferenceLayer() {
+    return tfLayer();
+  }
+
+  @NotNull
+  public abstract TFLayer tfLayer();
+
+  @Nullable
+  @Override
+  public Class<? extends Layer> getReferenceLayerClass() {
+    return null;
+  }
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
+  }
+
+  public static class Layer0 extends InceptionPipelineTest {
 
     @Nonnull
     @Override
@@ -63,34 +106,15 @@ public class InceptionPipelineTest {
       };
     }
 
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
 
-    private final Layer layer = layers.get(0);
-
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return layer.copy();
+    @NotNull
+    public TFLayer tfLayer() {
+      return (TFLayer) layers.get(0).copy();
     }
 
   }
 
-  public static class Layer1 extends LayerTestBase {
-
-    @Override
-    public SingleDerivativeTester getDerivativeTester() {
-      return null;
-    }
-
+  public static class Layer1 extends InceptionPipelineTest {
 
     @Nonnull
     @Override
@@ -100,34 +124,15 @@ public class InceptionPipelineTest {
       };
     }
 
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
+    @NotNull
+    public TFLayer tfLayer() {
+      return (TFLayer) layers.get(1).copy();
     }
 
-    private final Layer layer = layers.get(1);
-
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return layer.copy();
-    }
 
   }
 
-  public static class Layer2 extends LayerTestBase {
-
-    @Override
-    public SingleDerivativeTester getDerivativeTester() {
-      return null;
-    }
-
+  public static class Layer2 extends InceptionPipelineTest {
 
     @Nonnull
     @Override
@@ -137,23 +142,9 @@ public class InceptionPipelineTest {
       };
     }
 
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
-    }
-
-    private final Layer layer = layers.get(2);
-
-    @Override
-    protected Layer lossLayer() {
-      return new MeanSqLossLayer();
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return layer.copy();
+    @NotNull
+    public TFLayer tfLayer() {
+      return (TFLayer) layers.get(2).copy();
     }
 
   }

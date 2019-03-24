@@ -30,12 +30,12 @@ import java.util.*;
 
 public class SoftmaxLayer extends TFLayerBase {
 
-  public boolean isSingleBatch() {
-    return false;
-  }
-
   public SoftmaxLayer() {
     super(new HashMap<>());
+  }
+
+  public SoftmaxLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
   }
 
   @Nonnull
@@ -43,8 +43,8 @@ public class SoftmaxLayer extends TFLayerBase {
     return new SoftmaxLayer(json, rs);
   }
 
-  public SoftmaxLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  public boolean isSingleBatch() {
+    return false;
   }
 
   @Override

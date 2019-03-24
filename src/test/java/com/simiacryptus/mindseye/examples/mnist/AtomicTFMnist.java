@@ -39,6 +39,25 @@ public class AtomicTFMnist {
 
   private static boolean summarize = false;
 
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
+  public static Layer network(NotebookOutput log) {
+    return log.eval(() -> {
+      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      if (summarize) pipeline.wrap(new SummaryLayer("input")).freeRef();
+      pipeline.wrap(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10})
+          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
+      if (summarize) pipeline.wrap(new SummaryLayer("matmul")).freeRef();
+      pipeline.wrap(new BiasLayer(10)).freeRef();
+      if (summarize) pipeline.wrap(new SummaryLayer("bias")).freeRef();
+      pipeline.wrap(new SoftmaxLayer()).freeRef();
+      if (summarize) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
+      return pipeline;
+    });
+  }
+
   public static class MnistDemo extends MnistDemoBase {
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
@@ -46,6 +65,7 @@ public class AtomicTFMnist {
           "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
+
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -79,25 +99,6 @@ public class AtomicTFMnist {
     public void run(@Nonnull NotebookOutput log) {
       super.run(log);
     }
-  }
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
-  public static Layer network(NotebookOutput log) {
-    return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
-      if(summarize) pipeline.wrap(new SummaryLayer("input")).freeRef();
-      pipeline.wrap(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      if(summarize) pipeline.wrap(new SummaryLayer("matmul")).freeRef();
-      pipeline.wrap(new BiasLayer(10)).freeRef();
-      if(summarize) pipeline.wrap(new SummaryLayer("bias")).freeRef();
-      pipeline.wrap(new SoftmaxLayer()).freeRef();
-      if(summarize) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
-      return pipeline;
-    });
   }
 
 }

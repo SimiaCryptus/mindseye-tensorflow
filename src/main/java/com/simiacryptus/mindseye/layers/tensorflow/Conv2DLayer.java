@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -31,14 +32,20 @@ import java.util.*;
 
 public class Conv2DLayer extends TFLayerBase {
 
-  private final String padding = "VALID";
-
-  public boolean isSingleBatch() {
-    return false;
-  }
+  private final Class<Double> dtype = Double.class;
+  private String padding = "SAME";
+  private int strideX = 1;
+  private int strideY = 1;
 
   public Conv2DLayer(int... intputDims) {
     super(defaultStates(intputDims));
+  }
+
+  public Conv2DLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+    super(json, rs);
+    strideX = json.get("strideX").getAsInt();
+    strideY = json.get("strideY").getAsInt();
+    padding = json.get("padding").getAsString();
   }
 
   private static Map<String, Tensor> defaultStates(int[] intputDims) {
@@ -54,8 +61,18 @@ public class Conv2DLayer extends TFLayerBase {
     return new Conv2DLayer(json, rs);
   }
 
-  public Conv2DLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
-    super(json, rs);
+  @Override
+  protected boolean floatInputs(String key) {
+    return false;
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.addProperty("strideX", strideX);
+    json.addProperty("strideY", strideY);
+    json.addProperty("padding", padding);
+    return json;
   }
 
   @Override
@@ -70,10 +87,10 @@ public class Conv2DLayer extends TFLayerBase {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).conv2D(
-          ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          ops.withName("kernel").placeholder(Double.class),
-          Arrays.asList(1L, 1L, 1L, 1L),
-          padding
+          ops.withName(getInputNodes().get(0)).placeholder(dtype),
+          ops.withName("kernel").placeholder(dtype),
+          Arrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
+          getPadding()
       );
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
@@ -96,4 +113,30 @@ public class Conv2DLayer extends TFLayerBase {
     return Arrays.asList("input");
   }
 
+  public int getStrideX() {
+    return strideX;
+  }
+
+  public Conv2DLayer setStrideX(int strideX) {
+    this.strideX = strideX;
+    return this;
+  }
+
+  public int getStrideY() {
+    return strideY;
+  }
+
+  public Conv2DLayer setStrideY(int strideY) {
+    this.strideY = strideY;
+    return this;
+  }
+
+  public String getPadding() {
+    return padding;
+  }
+
+  public Conv2DLayer setPadding(String padding) {
+    this.padding = padding;
+    return this;
+  }
 }
