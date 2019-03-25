@@ -61,6 +61,11 @@ public abstract class TFLayerBase extends LayerBase {
     this.getWeights().putAll(states);
   }
 
+  @NotNull
+  public TFLayer asConstLayer() {
+    return new TFLayer(constGraph().toByteArray(), new HashMap<>(), getOutputNode(), getInputNodes().toArray(new String[]{}));
+  }
+
   public @NotNull GraphDef constGraph() {
     return TFUtil.implantConstants(getGraphDef(), getWeights());
   }

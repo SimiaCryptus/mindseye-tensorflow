@@ -30,7 +30,6 @@ import com.simiacryptus.util.JsonUtil;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Random;
 
 
@@ -59,7 +58,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
     kernel.randomize(1.0);
 //    kernel.set(new int[]{1,1,0}, 1.0);
 //    kernel.set(new int[]{0,0,0}, 1.0);
-    return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+    return layer.asConstLayer();
   }
 
   @Nonnull
@@ -130,7 +129,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 2).setStrideX(1).setStrideY(1);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
-      return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+      return layer.asConstLayer();
     }
 
   }
@@ -149,7 +148,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 2, 2).setStrideX(1).setStrideY(1);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
-      return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+      return layer.asConstLayer();
     }
 
   }
@@ -170,7 +169,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       Conv2DLayer layer = new Conv2DLayer(7, 7, 3, 64).setStrideX(2).setStrideY(2);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
-      return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+      return layer.asConstLayer();
 //      return layer;
     }
 
@@ -213,7 +212,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
 //      kernel.set(new int[]{0,0,0}, 1.0);
-      return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+      return layer.asConstLayer();
       //return layer;
     }
 
@@ -272,7 +271,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
 //      kernel.set(new int[]{0,0,0}, 1.0);
-      return new TFLayer(layer.constGraph().toByteArray(), new HashMap<>(), layer.getOutputNode(), layer.getInputNodes().toArray(new String[]{}));
+      return layer.asConstLayer();
       //return layer;
     }
 

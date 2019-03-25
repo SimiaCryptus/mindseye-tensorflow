@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -31,12 +32,34 @@ import java.util.*;
 
 public class MaxPoolLayer extends TFLayerBase {
 
+  private long strideX = 2L;
+  private long strideY = 2L;
+  private long width = 2L;
+  private long height = 2L;
+  private String padding = "SAME";
+
   public MaxPoolLayer() {
     super(defaultStates());
   }
 
   public MaxPoolLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
+    strideX = json.getAsJsonPrimitive("strideX").getAsInt();
+    strideY = json.getAsJsonPrimitive("strideY").getAsInt();
+    width = json.getAsJsonPrimitive("width").getAsInt();
+    height = json.getAsJsonPrimitive("height").getAsInt();
+    padding = json.getAsJsonPrimitive("padding").getAsString();
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.addProperty("strideX",strideX);
+    json.addProperty("strideY",strideY);
+    json.addProperty("width",width);
+    json.addProperty("height",height);
+    json.addProperty("padding",padding);
+    return json;
   }
 
   private static Map<String, Tensor> defaultStates() {
@@ -61,14 +84,13 @@ public class MaxPoolLayer extends TFLayerBase {
 
   @Override
   public GraphDef getGraphDef() {
-    long size = 2L;
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).maxPool(
           ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          Arrays.asList(1L, size, size, 1L),
-          Arrays.asList(1L, size, size, 1L),
-          "SAME"
+          Arrays.asList(1L, getWidth(), getHeight(), 1L),
+          Arrays.asList(1L, getStrideX(), getStrideY(), 1L),
+          getPadding()
       );
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
@@ -91,4 +113,48 @@ public class MaxPoolLayer extends TFLayerBase {
     return Arrays.asList("input");
   }
 
+  public long getStrideX() {
+    return strideX;
+  }
+
+  public MaxPoolLayer setStrideX(long strideX) {
+    this.strideX = strideX;
+    return this;
+  }
+
+  public long getStrideY() {
+    return strideY;
+  }
+
+  public MaxPoolLayer setStrideY(long strideY) {
+    this.strideY = strideY;
+    return this;
+  }
+
+  public long getWidth() {
+    return width;
+  }
+
+  public MaxPoolLayer setWidth(long width) {
+    this.width = width;
+    return this;
+  }
+
+  public long getHeight() {
+    return height;
+  }
+
+  public MaxPoolLayer setHeight(long height) {
+    this.height = height;
+    return this;
+  }
+
+  public String getPadding() {
+    return padding;
+  }
+
+  public MaxPoolLayer setPadding(String padding) {
+    this.padding = padding;
+    return this;
+  }
 }

@@ -39,6 +39,8 @@ import org.tensorflow.framework.AttrValue;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class TFConverter {
@@ -103,7 +105,7 @@ public class TFConverter {
             getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
       } else if (graphNode.getOp().equals("MaxPool")) {
         return network.add(
-            new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max),
+            getPoolingLayer(graphNode),
             getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
       } else if (graphNode.getOp().equals("Placeholder")) {
         return network.getInput(0);
@@ -111,6 +113,26 @@ public class TFConverter {
         throw new IllegalArgumentException(graphNode.getOp());
       }
     });
+  }
+
+  @NotNull
+  protected PoolingLayer getPoolingLayer(GraphModel.GraphNode graphNode) {
+    PoolingLayer poolingLayer = new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max);
+    Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
+    assert "SAME".equals(attrMap.get("padding").getS().toStringUtf8());
+    AttrValue _ksize = attrMap.get("ksize");
+    if(null != _ksize) {
+      List<Long> ksize = _ksize.getList().getIList();
+      poolingLayer.setWindowX(Math.toIntExact(ksize.get(1)));
+      poolingLayer.setWindowY(Math.toIntExact(ksize.get(2)));
+    }
+    AttrValue _strides = attrMap.get("strides");
+    if(null != _strides) {
+      List<Long> strides = _strides.getList().getIList();
+      poolingLayer.setStrideX(Math.toIntExact(strides.get(1)));
+      poolingLayer.setStrideY(Math.toIntExact(strides.get(2)));
+    }
+    return poolingLayer;
   }
 
   protected ImgBandBiasLayer getBiasAdd(GraphModel.GraphNode graphNode) {
