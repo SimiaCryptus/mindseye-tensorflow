@@ -22,37 +22,21 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.tensorflow.GraphModel;
-import com.simiacryptus.util.JsonUtil;
-import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
 
-public abstract class Conv2DLayerTest extends LayerTestBase {
-  protected final TFLayerBase layer = getLayer();
+public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
   public Conv2DLayerTest() {
     validateDifferentials = false;
     testTraining = false;
   }
 
-  @Override
-  public void run(@Nonnull NotebookOutput log) {
-    log.eval(() -> {
-      TFLayerBase tfLayer = getLayer();
-      GraphDef graphDef = tfLayer.constGraph();
-      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-      return JsonUtil.toJson(graphModel);
-    });
-    super.run(log);
-  }
-
-  protected TFLayerBase getLayer() {
+  public TFLayerBase createTFLayer() {
     Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(2).setStrideY(2);
     Tensor kernel = layer.getWeights().get("kernel");
     kernel.randomize(1.0);
@@ -64,17 +48,6 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public abstract int[][] getSmallDims(Random random);
-
-  @Override
-  public Layer getReferenceLayer() {
-    return new TFConverter().convert(layer);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
-  }
 
   public static class Small_0 extends Conv2DLayerTest {
     @Nonnull
@@ -106,7 +79,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
     }
 
     @Override
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(2).setStrideY(2);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
@@ -125,7 +98,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       };
     }
 
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 2).setStrideX(1).setStrideY(1);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
@@ -144,7 +117,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       };
     }
 
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 2, 2).setStrideX(1).setStrideY(1);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
@@ -165,12 +138,12 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
     }
 
 
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(7, 7, 3, 64).setStrideX(2).setStrideY(2);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
       return layer.asConstLayer();
-//      return layer;
+//      return tfLayer;
     }
 
     @Override
@@ -183,7 +156,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
           convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
-      }.convert(layer);
+      }.convert(getTfLayer());
     }
   }
 
@@ -207,13 +180,13 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       };
     }
 
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(3).setStrideY(3);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
 //      kernel.set(new int[]{0,0,0}, 1.0);
       return layer.asConstLayer();
-      //return layer;
+      //return tfLayer;
     }
 
     @Override
@@ -226,7 +199,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
           convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
-      }.convert(layer);
+      }.convert(getTfLayer());
     }
   }
 
@@ -266,13 +239,13 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
       };
     }
 
-    protected TFLayerBase getLayer() {
+    public TFLayerBase createTFLayer() {
       Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(4).setStrideY(4);
       Tensor kernel = layer.getWeights().get("kernel");
       kernel.randomize(1.0);
 //      kernel.set(new int[]{0,0,0}, 1.0);
       return layer.asConstLayer();
-      //return layer;
+      //return tfLayer;
     }
 
     @Override
@@ -285,7 +258,7 @@ public abstract class Conv2DLayerTest extends LayerTestBase {
           convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
-      }.convert(layer);
+      }.convert(getTfLayer());
     }
   }
 

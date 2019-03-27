@@ -28,9 +28,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class ReLuLayerTest extends LayerTestBase {
-
-  private final Layer layer = getBiasLayer();
+public class ReLuLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
@@ -40,23 +38,10 @@ public class ReLuLayerTest extends LayerTestBase {
     };
   }
 
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
-  }
-
   @NotNull
-  private ReLuLayer getBiasLayer() {
+  protected ReLuLayer createTFLayer() {
     ReLuLayer layer = new ReLuLayer();
     return layer;
   }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
-  }
-
 
 }

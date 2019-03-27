@@ -19,18 +19,15 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class LRNLayerTest extends LayerTestBase {
+public class LRNLayerTest extends RawTFLayerTestBase {
 
-  private final Layer layer = createLayer();
+  private final TFLayerBase tfLayer = createTFLayer();
 
   public LRNLayerTest() {
     validateDifferentials = false;
@@ -44,21 +41,13 @@ public class LRNLayerTest extends LayerTestBase {
     };
   }
 
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return com.simiacryptus.mindseye.layers.cudnn.LRNLayer.class;
-  }
-
   @NotNull
-  private Layer createLayer() {
-    return new LRNLayer().setRadius(2);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
+  protected TFLayerBase createTFLayer() {
+    return new LRNLayer()
+        .setRadius(5)
+        .setAlpha(1e-4f)
+        .setBias(2)
+        ;
   }
 
 

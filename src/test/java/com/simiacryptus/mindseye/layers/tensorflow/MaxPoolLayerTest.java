@@ -33,9 +33,8 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public abstract class MaxPoolLayerTest extends LayerTestBase {
+public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
 
-  private final TFLayerBase layer = getLayer();
 
   @Nonnull
   @Override
@@ -45,40 +44,10 @@ public abstract class MaxPoolLayerTest extends LayerTestBase {
     };
   }
 
-  @Override
-  public void run(@Nonnull NotebookOutput log) {
-    log.eval(() -> {
-      TFLayerBase tfLayer = getLayer();
-      GraphDef graphDef = tfLayer.constGraph();
-      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-      return JsonUtil.toJson(graphModel);
-    });
-    super.run(log);
-  }
-
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
-  }
-
-  @NotNull
-  protected abstract TFLayerBase getLayer();
-
-  @Override
-  public Layer getReferenceLayer() {
-    return new TFConverter().convert(layer);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
-  }
 
   public static class Test0 extends MaxPoolLayerTest {
     @NotNull
-    protected TFLayerBase getLayer() {
+    protected TFLayerBase createTFLayer() {
       MaxPoolLayer maxPoolLayer = new MaxPoolLayer();
       maxPoolLayer.setWidth(2);
       maxPoolLayer.setHeight(2);
@@ -91,7 +60,7 @@ public abstract class MaxPoolLayerTest extends LayerTestBase {
 
   public static class Test1 extends MaxPoolLayerTest {
     @NotNull
-    protected TFLayerBase getLayer() {
+    protected TFLayerBase createTFLayer() {
       MaxPoolLayer maxPoolLayer = new MaxPoolLayer();
       maxPoolLayer.setWidth(2);
       maxPoolLayer.setHeight(2);
@@ -104,7 +73,7 @@ public abstract class MaxPoolLayerTest extends LayerTestBase {
 
   public static class Test2 extends MaxPoolLayerTest {
     @NotNull
-    protected TFLayerBase getLayer() {
+    protected TFLayerBase createTFLayer() {
       MaxPoolLayer maxPoolLayer = new MaxPoolLayer();
       maxPoolLayer.setWidth(3);
       maxPoolLayer.setHeight(3);

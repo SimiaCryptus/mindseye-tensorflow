@@ -22,25 +22,20 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.util.TFConverter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
 
 
-public class MatMulLayerTest extends LayerTestBase {
+public class MatMulLayerTest extends RawTFLayerTestBase {
 
   private final int[] inputDim = {2, 2};
 
-  //  @Override
-//  public Tensor[] randomize(@Nonnull int[][] inputDims) {
-//    Random random = new Random();
-//    return Arrays.stream(inputDims).map(dim -> {
-//      Tensor tensor = new Tensor(dim);
-//      tensor.set(random.nextInt(tensor.length()), 1);
-//      return tensor;
-//    }).toArray(i -> new Tensor[i]);
-//  }
-  private final MatMulLayer matMulLayer = new MatMulLayer(inputDim, new int[]{2});
+  @NotNull
+  protected MatMulLayer createTFLayer() {
+    return new MatMulLayer(inputDim, new int[]{2});
+  }
 
   @Nonnull
   @Override
@@ -49,17 +44,5 @@ public class MatMulLayerTest extends LayerTestBase {
         inputDim
     };
   }
-
-  @Override
-  public Layer getReferenceLayer() {
-    return new TFConverter().getFCLayer(matMulLayer);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return matMulLayer.copy();
-  }
-
 
 }

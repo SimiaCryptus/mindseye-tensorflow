@@ -19,81 +19,22 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
-import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
-import com.simiacryptus.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
-import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
-public abstract class InceptionPipelineTest extends LayerTestBase {
-  private static final List<TFLayer> layers = getLayers();
+public abstract class InceptionPipelineTest extends TFLayerTestBase {
+  public static final List<TFLayer> layers = TFConverter.getLayers(ImageNetworkPipeline.inception5h());
 
   public InceptionPipelineTest() {
     validateDifferentials = false;
     testTraining = false;
     this.testingBatchSize = 5;
-  }
-
-  public static List<TFLayer> getLayers() {
-    final ImageNetworkPipeline inception5h = ImageNetworkPipeline.inception5h();
-    return IntStream.range(0, inception5h.graphDefs.size()).mapToObj(i -> new TFLayer(
-        inception5h.graphDefs.get(i).toByteArray(),
-        new HashMap<>(),
-        inception5h.nodeIds().get(i),
-        i == 0 ? "input" : inception5h.nodeIds().get(i - 1)
-    ).setFloat(true)).collect(Collectors.toList());
-  }
-
-  @Override
-  public void run(@Nonnull NotebookOutput log) {
-    log.eval(() -> {
-      TFLayer tfLayer = tfLayer();
-      GraphDef graphDef = tfLayer.constGraph();
-      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-      return JsonUtil.toJson(graphModel);
-    });
-    super.run(log);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    TFLayer tfLayer = tfLayer();
-    return new TFConverter().convert(tfLayer);
-  }
-
-  @Nullable
-  @Override
-  public Layer getReferenceLayer() {
-    return tfLayer();
-  }
-
-  @NotNull
-  public abstract TFLayer tfLayer();
-
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
-  }
-
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
   }
 
   public static class Layer0 extends InceptionPipelineTest {
@@ -107,9 +48,8 @@ public abstract class InceptionPipelineTest extends LayerTestBase {
     }
 
 
-    @NotNull
-    public TFLayer tfLayer() {
-      return (TFLayer) layers.get(0).copy();
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(0);
     }
 
   }
@@ -124,9 +64,8 @@ public abstract class InceptionPipelineTest extends LayerTestBase {
       };
     }
 
-    @NotNull
-    public TFLayer tfLayer() {
-      return (TFLayer) layers.get(1).copy();
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(1);
     }
 
 
@@ -142,9 +81,138 @@ public abstract class InceptionPipelineTest extends LayerTestBase {
       };
     }
 
-    @NotNull
-    public TFLayer tfLayer() {
-      return (TFLayer) layers.get(2).copy();
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(2);
+    }
+
+  }
+
+  public static class Layer3 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {40, 30, 256}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(3);
+    }
+
+  }
+
+  public static class Layer4 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {40, 30, 480}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(4);
+    }
+
+  }
+
+
+  public static class Layer5 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {20, 15, 508}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(5);
+    }
+
+  }
+
+
+  public static class Layer6 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {20, 15, 512}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(6);
+    }
+
+  }
+
+  public static class Layer7 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {20, 15, 512}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(7);
+    }
+
+  }
+
+  public static class Layer8 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {20, 15, 528}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(8);
+    }
+
+  }
+
+  public static class Layer9 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {20, 15, 832}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(9);
+    }
+
+  }
+
+  public static class Layer10 extends InceptionPipelineTest {
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{
+          {10, 8, 832}
+      };
+    }
+
+    public @NotNull TFLayerBase createTFLayer() {
+      return layers.get(10);
     }
 
   }

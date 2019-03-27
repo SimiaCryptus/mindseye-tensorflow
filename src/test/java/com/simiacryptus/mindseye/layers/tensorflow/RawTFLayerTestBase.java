@@ -20,28 +20,25 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.ImgBandBiasLayer;
-import org.jetbrains.annotations.NotNull;
+import com.simiacryptus.mindseye.util.TFConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+public abstract class RawTFLayerTestBase extends TFLayerTestBase {
 
-public class BiasAddLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 3}
-    };
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    return getTfLayer();
   }
 
-  public @NotNull TFLayerBase createTFLayer() {
-    BiasAddLayer biasLayer = new BiasAddLayer(3);
-    biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
-    return biasLayer;
+  @Nullable
+  @Override
+  public Layer getReferenceLayer() {
+    return new TFConverter().convert(getTfLayer());
   }
 
 }

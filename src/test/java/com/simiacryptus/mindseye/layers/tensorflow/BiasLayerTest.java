@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -28,9 +27,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class BiasLayerTest extends LayerTestBase {
-
-  private final Layer layer = getBiasLayer();
+public class BiasLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
@@ -40,23 +37,11 @@ public class BiasLayerTest extends LayerTestBase {
     };
   }
 
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return com.simiacryptus.mindseye.layers.java.BiasLayer.class;
-  }
-
   @NotNull
-  private BiasLayer getBiasLayer() {
+  public BiasLayer createTFLayer() {
     BiasLayer biasLayer = new BiasLayer(3, 3);
     biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
     return biasLayer;
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
   }
 
 

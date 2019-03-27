@@ -21,15 +21,19 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class SoftmaxLayerTest extends LayerTestBase {
+public class SoftmaxLayerTest extends RawTFLayerTestBase {
 
-  private final Layer layer = new SoftmaxLayer();
+  @NotNull
+  protected SoftmaxLayer createTFLayer() {
+    return new SoftmaxLayer();
+  }
 
   @Nonnull
   @Override
@@ -38,18 +42,5 @@ public class SoftmaxLayerTest extends LayerTestBase {
         {5}
     };
   }
-
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return com.simiacryptus.mindseye.layers.java.SoftmaxLayer.class;
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return layer.copy();
-  }
-
 
 }

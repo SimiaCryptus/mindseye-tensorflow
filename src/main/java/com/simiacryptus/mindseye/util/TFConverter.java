@@ -20,30 +20,45 @@
 package com.simiacryptus.mindseye.util;
 
 import com.google.common.collect.Streams;
+import com.simiacryptus.lang.ref.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.mindseye.layers.cudnn.ActivationLayer;
-import com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer;
-import com.simiacryptus.mindseye.layers.cudnn.LRNLayer;
-import com.simiacryptus.mindseye.layers.cudnn.PoolingLayer;
+import com.simiacryptus.mindseye.layers.cudnn.*;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.MatMulLayer;
+import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayerBase;
 import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.tensorflow.GraphModel;
+import com.simiacryptus.tensorflow.ImageNetworkPipeline;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.AttrValue;
+import org.tensorflow.framework.GraphDef;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TFConverter {
+
+  public static List<TFLayer> getLayers(ImageNetworkPipeline pipeline) {
+    return IntStream.range(0, pipeline.graphDefs.size()).mapToObj(i -> getLayer(pipeline, i)).collect(Collectors.toList());
+  }
+
+  @NotNull
+  public static TFLayer getLayer(ImageNetworkPipeline pipeline, int i) {
+    GraphDef graphDef = pipeline.graphDefs.get(i);
+    String output = pipeline.nodeIds().get(i);
+    String input = i == 0 ? "input" : pipeline.nodeIds().get(i - 1);
+    return new TFLayer(graphDef.toByteArray(), new HashMap<>(), output, input).setFloat(true);
+  }
 
   @NotNull
   public FullyConnectedLayer getFCLayer(MatMulLayer matMulLayer) {
@@ -74,45 +89,74 @@ public class TFConverter {
   @NotNull
   public DAGNetwork convert(TFLayerBase tfLayer) {
     final PipelineNetwork converted = new PipelineNetwork(1);
+    ConcurrentHashMap<String, DAGNode> nodes = new ConcurrentHashMap<>();
     getNode(
         tfLayer.getOutputNode(),
         converted,
         new GraphModel(tfLayer.constGraph().toByteArray()),
-        new HashMap<>()
-    );
+        nodes
+    ).freeRef();
+    nodes.values().forEach(ReferenceCounting::freeRef);
     return converted;
   }
 
-  protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel, HashMap<String, DAGNode> map) {
-    GraphModel.GraphNode graphNode = tfModel.getChild(id);
-    assert null != graphNode;
-    return map.computeIfAbsent(id, uuid -> {
-      if (graphNode.getOp().equals("Conv2D")) {
-        return network.add(
-            getConv2D(graphNode),
-            getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
-      } else if (graphNode.getOp().equals("BiasAdd")) {
-        return network.add(
-            getBiasAdd(graphNode),
-            getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
-      } else if (graphNode.getOp().equals("Relu")) {
-        return network.add(
-            new ActivationLayer(ActivationLayer.Mode.RELU),
-            getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
-      } else if (graphNode.getOp().equals("LRN")) {
-        return network.add(
-            new LRNLayer(3),
-            getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
-      } else if (graphNode.getOp().equals("MaxPool")) {
-        return network.add(
-            getPoolingLayer(graphNode),
-            getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
-      } else if (graphNode.getOp().equals("Placeholder")) {
-        return network.getInput(0);
-      } else {
-        throw new IllegalArgumentException(graphNode.getOp());
+  protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel, ConcurrentHashMap<String, DAGNode> map) {
+    try {
+      if(!map.containsKey(id)) {
+        DAGNode result;
+        GraphModel.GraphNode graphNode = tfModel.getChild(id);
+        assert null != graphNode;
+        if (graphNode.getOp().equals("Conv2D")) {
+          result = network.wrap(
+              getConv2D(graphNode),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+        } else if (graphNode.getOp().equals("BiasAdd")) {
+          result = network.wrap(
+              getBiasAdd(graphNode),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+        } else if (graphNode.getOp().equals("Relu")) {
+          result = network.wrap(
+              new ActivationLayer(ActivationLayer.Mode.RELU),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+        } else if (graphNode.getOp().equals("LRN")) {
+          result = network.wrap(
+              getLRNLayer(graphNode),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+        } else if (graphNode.getOp().equals("MaxPool")) {
+          result = network.wrap(
+              getPoolingLayer(graphNode),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+        } else if (graphNode.getOp().equals("Concat")) {
+          List<String> inputKeys = graphNode.getInputKeys();
+          result = network.wrap(
+              new ImgConcatLayer(),
+              inputKeys.stream().skip(1).map(inputKey -> getNode(inputKey, network, tfModel, map)).toArray(i -> new DAGNode[i]));
+        } else if (graphNode.getOp().equals("Placeholder")) {
+          result = network.getInput(0);
+        } else {
+          throw new IllegalArgumentException(graphNode.getOp());
+        }
+        if(map.containsKey(id)) {
+          result.freeRef();
+        } else {
+          map.put(id, result);
+        }
       }
-    });
+      return map.get(id).addRef();
+    } catch (Throwable e) {
+      throw new RuntimeException("Error converting " + id,e);
+    }
+  }
+
+  @NotNull
+  private LRNLayer getLRNLayer(GraphModel.GraphNode graphNode) {
+    Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
+    long depth_radius = attrMap.get("depth_radius").getI();
+    float alpha = attrMap.get("alpha").getF();
+    float bias = attrMap.get("bias").getF();
+    float beta = attrMap.get("beta").getF();
+    long width = depth_radius * 2 + 1;
+    return new LRNLayer((int) width).setAlpha(alpha*width).setBeta(beta).setK(bias);
   }
 
   @NotNull
@@ -139,8 +183,10 @@ public class TFConverter {
     GraphModel.GraphNode dataNode = graphNode.getInputs().get(1);
     assert dataNode.getOp().equals("Const");
     double[] data = dataNode.getData();
-    //Doubles.reverse(data);
-    return new ImgBandBiasLayer(data.length).set(new Tensor(data, new int[]{data.length}));
+    Tensor tensor = new Tensor(data, new int[]{data.length});
+    ImgBandBiasLayer imgBandBiasLayer = new ImgBandBiasLayer(data.length).set(tensor);
+    tensor.freeRef();
+    return imgBandBiasLayer;
   }
 
   protected Layer getConv2D(GraphModel.GraphNode graphNode) {
@@ -163,7 +209,6 @@ public class TFConverter {
         sourceKernelDimensions[2],
         sourceKernelDimensions[3]
     );
-//    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceDims[0], sourceDims[1], sourceDims[2], sourceDims[3]);
     sourceKernel.coordStream(false).forEach(c -> {
       int[] coord = c.getCoords();
       targetKernel.set(
@@ -187,10 +232,10 @@ public class TFConverter {
         convolutionLayer.setStrideY(strideY);
         return convolutionLayer;
       } else {
-        return convolutionLayer.explode();
+        return convolutionLayer;
       }
     } else {
-      return convolutionLayer.explode();
+      return convolutionLayer;
     }
   }
 

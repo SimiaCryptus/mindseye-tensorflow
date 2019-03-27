@@ -44,7 +44,7 @@ public class LRNLayer extends TFLayerBase {
   public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     setRadius((json.get("width").getAsInt() - 1) / 2);
-    setAlpha((float) (json.get("alpha").getAsDouble() / getF1()));
+    setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1))));
     setBeta((float) json.get("beta").getAsDouble());
     setBias((float) json.get("k").getAsDouble());
   }
@@ -66,15 +66,12 @@ public class LRNLayer extends TFLayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
-    json.addProperty("width", getRadius() * 2 + 1);
-    json.addProperty("alpha", getAlpha() * getF1());
+    long width = getRadius() * 2 + 1;
+    json.addProperty("width", width);
+    json.addProperty("alpha", getAlpha() * ((double) width));
     json.addProperty("beta", getBeta());
     json.addProperty("k", getBias());
     return json;
-  }
-
-  public double getF1() {
-    return getRadius() * 2 + 1;
   }
 
   @Override
