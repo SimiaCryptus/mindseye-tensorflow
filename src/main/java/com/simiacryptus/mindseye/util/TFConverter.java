@@ -24,6 +24,7 @@ import com.simiacryptus.lang.ref.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.*;
+import com.simiacryptus.mindseye.layers.cudnn.conv.ConvolutionLayer;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.MatMulLayer;
@@ -202,7 +203,7 @@ public class TFConverter {
         kernelDims[0]
     }).invertDimensionsAndFree();
     int[] sourceKernelDimensions = sourceKernel.getDimensions();
-    SimpleConvolutionLayer convolutionLayer = new SimpleConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
+    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
     Tensor targetKernel = new Tensor(
         sourceKernelDimensions[0],
         sourceKernelDimensions[1],
@@ -230,12 +231,12 @@ public class TFConverter {
       if (strideX > 1 || strideY > 1) {
         convolutionLayer.setStrideX(strideX);
         convolutionLayer.setStrideY(strideY);
-        return convolutionLayer;
+        return convolutionLayer.explode();
       } else {
-        return convolutionLayer;
+        return convolutionLayer.explode();
       }
     } else {
-      return convolutionLayer;
+      return convolutionLayer.explode();
     }
   }
 
