@@ -19,11 +19,9 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.Layer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 
 

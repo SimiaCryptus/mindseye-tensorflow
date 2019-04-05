@@ -36,6 +36,8 @@ import java.util.Random;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
+  private volatile @NotNull TFLayerBase tfLayer = null;
+
   @Override
   public void run(@Nonnull NotebookOutput log) {
     log.eval(() -> {
@@ -73,11 +75,10 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return new MeanSqLossLayer();
   }
 
-  private volatile @NotNull TFLayerBase tfLayer = null;
   public TFLayerBase getTfLayer() {
-    if(null == tfLayer) {
+    if (null == tfLayer) {
       synchronized (this) {
-        if(null == tfLayer) {
+        if (null == tfLayer) {
           tfLayer = createTFLayer();
         }
       }

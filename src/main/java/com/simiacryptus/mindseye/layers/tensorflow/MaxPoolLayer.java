@@ -51,17 +51,6 @@ public class MaxPoolLayer extends TFLayerBase {
     padding = json.getAsJsonPrimitive("padding").getAsString();
   }
 
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    JsonObject json = super.getJson(resources, dataSerializer);
-    json.addProperty("strideX",strideX);
-    json.addProperty("strideY",strideY);
-    json.addProperty("width",width);
-    json.addProperty("height",height);
-    json.addProperty("padding",padding);
-    return json;
-  }
-
   private static Map<String, Tensor> defaultStates() {
     HashMap<String, Tensor> map = new HashMap<>();
     return map;
@@ -70,6 +59,17 @@ public class MaxPoolLayer extends TFLayerBase {
   @Nonnull
   public static MaxPoolLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxPoolLayer(json, rs);
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.addProperty("strideX", strideX);
+    json.addProperty("strideY", strideY);
+    json.addProperty("width", width);
+    json.addProperty("height", height);
+    json.addProperty("padding", padding);
+    return json;
   }
 
   public boolean isSingleBatch() {

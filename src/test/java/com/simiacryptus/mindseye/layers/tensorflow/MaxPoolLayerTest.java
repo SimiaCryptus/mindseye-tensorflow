@@ -19,17 +19,9 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
-import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.tensorflow.GraphModel;
-import com.simiacryptus.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
-import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 
 

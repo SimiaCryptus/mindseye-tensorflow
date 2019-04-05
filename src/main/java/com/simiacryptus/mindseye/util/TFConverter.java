@@ -24,7 +24,6 @@ import com.simiacryptus.lang.ref.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.*;
-import com.simiacryptus.mindseye.layers.cudnn.conv.ConvolutionLayer;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.MatMulLayer;
@@ -103,7 +102,7 @@ public class TFConverter {
 
   protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel, ConcurrentHashMap<String, DAGNode> map) {
     try {
-      if(!map.containsKey(id)) {
+      if (!map.containsKey(id)) {
         DAGNode result;
         GraphModel.GraphNode graphNode = tfModel.getChild(id);
         assert null != graphNode;
@@ -137,7 +136,7 @@ public class TFConverter {
         } else {
           throw new IllegalArgumentException(graphNode.getOp());
         }
-        if(map.containsKey(id)) {
+        if (map.containsKey(id)) {
           result.freeRef();
         } else {
           map.put(id, result);
@@ -145,7 +144,7 @@ public class TFConverter {
       }
       return map.get(id).addRef();
     } catch (Throwable e) {
-      throw new RuntimeException("Error converting " + id,e);
+      throw new RuntimeException("Error converting " + id, e);
     }
   }
 
@@ -157,7 +156,7 @@ public class TFConverter {
     float bias = attrMap.get("bias").getF();
     float beta = attrMap.get("beta").getF();
     long width = depth_radius * 2 + 1;
-    return new LRNLayer((int) width).setAlpha(alpha*width).setBeta(beta).setK(bias);
+    return new LRNLayer((int) width).setAlpha(alpha * width).setBeta(beta).setK(bias);
   }
 
   @NotNull
@@ -166,13 +165,13 @@ public class TFConverter {
     Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
     assert "SAME".equals(attrMap.get("padding").getS().toStringUtf8());
     AttrValue _ksize = attrMap.get("ksize");
-    if(null != _ksize) {
+    if (null != _ksize) {
       List<Long> ksize = _ksize.getList().getIList();
       poolingLayer.setWindowX(Math.toIntExact(ksize.get(1)));
       poolingLayer.setWindowY(Math.toIntExact(ksize.get(2)));
     }
     AttrValue _strides = attrMap.get("strides");
-    if(null != _strides) {
+    if (null != _strides) {
       List<Long> strides = _strides.getList().getIList();
       poolingLayer.setStrideX(Math.toIntExact(strides.get(1)));
       poolingLayer.setStrideY(Math.toIntExact(strides.get(2)));
@@ -203,7 +202,8 @@ public class TFConverter {
         kernelDims[0]
     }).invertDimensionsAndFree();
     int[] sourceKernelDimensions = sourceKernel.getDimensions();
-    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
+//    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
+    SimpleConvolutionLayer convolutionLayer = new SimpleConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
     Tensor targetKernel = new Tensor(
         sourceKernelDimensions[0],
         sourceKernelDimensions[1],
@@ -231,12 +231,15 @@ public class TFConverter {
       if (strideX > 1 || strideY > 1) {
         convolutionLayer.setStrideX(strideX);
         convolutionLayer.setStrideY(strideY);
-        return convolutionLayer.explode();
+        //return convolutionLayer.explodeAndFree();
+        return convolutionLayer;
       } else {
-        return convolutionLayer.explode();
+        //return convolutionLayer.explodeAndFree();
+        return convolutionLayer;
       }
     } else {
-      return convolutionLayer.explode();
+      //return convolutionLayer.explodeAndFree();
+      return convolutionLayer;
     }
   }
 

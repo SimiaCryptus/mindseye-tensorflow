@@ -19,9 +19,6 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
-import com.simiacryptus.mindseye.util.TFConverter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
