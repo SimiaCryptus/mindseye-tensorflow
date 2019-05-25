@@ -71,10 +71,30 @@ public class TFIO {
                   .toArray(s -> new float[s][]))
               .toArray(s -> new float[s][][]))
           .toArray(s -> new float[s][][][]);
-    } else {
+    } else if (shape.length == 5) {
       return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> createFloatArray(Arrays.stream(shape).skip(1).toArray()))
-          .toArray(s -> new Object[s]);
+          .mapToObj(i -> IntStream.range(0, (int) shape[1])
+              .mapToObj(j -> IntStream.range(0, (int) shape[2])
+                  .mapToObj(k -> IntStream.range(0, (int) shape[3])
+                      .mapToObj(l -> new float[(int) shape[4]])
+                      .toArray(s -> new float[s][]))
+                  .toArray(s -> new float[s][][]))
+              .toArray(s -> new float[s][][][]))
+          .toArray(s -> new float[s][][][][]);
+    } else if (shape.length == 6) {
+      return IntStream.range(0, (int) shape[0])
+          .mapToObj(i -> IntStream.range(0, (int) shape[1])
+              .mapToObj(j -> IntStream.range(0, (int) shape[2])
+                  .mapToObj(k -> IntStream.range(0, (int) shape[3])
+                      .mapToObj(l -> IntStream.range(0, (int) shape[4])
+                          .mapToObj(m -> new float[(int) shape[5]])
+                          .toArray(s -> new float[s][]))
+                      .toArray(s -> new float[s][][]))
+                  .toArray(s -> new float[s][][][]))
+              .toArray(s -> new float[s][][][][]))
+          .toArray(s -> new float[s][][][][][]);
+    } else {
+      throw new RuntimeException("Rank " + shape.length);
     }
   }
 
@@ -100,9 +120,7 @@ public class TFIO {
               .toArray(s -> new double[s][][]))
           .toArray(s -> new double[s][][][]);
     } else {
-      return IntStream.range(0, (int) shape[0])
-          .mapToObj(i -> createDoubleArray(Arrays.stream(shape).skip(1).toArray()))
-          .toArray(s -> new Object[s]);
+      throw new RuntimeException("Rank " + shape.length);
     }
   }
 
@@ -167,6 +185,7 @@ public class TFIO {
   }
 
   private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, long[] shape, boolean invertRanks) {
+    if(0==tensor.numElements()) return new Tensor(Arrays.stream(shape).mapToInt(x-> (int) x).toArray());
     float[] doubles = getFloats(tensor);
     int[] dims = Arrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
@@ -229,6 +248,7 @@ public class TFIO {
   }
 
   private static float[] getFloats(org.tensorflow.Tensor<Float> result) {
+    if(0==result.numElements()) return new float[]{};
     Object deepArray = result.copyTo(createFloatArray(result.shape()));
     double[] doubles = flattenFloats(deepArray).mapToDouble(x -> x).toArray();
     free(deepArray);

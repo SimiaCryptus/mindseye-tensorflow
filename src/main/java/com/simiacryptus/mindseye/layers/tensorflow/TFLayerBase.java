@@ -76,7 +76,7 @@ public abstract class TFLayerBase extends LayerBase {
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = getJsonStub();
     for (Map.Entry<String, Tensor> entry : getWeights().entrySet()) {
-      json.add(entry.getKey(), entry.getValue().toJson(resources, dataSerializer));
+      json.add(entry.getKey(), entry.getValue().getJson(resources, dataSerializer));
     }
     return json;
   }
