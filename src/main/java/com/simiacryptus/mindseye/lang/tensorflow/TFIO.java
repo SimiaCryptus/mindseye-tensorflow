@@ -185,7 +185,7 @@ public class TFIO {
   }
 
   private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, long[] shape, boolean invertRanks) {
-    if(0==tensor.numElements()) return new Tensor(Arrays.stream(shape).mapToInt(x-> (int) x).toArray());
+    if (0 == tensor.numElements()) return new Tensor(Arrays.stream(shape).mapToInt(x -> (int) x).toArray());
     float[] doubles = getFloats(tensor);
     int[] dims = Arrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
@@ -248,7 +248,7 @@ public class TFIO {
   }
 
   private static float[] getFloats(org.tensorflow.Tensor<Float> result) {
-    if(0==result.numElements()) return new float[]{};
+    if (0 == result.numElements()) return new float[]{};
     Object deepArray = result.copyTo(createFloatArray(result.shape()));
     double[] doubles = flattenFloats(deepArray).mapToDouble(x -> x).toArray();
     free(deepArray);
