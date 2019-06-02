@@ -183,7 +183,7 @@ public class TFConverter {
     GraphModel.GraphNode dataNode = graphNode.getInputs().get(1);
     assert dataNode.getOp().equals("Const");
     double[] data = dataNode.getData();
-    Tensor tensor = new Tensor(data, new int[]{data.length});
+    Tensor tensor = new Tensor(data, data.length);
     ImgBandBiasLayer imgBandBiasLayer = new ImgBandBiasLayer(data.length).set(tensor);
     tensor.freeRef();
     return imgBandBiasLayer;
@@ -195,12 +195,10 @@ public class TFConverter {
     int[] kernelDims = Arrays.stream(dataNode.getShape()).mapToInt(x -> (int) x).toArray();
     double[] data = dataNode.getData();
     if (kernelDims.length == 0) kernelDims = new int[]{data.length};
-    Tensor sourceKernel = new Tensor(data, new int[]{
-        kernelDims[3],
+    Tensor sourceKernel = new Tensor(data, kernelDims[3],
         kernelDims[2],
         kernelDims[1],
-        kernelDims[0]
-    }).invertDimensionsAndFree();
+        kernelDims[0]).invertDimensionsAndFree();
     int[] sourceKernelDimensions = sourceKernel.getDimensions();
 //    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
     SimpleConvolutionLayer convolutionLayer = new SimpleConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
