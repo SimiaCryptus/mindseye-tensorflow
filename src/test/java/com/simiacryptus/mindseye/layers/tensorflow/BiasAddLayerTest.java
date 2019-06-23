@@ -35,7 +35,8 @@ public class BiasAddLayerTest extends RawTFLayerTestBase {
     };
   }
 
-  public @NotNull TFLayerBase createTFLayer() {
+  public @NotNull
+  TFLayerBase createTFLayer() {
     BiasAddLayer biasLayer = new BiasAddLayer(3);
     biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
     return biasLayer;

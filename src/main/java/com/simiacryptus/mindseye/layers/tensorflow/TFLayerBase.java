@@ -66,7 +66,8 @@ public abstract class TFLayerBase extends LayerBase {
     return new TFLayer(constGraph().toByteArray(), new HashMap<>(), getOutputNode(), getInputNodes().toArray(new String[]{}));
   }
 
-  public @NotNull GraphDef constGraph() {
+  public @NotNull
+  GraphDef constGraph() {
     return TFUtil.implantConstants(getGraphDef(), getWeights());
   }
 
@@ -96,7 +97,8 @@ public abstract class TFLayerBase extends LayerBase {
     return result;
   }
 
-  @NotNull Result evalAndFree(TFSession tfsession, Result... inputs) {
+  @NotNull
+  Result evalAndFree(TFSession tfsession, Result... inputs) {
     tfsession.addRef();
     List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
     Session.Runner runner = tfsession.session.runner();
@@ -238,7 +240,8 @@ public abstract class TFLayerBase extends LayerBase {
     return true;
   }
 
-  public @NotNull GraphDef getConstGraph(GraphDef graphDef) {
+  public @NotNull
+  GraphDef getConstGraph(GraphDef graphDef) {
     return TFUtil.implantConstants(graphDef, getWeights());
   }
 

@@ -36,7 +36,8 @@ import java.util.Random;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
-  private volatile @NotNull TFLayerBase tfLayer = null;
+  private volatile @NotNull
+  TFLayerBase tfLayer = null;
 
   @Override
   public void run(@Nonnull NotebookOutput log) {
@@ -68,7 +69,8 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return getTfLayer();
   }
 
-  protected abstract @NotNull TFLayerBase createTFLayer();
+  protected abstract @NotNull
+  TFLayerBase createTFLayer();
 
   @Override
   protected Layer lossLayer() {

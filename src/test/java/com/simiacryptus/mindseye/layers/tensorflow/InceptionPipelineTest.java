@@ -48,7 +48,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     }
 
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(0);
     }
 
@@ -64,7 +65,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(1);
     }
 
@@ -81,7 +83,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(2);
     }
 
@@ -97,7 +100,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(3);
     }
 
@@ -113,7 +117,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(4);
     }
 
@@ -130,7 +135,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(5);
     }
 
@@ -147,7 +153,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(6);
     }
 
@@ -163,7 +170,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(7);
     }
 
@@ -179,7 +187,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(8);
     }
 
@@ -195,7 +204,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(9);
     }
 
@@ -211,7 +221,8 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       };
     }
 
-    public @NotNull TFLayerBase createTFLayer() {
+    public @NotNull
+    TFLayerBase createTFLayer() {
       return layers.get(10);
     }
 
