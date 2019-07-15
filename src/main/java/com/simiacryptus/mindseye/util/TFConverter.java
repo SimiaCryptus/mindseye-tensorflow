@@ -29,7 +29,6 @@ import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.MatMulLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayerBase;
-import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.network.DAGNode;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.tensorflow.GraphModel;
@@ -87,7 +86,7 @@ public class TFConverter {
   }
 
   @NotNull
-  public DAGNetwork convert(TFLayerBase tfLayer) {
+  public PipelineNetwork convert(TFLayerBase tfLayer) {
     final PipelineNetwork converted = new PipelineNetwork(1);
     ConcurrentHashMap<String, DAGNode> nodes = new ConcurrentHashMap<>();
     getNode(
