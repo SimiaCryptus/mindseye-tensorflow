@@ -20,7 +20,7 @@
 package com.simiacryptus.mindseye.lang.tensorflow;
 
 import com.google.common.primitives.Floats;
-import com.simiacryptus.lang.ref.RecycleBin;
+import com.simiacryptus.ref.lang.RecycleBin;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;

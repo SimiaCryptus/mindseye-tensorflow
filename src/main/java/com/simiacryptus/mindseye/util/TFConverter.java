@@ -20,7 +20,7 @@
 package com.simiacryptus.mindseye.util;
 
 import com.google.common.collect.Streams;
-import com.simiacryptus.lang.ref.ReferenceCounting;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.*;
