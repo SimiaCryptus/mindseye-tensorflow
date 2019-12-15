@@ -1,8 +1,7 @@
-*.iml
-target/
-../.gitignore
 ../.gitignore
 *.gz
+*.iml
 reports/
+target/
 tensorboard/
 *.zip
