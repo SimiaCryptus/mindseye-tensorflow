@@ -1,5 +1,6 @@
 ../.gitignore
 *.gz
+.idea/
 *.iml
 reports/
 target/
