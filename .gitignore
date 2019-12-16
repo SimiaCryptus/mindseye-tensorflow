@@ -2,6 +2,7 @@
 *.gz
 .idea/
 *.iml
+mindseye-tensorflow.iml
 reports/
 target/
 tensorboard/
