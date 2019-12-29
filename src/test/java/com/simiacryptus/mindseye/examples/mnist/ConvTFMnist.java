@@ -43,7 +43,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
-
 public class ConvTFMnist {
 
   public static final String input = "image";
@@ -54,39 +53,39 @@ public class ConvTFMnist {
   public static final String bias2 = "bias2";
   public static final String bias3 = "bias3";
   public static final String output = "softmax";
-  public static String statOutput = "output/summary";
+  public static final String statOutput = "output/summary";
 
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
-  public static Layer network(NotebookOutput log) {
-    return log.eval(() -> {
-      byte[] bytes;
-      try {
-        bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
-      } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
-      }
-      return stochasticClassificationLayer(
-          new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput),
-          Math.pow(0.5, 1.0),
-          5,
-          0.001);
+  private static byte[] getGraphDef() {
+    return TensorflowUtil.makeGraph(ops -> {
+      int bands1 = 32;
+      Operand<Double> conv1 = ops.add(
+          ops.withName(bias1).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands1))),
+          ops.relu(ops.maxPool(
+              ops.withName("conv2d_0").conv2D(
+                  ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
+                  ops.withName(ConvTFMnist.conv1).placeholder(Double.class,
+                      Placeholder.shape(Shape.make(5, 5, 1, bands1))),
+                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
+      int bands2 = 64;
+      Operand<Double> conv2 = ops.add(
+          ops.withName(bias2).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands2))),
+          ops.relu(ops.maxPool(
+              ops.withName("conv2d_1").conv2D(conv1,
+                  ops.withName(ConvTFMnist.conv2).placeholder(Double.class,
+                      Placeholder.shape(Shape.make(5, 5, bands1, bands2))),
+                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
+      Operand<Double> fc1 = ops.add(
+          ops.withName(bias3).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1024))),
+          ops.relu(ops.transpose(
+              ops.matMul(
+                  ops.withName(ConvTFMnist.fc1).placeholder(Double.class,
+                      Placeholder.shape(Shape.make(1024, 7 * 7 * bands2))),
+                  ops.reshape(conv2, ops.constant(new long[]{-1, 7 * 7 * bands2})), MatMul.transposeB(true)),
+              ops.constant(new int[]{1, 0}))));
+      ops.withName(output).reshape(fc1, ops.constant(new long[]{-1, 1024}));
     });
-  }
-
-  @NotNull
-  public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
-    PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
-    stochasticTerminal.wrap(BinaryNoiseLayer.maskLayer(density)).freeRef();
-    stochasticTerminal.wrap(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).randomize(initialWeight)).freeRef();
-    stochasticTerminal.wrap(new BiasLayer(10)).freeRef();
-    stochasticTerminal.wrap(new SoftmaxLayer()).freeRef();
-    PipelineNetwork pipeline = new PipelineNetwork(1);
-    pipeline.wrap(inner);
-    pipeline.wrap(StochasticSamplingSubnetLayer.wrap(stochasticTerminal, samples)).freeRef();
-    return pipeline;
   }
 
   @NotNull
@@ -101,87 +100,51 @@ public class ConvTFMnist {
     return variables;
   }
 
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
+  public static Layer network(NotebookOutput log) {
+    return log.eval(() -> {
+      byte[] bytes;
+      try {
+        bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
+      } catch (InvalidProtocolBufferException e) {
+        throw new RuntimeException(e);
+      }
+      return stochasticClassificationLayer(new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput),
+          Math.pow(0.5, 1.0), 5, 0.001);
+    });
+  }
+
+  @NotNull
+  public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
+    PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
+    stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density));
+    stochasticTerminal.add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).randomize(initialWeight));
+    stochasticTerminal.add(new BiasLayer(10));
+    stochasticTerminal.add(new SoftmaxLayer());
+    PipelineNetwork pipeline = new PipelineNetwork(1);
+    pipeline.add(inner);
+    pipeline.add(new StochasticSamplingSubnetLayer(stochasticTerminal, samples));
+    return pipeline;
+  }
+
   private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput) return graphDef;
+    if (null == statOutput)
+      return graphDef;
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!Arrays.asList(
-          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D"
-      ).contains(op)) return null;
-      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
-//      if (node.getName().equalsIgnoreCase(input)) {
-//        nodeInstrumentation.setImage(28, 28, 1);
-//      }
-      return nodeInstrumentation;
+      if (!Arrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D").contains(op))
+        return null;
+      //      if (node.getName().equalsIgnoreCase(input)) {
+      //        nodeInstrumentation.setImage(28, 28, 1);
+      //      }
+      return new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
     });
     TensorflowUtil.validate(graphDef);
     return newDef;
-  }
-
-  private static byte[] getGraphDef() {
-    return TensorflowUtil.makeGraph(ops -> {
-      int bands1 = 32;
-      Operand<Double> conv1 = ops.add(
-          ops.withName(bias1).placeholder(
-              Double.class,
-              Placeholder.shape(Shape.make(1, 1, 1, bands1))
-          ),
-          ops.relu(ops.maxPool(ops.withName("conv2d_0").conv2D(
-              ops.withName(input).placeholder(
-                  Double.class,
-                  Placeholder.shape(Shape.make(-1, 28, 28, 1))
-              ),
-              ops.withName(ConvTFMnist.conv1).placeholder(
-                  Double.class,
-                  Placeholder.shape(Shape.make(5, 5, 1, bands1))
-              ),
-              Arrays.asList(1L, 1L, 1L, 1L),
-              "SAME"
-              ),
-              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME"))
-      );
-      int bands2 = 64;
-      Operand<Double> conv2 = ops.add(
-          ops.withName(bias2).placeholder(
-              Double.class,
-              Placeholder.shape(Shape.make(1, 1, 1, bands2))
-          ),
-          ops.relu(ops.maxPool(ops.withName("conv2d_1").conv2D(
-              conv1,
-              ops.withName(ConvTFMnist.conv2).placeholder(
-                  Double.class,
-                  Placeholder.shape(Shape.make(5, 5, bands1, bands2))
-              ),
-              Arrays.asList(1L, 1L, 1L, 1L),
-              "SAME"
-          ), Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME"))
-      );
-      Operand<Double> fc1 = ops.add(
-          ops.withName(bias3).placeholder(
-              Double.class,
-              Placeholder.shape(Shape.make(1, 1024))
-          ),
-          ops.relu(ops.transpose(
-              ops.matMul(
-                  ops.withName(ConvTFMnist.fc1).placeholder(
-                      Double.class,
-                      Placeholder.shape(Shape.make(1024, 7 * 7 * bands2))
-                  ),
-                  ops.reshape(
-                      conv2,
-                      ops.constant(new long[]{-1, 7 * 7 * bands2})
-                  ),
-                  MatMul.transposeB(true)
-              ),
-              ops.constant(new int[]{1, 0})
-          ))
-      );
-      ops.withName(output).reshape(
-          fc1,
-          ops.constant(new long[]{-1, 1024})
-      );
-    });
   }
 
   public static class MnistDemo extends MnistDemoBase {
@@ -193,8 +156,8 @@ public class ConvTFMnist {
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
       timeout = 15 * 60;
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      log.p("This is a very simple model that performs basic logistic regression. "
+          + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
 
@@ -202,18 +165,16 @@ public class ConvTFMnist {
 
   public static class LayerTest extends LayerTestBase {
 
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull

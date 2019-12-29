@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
-import com.simiacryptus.mindseye.network.DAGNetwork;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.tensorflow.GraphModel;
@@ -36,45 +35,12 @@ import java.util.Random;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
-  private volatile @NotNull
-  TFLayerBase tfLayer = null;
-
-  @Override
-  public void run(@Nonnull NotebookOutput log) {
-    log.eval(() -> {
-      TFLayerBase tfLayer = getTfLayer();
-      GraphDef graphDef = tfLayer.constGraph();
-      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-      try {
-        return JsonUtil.toJson(graphModel);
-      } finally {
-        tfLayer.freeRef();
-      }
-    });
-    super.run(log);
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    TFLayerBase tfLayer = getTfLayer();
-    DAGNetwork convert = new TFConverter().convert(tfLayer);
-    tfLayer.freeRef();
-    return convert;
-  }
+  private volatile @NotNull TFLayerBase tfLayer = null;
 
   @Nullable
   @Override
   public Layer getReferenceLayer() {
     return getTfLayer();
-  }
-
-  protected abstract @NotNull
-  TFLayerBase createTFLayer();
-
-  @Override
-  protected Layer lossLayer() {
-    return new MeanSqLossLayer();
   }
 
   public TFLayerBase getTfLayer() {
@@ -86,5 +52,30 @@ public abstract class TFLayerTestBase extends LayerTestBase {
       }
     }
     return (TFLayerBase) tfLayer.copy();
+  }
+
+  @Override
+  public void run(@NotNull @Nonnull NotebookOutput log) {
+    log.eval(() -> {
+      TFLayerBase tfLayer = getTfLayer();
+      GraphDef graphDef = tfLayer.constGraph();
+      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
+      return JsonUtil.toJson(graphModel);
+    });
+    super.run(log);
+  }
+
+  @Nonnull
+  @Override
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    TFLayerBase tfLayer = getTfLayer();
+    return new TFConverter().convert(tfLayer);
+  }
+
+  protected abstract @NotNull TFLayerBase createTFLayer();
+
+  @Override
+  protected Layer lossLayer() {
+    return new MeanSqLossLayer();
   }
 }

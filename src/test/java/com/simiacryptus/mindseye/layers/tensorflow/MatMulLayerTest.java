@@ -29,17 +29,17 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
 
   private final int[] inputDim = {2, 2};
 
-  @NotNull
-  protected MatMulLayer createTFLayer() {
-    return new MatMulLayer(inputDim, new int[]{2});
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
         inputDim
     };
+  }
+
+  @NotNull
+  protected MatMulLayer createTFLayer() {
+    return new MatMulLayer(inputDim, new int[]{2});
   }
 
 }

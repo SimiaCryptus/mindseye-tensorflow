@@ -58,7 +58,51 @@ public class TFLayer extends TFLayerBase {
     setSummaryOut(json.get("summaryOut").getAsString());
   }
 
+  @Override
+  public GraphDef getGraphDef() {
+    try {
+      return GraphDef.parseFrom(this.graphDef);
+    } catch (InvalidProtocolBufferException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public List<String> getInputNodes() {
+    return inputNodes;
+  }
+
+  public void setInputNodes(List<String> inputNodes) {
+    this.inputNodes = inputNodes;
+  }
+
+  public String getOutputNode() {
+    return outputNode;
+  }
+
+  public void setOutputNode(String outputNode) {
+    this.outputNode = outputNode;
+  }
+
+  public String getSummaryOut() {
+    return summaryOut;
+  }
+
+  public TFLayer setSummaryOut(String summaryOut) {
+    this.summaryOut = summaryOut;
+    return this;
+  }
+
+  public boolean isFloat() {
+    return isFloat;
+  }
+
+  public TFLayer setFloat(boolean aFloat) {
+    isFloat = aFloat;
+    return this;
+  }
+
   @Nonnull
+  @SuppressWarnings("unused")
   public static TFLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new TFLayer(json, rs);
   }
@@ -92,50 +136,5 @@ public class TFLayer extends TFLayerBase {
       hashSet.add(dataKeys.get(i).getAsString());
     }
     return hashSet;
-  }
-
-  @Override
-  public GraphDef getGraphDef() {
-    try {
-      return GraphDef.parseFrom(this.graphDef);
-    } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public String getOutputNode() {
-    return outputNode;
-  }
-
-  public TFLayer setOutputNode(String outputNode) {
-    this.outputNode = outputNode;
-    return this;
-  }
-
-  public List<String> getInputNodes() {
-    return inputNodes;
-  }
-
-  public TFLayer setInputNodes(List<String> inputNodes) {
-    this.inputNodes = inputNodes;
-    return this;
-  }
-
-  public String getSummaryOut() {
-    return summaryOut;
-  }
-
-  public TFLayer setSummaryOut(String summaryOut) {
-    this.summaryOut = summaryOut;
-    return this;
-  }
-
-  public boolean isFloat() {
-    return isFloat;
-  }
-
-  public TFLayer setFloat(boolean aFloat) {
-    isFloat = aFloat;
-    return this;
   }
 }

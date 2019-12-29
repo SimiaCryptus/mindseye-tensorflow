@@ -29,16 +29,16 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-
 public class CudnnJavaMnist {
 
-  private static boolean tensorboard = false;
+  private static final boolean tensorboard = false;
 
   public static Layer network() {
     return network(new NullNotebookOutput());
@@ -47,44 +47,42 @@ public class CudnnJavaMnist {
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
-      if (tensorboard) pipeline.wrap(new SummaryLayer("input")).freeRef();
+      if (tensorboard)
+        pipeline.add(new SummaryLayer("input"));
 
       int bands1 = 64;
-//      pipeline.wrap(new ConvolutionLayer(5,5, 1, bands1)
-//          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new SimpleConvolutionLayer(5, 5, 1 * bands1)
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands1)).freeRef();
-      pipeline.wrap(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
-      pipeline.wrap(new ActivationLayer(ActivationLayer.Mode.RELU)).freeRef();
-      if (tensorboard) pipeline.wrap(new SummaryLayer("layerout1")).freeRef();
+      pipeline.add(new SimpleConvolutionLayer(5, 5, 1 * bands1).set(() -> 0.001 * (Math.random() - 0.45)));
+      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands1));
+      pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
+      if (tensorboard)
+        pipeline.add(new SummaryLayer("layerout1"));
 
       int bands2 = 32;
-      pipeline.wrap(new SimpleConvolutionLayer(5, 5, bands1 * bands2)
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-//      pipeline.wrap(new ConvolutionLayer(5,5, bands1, bands2)
-//          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands2)).freeRef();
-      pipeline.wrap(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max)).freeRef();
-      pipeline.wrap(new ActivationLayer(ActivationLayer.Mode.RELU)).freeRef();
-      if (tensorboard) pipeline.wrap(new SummaryLayer("layerout2")).freeRef();
+      pipeline.add(new SimpleConvolutionLayer(5, 5, bands1 * bands2).set(() -> 0.001 * (Math.random() - 0.45)));
+      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands2));
+      pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
+      pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
+      if (tensorboard)
+        pipeline.add(new SummaryLayer("layerout2"));
 
-      pipeline.wrap(new AssertDimensionsLayer(7, 7, bands2)).freeRef();
-      pipeline.wrap(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{7, 7, bands2}, new int[]{1024})
-          .set(() -> 0.001 * (Math.random() - 0.45)).explodeAndFree()).freeRef();
-      pipeline.wrap(new BiasLayer(1024)).freeRef();
-      pipeline.wrap(new ReLuActivationLayer()).freeRef();
-      if (tensorboard) pipeline.wrap(new SummaryLayer("layerout3")).freeRef();
+      pipeline.add(new AssertDimensionsLayer(7, 7, bands2));
+      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{7, 7, bands2},
+            new int[]{1024}).set(() -> 0.001 * (Math.random() - 0.45)).explode());
+      pipeline.add(new BiasLayer(1024));
+      pipeline.add(new ReLuActivationLayer());
+      if (tensorboard)
+        pipeline.add(new SummaryLayer("layerout3"));
 
       PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
-      stochasticTerminal.wrap(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5))).freeRef();
-      stochasticTerminal.wrap(new FullyConnectedLayer(new int[]{1024}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      stochasticTerminal.wrap(new BiasLayer(10)).freeRef();
-      stochasticTerminal.wrap(new SoftmaxLayer()).freeRef();
-      pipeline.wrap(StochasticSamplingSubnetLayer.wrap(stochasticTerminal, 5)).freeRef();
+      stochasticTerminal.add(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5)));
+      stochasticTerminal.add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      stochasticTerminal.add(new BiasLayer(10));
+      stochasticTerminal.add(new SoftmaxLayer());
+      pipeline.add(new StochasticSamplingSubnetLayer(stochasticTerminal, 5));
 
-      if (tensorboard) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
+      if (tensorboard)
+        pipeline.add(new SummaryLayer("softmax"));
       return pipeline;
     });
   }
@@ -98,8 +96,8 @@ public class CudnnJavaMnist {
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
       timeout = 15 * 60;
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      log.p("This is a very simple model that performs basic logistic regression. "
+          + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
 
@@ -107,23 +105,16 @@ public class CudnnJavaMnist {
 
   public static class LayerTest extends LayerTestBase {
 
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
     }
 
+    @Nonnull
     @Override
-    protected Layer lossLayer() {
-      return new EntropyLossLayer();
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
@@ -133,8 +124,13 @@ public class CudnnJavaMnist {
     }
 
     @Override
-    public void run(@Nonnull NotebookOutput log) {
+    public void run(@NotNull @Nonnull NotebookOutput log) {
       super.run(log);
+    }
+
+    @Override
+    protected Layer lossLayer() {
+      return new EntropyLossLayer();
     }
   }
 

@@ -71,7 +71,7 @@ public class TFIOTest {
   }
 
   public TensorArray newTensorList(int length, int... ints) {
-    return TensorArray.wrap(IntStream.range(0, length).mapToObj(i -> new Tensor(ints).randomize(1.0)).toArray(i -> new Tensor[i]));
+    return new TensorArray(IntStream.range(0, length).mapToObj(i -> new Tensor(ints).randomize(1.0)).toArray(i -> new Tensor[i]));
   }
 
   public void test(TensorList tensor) {

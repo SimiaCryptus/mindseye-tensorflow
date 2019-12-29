@@ -49,34 +49,30 @@ public class LRNLayer extends TFLayerBase {
     setBias((float) json.get("k").getAsDouble());
   }
 
-  @Nonnull
-  public static LRNLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new LRNLayer(json, rs);
+  public float getAlpha() {
+    return alpha;
   }
 
-  public boolean isSingleBatch() {
-    return false;
+  public LRNLayer setAlpha(float alpha) {
+    this.alpha = alpha;
+    return this;
   }
 
-  @Override
-  protected boolean floatInputs(String key) {
-    return true;
+  public float getBeta() {
+    return beta;
   }
 
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    JsonObject json = super.getJson(resources, dataSerializer);
-    long width = getRadius() * 2 + 1;
-    json.addProperty("width", width);
-    json.addProperty("alpha", getAlpha() * ((double) width));
-    json.addProperty("beta", getBeta());
-    json.addProperty("k", getBias());
-    return json;
+  public void setBeta(float beta) {
+    this.beta = beta;
   }
 
-  @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    return new HashSet<>();
+  public float getBias() {
+    return bias;
+  }
+
+  public LRNLayer setBias(float bias) {
+    this.bias = bias;
+    return this;
   }
 
   @Override
@@ -94,18 +90,13 @@ public class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  public String getSummaryOut() {
-    return null;
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override
   public String getOutputNode() {
     return "output";
-  }
-
-  @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
   }
 
   public long getRadius() {
@@ -117,30 +108,39 @@ public class LRNLayer extends TFLayerBase {
     return this;
   }
 
-  public float getBeta() {
-    return beta;
+  @Override
+  public String getSummaryOut() {
+    return null;
   }
 
-  public LRNLayer setBeta(float beta) {
-    this.beta = beta;
-    return this;
+  public boolean isSingleBatch() {
+    return false;
   }
 
-  public float getAlpha() {
-    return alpha;
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static LRNLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new LRNLayer(json, rs);
   }
 
-  public LRNLayer setAlpha(float alpha) {
-    this.alpha = alpha;
-    return this;
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    long width = getRadius() * 2 + 1;
+    json.addProperty("width", width);
+    json.addProperty("alpha", getAlpha() * ((double) width));
+    json.addProperty("beta", getBeta());
+    json.addProperty("k", getBias());
+    return json;
   }
 
-  public float getBias() {
-    return bias;
+  @Override
+  protected boolean floatInputs(String key) {
+    return true;
   }
 
-  public LRNLayer setBias(float bias) {
-    this.bias = bias;
-    return this;
+  @Override
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 }

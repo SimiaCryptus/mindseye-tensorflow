@@ -39,30 +39,6 @@ public class BiasLayer extends TFLayerBase {
     super(json, rs);
   }
 
-  private static Map<String, Tensor> defaultStates(int[] intputDims) {
-    HashMap<String, Tensor> map = new HashMap<>();
-    map.put("bias", new Tensor(intputDims).setByCoord(c -> {
-      return 0;
-    }));
-    return map;
-  }
-
-  @Nonnull
-  public static BiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new BiasLayer(json, rs);
-  }
-
-  public boolean isSingleBatch() {
-    return false;
-  }
-
-  @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    hashSet.add("bias");
-    return hashSet;
-  }
-
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
@@ -78,8 +54,8 @@ public class BiasLayer extends TFLayerBase {
   }
 
   @Override
-  public String getSummaryOut() {
-    return null;
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override
@@ -88,8 +64,33 @@ public class BiasLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public String getSummaryOut() {
+    return null;
+  }
+
+  public boolean isSingleBatch() {
+    return false;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static BiasLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new BiasLayer(json, rs);
+  }
+
+  private static Map<String, Tensor> defaultStates(int[] intputDims) {
+    HashMap<String, Tensor> map = new HashMap<>();
+    map.put("bias", new Tensor(intputDims).setByCoord(c -> {
+      return 0;
+    }));
+    return map;
+  }
+
+  @Override
+  protected Set<String> getDataKeys(JsonObject json) {
+    HashSet<String> hashSet = new HashSet<>();
+    hashSet.add("bias");
+    return hashSet;
   }
 
 }

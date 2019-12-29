@@ -48,40 +48,6 @@ public class Conv2DLayer extends TFLayerBase {
     padding = json.get("padding").getAsString();
   }
 
-  private static Map<String, Tensor> defaultStates(int[] intputDims) {
-    HashMap<String, Tensor> map = new HashMap<>();
-    map.put("kernel", new Tensor(intputDims).setByCoord(c -> {
-      return 0;
-    }));
-    return map;
-  }
-
-  @Nonnull
-  public static Conv2DLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new Conv2DLayer(json, rs);
-  }
-
-  @Override
-  protected boolean floatInputs(String key) {
-    return false;
-  }
-
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    JsonObject json = super.getJson(resources, dataSerializer);
-    json.addProperty("strideX", strideX);
-    json.addProperty("strideY", strideY);
-    json.addProperty("padding", padding);
-    return json;
-  }
-
-  @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    hashSet.add("kernel");
-    return hashSet;
-  }
-
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
@@ -99,8 +65,8 @@ public class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  public String getSummaryOut() {
-    return null;
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override
@@ -108,9 +74,13 @@ public class Conv2DLayer extends TFLayerBase {
     return "output";
   }
 
-  @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public String getPadding() {
+    return padding;
+  }
+
+  public Conv2DLayer setPadding(String padding) {
+    this.padding = padding;
+    return this;
   }
 
   public int getStrideX() {
@@ -131,12 +101,43 @@ public class Conv2DLayer extends TFLayerBase {
     return this;
   }
 
-  public String getPadding() {
-    return padding;
+  @Override
+  public String getSummaryOut() {
+    return null;
   }
 
-  public Conv2DLayer setPadding(String padding) {
-    this.padding = padding;
-    return this;
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static Conv2DLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new Conv2DLayer(json, rs);
+  }
+
+  private static Map<String, Tensor> defaultStates(int[] intputDims) {
+    HashMap<String, Tensor> map = new HashMap<>();
+    map.put("kernel", new Tensor(intputDims).setByCoord(c -> {
+      return 0;
+    }));
+    return map;
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.addProperty("strideX", strideX);
+    json.addProperty("strideY", strideY);
+    json.addProperty("padding", padding);
+    return json;
+  }
+
+  @Override
+  protected boolean floatInputs(String key) {
+    return false;
+  }
+
+  @Override
+  protected Set<String> getDataKeys(JsonObject json) {
+    HashSet<String> hashSet = new HashSet<>();
+    hashSet.add("kernel");
+    return hashSet;
   }
 }

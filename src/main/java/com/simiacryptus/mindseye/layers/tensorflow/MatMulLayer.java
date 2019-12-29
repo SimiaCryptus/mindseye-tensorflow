@@ -52,84 +52,22 @@ public class MatMulLayer extends TFLayerBase {
     outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
   }
 
-  private static Map<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
-    HashMap<String, Tensor> map = new HashMap<>();
-    int outs = Tensor.length(outputDims);
-    int inputs = Tensor.length(intputDims);
-    map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
-      final double ratio = Math.sqrt(6. / (inputs + outs + 1));
-      final double fate = Util.R.get().nextDouble();
-      final double v = (1 - 2 * fate) * ratio;
-      return v;
-    }));
-    return map;
-  }
-
-  @Nonnull
-  public static MatMulLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new MatMulLayer(json, rs);
-  }
-
-  public boolean isSingleBatch() {
-    return false;
-  }
-
-  @Nonnull
-  public MatMulLayer set(@Nonnull final DoubleSupplier f) {
-    Arrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
-    return this;
-  }
-
-  @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    hashSet.add("weights");
-    return hashSet;
-  }
-
-  @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
-    JsonObject json = super.getJson(resources, dataSerializer);
-    json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
-    json.add("outputDims", JsonUtil.toIntArray(getOutputDims()));
-    return json;
-  }
-
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).reshape(
           ops.transpose(
-              ops.matMul(
-                  ops.withName("weights").placeholder(Double.class),
-                  ops.reshape(
-                      ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-                      ops.constant(new long[]{-1, Tensor.length(getIntputDims())})
-                  ),
-                  MatMul.transposeB(true)
-              ),
-              ops.constant(new int[]{1, 0})
-          ),
-          ops.constant(IntStream.concat(
-              IntStream.of(-1),
-              Arrays.stream(getOutputDims())
-          ).toArray())
-      );
+              ops.matMul(ops.withName("weights").placeholder(Double.class),
+                  ops.reshape(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+                      ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
+                  MatMul.transposeB(true)),
+              ops.constant(new int[]{1, 0})),
+          ops.constant(IntStream.concat(IntStream.of(-1), Arrays.stream(getOutputDims())).toArray()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public String getSummaryOut() {
-    return null;
-  }
-
-  @Override
-  public String getOutputNode() {
-    return "output";
   }
 
   @Override
@@ -145,9 +83,62 @@ public class MatMulLayer extends TFLayerBase {
     return outputDims;
   }
 
-//  @Override
-//  public boolean invertWeights() {
-//    return false;
-//  }
+  @Override
+  public String getOutputNode() {
+    return "output";
+  }
+
+  @Override
+  public String getSummaryOut() {
+    return null;
+  }
+
+  public boolean isSingleBatch() {
+    return false;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static MatMulLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new MatMulLayer(json, rs);
+  }
+
+  private static Map<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
+    HashMap<String, Tensor> map = new HashMap<>();
+    int outs = Tensor.length(outputDims);
+    int inputs = Tensor.length(intputDims);
+    map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
+      final double ratio = Math.sqrt(6. / (inputs + outs + 1));
+      final double fate = Util.R.get().nextDouble();
+      return (1 - 2 * fate) * ratio;
+    }));
+    return map;
+  }
+
+  @Nonnull
+  public MatMulLayer set(@Nonnull final DoubleSupplier f) {
+    Arrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
+    return this;
+  }
+
+  @Override
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+    JsonObject json = super.getJson(resources, dataSerializer);
+    json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
+    json.add("outputDims", JsonUtil.toIntArray(getOutputDims()));
+    return json;
+  }
+
+  @Override
+  protected Set<String> getDataKeys(JsonObject json) {
+    HashSet<String> hashSet = new HashSet<>();
+    hashSet.add("weights");
+    return hashSet;
+  }
+
+  //  @Override
+  //  public boolean invertWeights() {
+  //    return false;
+  //  }
 
 }

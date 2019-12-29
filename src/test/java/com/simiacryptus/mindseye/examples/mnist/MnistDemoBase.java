@@ -19,7 +19,6 @@
 
 package com.simiacryptus.mindseye.examples.mnist;
 
-import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
 import com.simiacryptus.mindseye.eval.Trainable;
 import com.simiacryptus.mindseye.lang.Layer;
@@ -40,6 +39,7 @@ import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.TableOutput;
+import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.util.CodeUtil;
 import com.simiacryptus.util.test.LabeledObject;
@@ -65,20 +65,23 @@ public abstract class MnistDemoBase {
   private static final Logger log = LoggerFactory.getLogger(MnistDemoBase.class);
   protected int timeout = 60;
 
+  protected abstract byte[] getGraphDef();
+
   @Test
   public void test() throws Exception {
     File tensorboardLocation = new File("tensorboard/tflayer_TFLayer").getAbsoluteFile();
     File[] listFiles = tensorboardLocation.getParentFile().listFiles();
-    if (null != listFiles) Arrays.stream(listFiles).forEach(file -> {
-      System.out.println("Delete: " + file);
-      file.delete();
-    });
+    if (null != listFiles)
+      Arrays.stream(listFiles).forEach(file -> {
+        System.out.println("Delete: " + file);
+        file.delete();
+      });
     byte[] graphDef = getGraphDef();
     if (null != graphDef) {
       TFLayerBase.eventWriter = new TensorboardEventWriter(tensorboardLocation, GraphDef.parseFrom(graphDef));
     }
-    File reportFile = new File(String.format("target/reports/%s/%s/test",
-        getClass().getSimpleName(), new SimpleDateFormat("yyyyMMddHHmm").format(new Date())));
+    File reportFile = new File(String.format("target/reports/%s/%s/test", getClass().getSimpleName(),
+        new SimpleDateFormat("yyyyMMddHHmm").format(new Date())));
     MarkdownNotebookOutput log = new MarkdownNotebookOutput(reportFile, true);
     try (CodeUtil.LogInterception ignored = CodeUtil.intercept(log, ReferenceCountingBase.class.getCanonicalName())) {
       run(log);
@@ -95,8 +98,6 @@ public abstract class MnistDemoBase {
       });
     }
   }
-
-  protected abstract byte[] getGraphDef();
 
   public void run(@Nonnull NotebookOutput log) {
 
@@ -121,13 +122,13 @@ public abstract class MnistDemoBase {
       @Override
       public void log(final String msg) {
         MnistDemoBase.log.info(msg);
-//        if(null != TFLayerBase.eventWriter) {
-//          try {
-//            TFLayerBase.eventWriter.write(LogMessage.newBuilder().setLevel(LogMessage.Level.INFO).setMessage(msg).build());
-//          } catch (IOException e) {
-//            throw new RuntimeException(e);
-//          }
-//        }
+        //        if(null != TFLayerBase.eventWriter) {
+        //          try {
+        //            TFLayerBase.eventWriter.write(LogMessage.newBuilder().setLevel(LogMessage.Level.INFO).setMessage(msg).build());
+        //          } catch (IOException e) {
+        //            throw new RuntimeException(e);
+        //          }
+        //        }
         super.log(msg);
       }
 
@@ -143,43 +144,18 @@ public abstract class MnistDemoBase {
     log.eval(() -> {
       EntropyLossLayer loss = new EntropyLossLayer();
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
-      loss.freeRef();
       @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 1000);
-      supervisedNetwork.freeRef();
-      double result = new IterativeTrainer(trainable)
-          .setMonitor(monitor)
-          .setOrientation(new LBFGS())
-//          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
-          .setLineSearchFactory(n -> new QuadraticSearch())
-          .setTimeout(timeout, TimeUnit.SECONDS)
-          .setMaxIterations(200)
-          .setIterationsPerSample(20)
-          .runAndFree();
-      trainable.freeRef();
-      return result;
+      //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new LBFGS())
+          //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+          .setLineSearchFactory(n -> new QuadraticSearch()).setTimeout(timeout, TimeUnit.SECONDS).setMaxIterations(200)
+          .setIterationsPerSample(20).run();
     });
-//    log.eval(() -> {
-//      EntropyLossLayer loss = new EntropyLossLayer();
-//      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
-//      loss.freeRef();
-//      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000);
-//      supervisedNetwork.freeRef();
-//      double result = new IterativeTrainer(trainable)
-//          .setMonitor(monitor)
-//          .setOrientation(new RecursiveSubspace()
-//              .setLineSearch(new ArmijoWolfeSearch().setAlpha(1e3))
-//          )
-//          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
-//          .setTimeout(timeout, TimeUnit.SECONDS)
-//          .setMaxIterations(200)
-//          .setIterationsPerSample(20)
-//          .runAndFree();
-//      trainable.freeRef();
-//      return result;
-//    });
     if (!history.isEmpty()) {
       log.eval(() -> {
-        @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())}).toArray(i -> new double[i][]));
+        @Nonnull final PlotCanvas plot = ScatterPlot
+            .plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())})
+                .toArray(i -> new double[i][]));
         plot.setTitle("Convergence Plot");
         plot.setAxisLabels("Iteration", "log10(Fitness)");
         plot.setSize(600, 400);
@@ -189,7 +165,8 @@ public abstract class MnistDemoBase {
 
     if (recognitionNetwork instanceof DAGNetwork) {
       ((DAGNetwork) recognitionNetwork).visitLayers(layer -> {
-        if (layer instanceof StochasticComponent) ((StochasticComponent) layer).clearNoise();
+        if (layer instanceof StochasticComponent)
+          ((StochasticComponent) layer).clearNoise();
       });
     }
 
@@ -210,21 +187,16 @@ public abstract class MnistDemoBase {
     log.eval(() -> {
       List<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(Collectors.toList());
       Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
-      TensorList predictionData = recognitionNetwork.eval(tensors).getDataAndFree();
-      //Arrays.stream(tensors).flatMap(Arrays::stream).forEach(ReferenceCountingBase::freeRef);
+      TensorList predictionData = recognitionNetwork.eval(tensors).getData();
       List<int[]> predicitonList = IntStream.range(0, predictionData.length()).mapToObj(rowIndex -> {
         Tensor predictionTensor = predictionData.get(rowIndex);
-        int[] prediction = IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(ii -> {
+        return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(ii -> {
           return -predictionTensor.getData()[ii];
         })).mapToInt(x -> x).toArray();
-        predictionTensor.freeRef();
-        return prediction;
       }).collect(Collectors.toList());
-      double result = IntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
+      return IntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
         return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
       }).average().getAsDouble() * 100;
-      predictionData.freeRef();
-      return result;
     });
 
     log.p("Let's examine some incorrectly predicted results in more detail:");
@@ -233,13 +205,16 @@ public abstract class MnistDemoBase {
       MNIST.validationDataStream().map(labeledObject -> {
         final int actualCategory = parse(labeledObject.label);
         @Nullable final double[] predictionSignal = recognitionNetwork.eval(labeledObject.data).getData().get(0).getData();
-        final int[] predictionList = IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
-        if (predictionList[0] == actualCategory) return null; // We will only examine mispredicted rows
+        final int[] predictionList = IntStream.range(0, 10).mapToObj(x -> x)
+            .sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+        if (predictionList[0] == actualCategory)
+          return null; // We will only examine mispredicted rows
         @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
-        row.put("Prediction", Arrays.stream(predictionList).limit(3)
-            .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
-            .reduce((a, b) -> a + ", " + b).get());
+        row.put("Prediction",
+            Arrays.stream(predictionList).limit(3)
+                .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                .reduce((a, b) -> a + ", " + b).get());
         return row;
       }).filter(x -> null != x).limit(10).forEach(table::putRow);
       return table;
@@ -247,16 +222,15 @@ public abstract class MnistDemoBase {
 
   }
 
-  protected abstract Layer buildModel(@Nonnull NotebookOutput log);
-
   public int parse(@Nonnull final String label) {
     return Integer.parseInt(label.replaceAll("[^\\d]", ""));
   }
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
-    Tensor tensor = network.eval(labeledObject.data).getDataAndFree().getAndFree(0);
-    int[] prediction = IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -tensor.getData()[i])).mapToInt(x -> x).toArray();
-    tensor.freeRef();
-    return prediction;
+    Tensor tensor = network.eval(labeledObject.data).getData().get(0);
+    return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -tensor.getData()[i]))
+        .mapToInt(x -> x).toArray();
   }
+
+  protected abstract Layer buildModel(@Nonnull NotebookOutput log);
 }

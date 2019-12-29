@@ -41,14 +41,46 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
-
 public class FloatTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
   public static final String bias = "bias";
   public static final String output = "softmax";
-  public static String statOutput = null; //"output/summary";
+  public static final String statOutput = null; //"output/summary";
+
+  private static byte[] getGraphDef() {
+    return TensorflowUtil.makeGraph(ops -> {
+      ops.withName(output)
+          .softmax(
+              ops.reshape(
+                  ops.transpose(
+                      ops.matMul(ops.withName(weights).placeholder(Float.class, Placeholder
+                              .shape(Shape.make(10, 28 * 28))), ops
+                              .reshape(
+                                  ops.add(
+                                      ops.reshape(
+                                          ops.withName(bias).placeholder(Float.class,
+                                              Placeholder.shape(Shape.make(1, 28, 28))),
+                                          ops.constant(new long[]{1, 28, 28})),
+                                      ops.reshape(
+                                          ops.withName(input).placeholder(Float.class,
+                                              Placeholder.shape(Shape.make(-1, 28, 28))),
+                                          ops.constant(new long[]{-1, 28, 28}))),
+                                  ops.constant(new long[]{-1, 28 * 28})),
+                          MatMul.transposeB(true)),
+                      ops.constant(new int[]{1, 0})),
+                  ops.constant(new long[]{-1, 10})));
+    });
+  }
+
+  @NotNull
+  private static HashMap<String, Tensor> getVariables() {
+    HashMap<String, Tensor> variables = new HashMap<>();
+    variables.put(weights, new Tensor(10, 28 * 28).setByCoord(c -> .001 * (Math.random() - 0.5)));
+    variables.put(bias, new Tensor(1, 28, 28).setByCoord(c -> 0));
+    return variables;
+  }
 
   public static Layer network() {
     return network(new NullNotebookOutput());
@@ -66,26 +98,16 @@ public class FloatTFMnist {
     });
   }
 
-  @NotNull
-  private static HashMap<String, Tensor> getVariables() {
-    HashMap<String, Tensor> variables = new HashMap<>();
-    variables.put(weights,
-        new Tensor(10, 28 * 28)
-            .setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(bias,
-        new Tensor(1, 28, 28).setByCoord(c -> 0));
-    return variables;
-  }
-
   private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput) return graphDef;
+    if (null == statOutput)
+      return graphDef;
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!Arrays.asList(
-          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
-      ).contains(op)) return null;
-      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_FLOAT));
+      if (!Arrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
+        return null;
+      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
+          NodeInstrumentation.getDataType(node, DataType.DT_FLOAT));
       if (node.getName().equalsIgnoreCase(input)) {
         nodeInstrumentation.setImage(28, 28, 1);
       }
@@ -93,45 +115,6 @@ public class FloatTFMnist {
     });
     TensorflowUtil.validate(graphDef);
     return newDef;
-  }
-
-  private static byte[] getGraphDef() {
-    byte[] bytes = TensorflowUtil.makeGraph(ops -> {
-      ops.withName(output).softmax(
-          ops.reshape(
-              ops.transpose(
-                  ops.matMul(
-                      ops.withName(weights).placeholder(
-                          Float.class,
-                          Placeholder.shape(Shape.make(10, 28 * 28))
-                      ),
-                      ops.reshape(
-                          ops.add(
-                              ops.reshape(
-                                  ops.withName(bias).placeholder(
-                                      Float.class,
-                                      Placeholder.shape(Shape.make(1, 28, 28))
-                                  ),
-                                  ops.constant(new long[]{1, 28, 28})
-                              ),
-                              ops.reshape(
-                                  ops.withName(input).placeholder(
-                                      Float.class,
-                                      Placeholder.shape(Shape.make(-1, 28, 28))
-                                  ),
-                                  ops.constant(new long[]{-1, 28, 28})
-                              )
-                          ),
-                          ops.constant(new long[]{-1, 28 * 28})
-                      ),
-                      MatMul.transposeB(true)
-                  ),
-                  ops.constant(new int[]{1, 0})
-              ),
-              ops.constant(new long[]{-1, 10})
-          ));
-    });
-    return bytes;
   }
 
   public static class MnistDemo extends MnistDemoBase {
@@ -142,8 +125,8 @@ public class FloatTFMnist {
 
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      log.p("This is a very simple model that performs basic logistic regression. "
+          + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
 
@@ -151,18 +134,16 @@ public class FloatTFMnist {
 
   public static class LayerTest extends LayerTestBase {
 
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
-
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    @Nonnull
+    @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull

@@ -38,28 +38,11 @@ public class SoftmaxLayer extends TFLayerBase {
     super(json, rs);
   }
 
-  @Nonnull
-  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new SoftmaxLayer(json, rs);
-  }
-
-  public boolean isSingleBatch() {
-    return false;
-  }
-
-  @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    return hashSet;
-  }
-
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).softmax(
-          ops.withName(getInputNodes().get(0)).placeholder(Double.class)
-      );
+      ops.withName(getOutputNode()).softmax(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -67,8 +50,8 @@ public class SoftmaxLayer extends TFLayerBase {
   }
 
   @Override
-  public String getSummaryOut() {
-    return null;
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override
@@ -77,8 +60,23 @@ public class SoftmaxLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public String getSummaryOut() {
+    return null;
+  }
+
+  public boolean isSingleBatch() {
+    return false;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new SoftmaxLayer(json, rs);
+  }
+
+  @Override
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 
 }

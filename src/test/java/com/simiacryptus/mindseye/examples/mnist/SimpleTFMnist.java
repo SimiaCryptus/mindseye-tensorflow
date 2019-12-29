@@ -56,52 +56,7 @@ public class SimpleTFMnist {
   public static final String weights = "fc1";
   public static final String bias = "bias";
   public static final String output = "softmax";
-  public static String statOutput = null;
-
-  public static Layer network() {
-    return network(new NullNotebookOutput());
-  }
-
-  public static Layer network(NotebookOutput log) {
-    return log.eval(() -> {
-      byte[] bytes;
-      try {
-        bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
-      } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
-      }
-      return new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput);
-    });
-  }
-
-  @NotNull
-  private static HashMap<String, Tensor> getVariables() {
-    HashMap<String, Tensor> variables = new HashMap<>();
-    variables.put(weights,
-        new Tensor(10, 28 * 28)
-            .setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(bias,
-        new Tensor(1, 28, 28).setByCoord(c -> 0));
-    return variables;
-  }
-
-  private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput) return graphDef;
-    TensorflowUtil.validate(graphDef);
-    GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
-      String op = node.getOp();
-      if (!Arrays.asList(
-          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
-      ).contains(op)) return null;
-      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
-      if (node.getName().equalsIgnoreCase(input)) {
-        nodeInstrumentation.setImage(28, 28, 1);
-      }
-      return nodeInstrumentation;
-    });
-    TensorflowUtil.validate(graphDef);
-    return newDef;
-  }
+  public static final String statOutput = null;
 
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
@@ -141,6 +96,51 @@ public class SimpleTFMnist {
     });
   }
 
+  @NotNull
+  private static HashMap<String, Tensor> getVariables() {
+    HashMap<String, Tensor> variables = new HashMap<>();
+    variables.put(weights,
+        new Tensor(10, 28 * 28)
+            .setByCoord(c -> .001 * (Math.random() - 0.5)));
+    variables.put(bias,
+        new Tensor(1, 28, 28).setByCoord(c -> 0));
+    return variables;
+  }
+
+  public static Layer network() {
+    return network(new NullNotebookOutput());
+  }
+
+  public static Layer network(NotebookOutput log) {
+    return log.eval(() -> {
+      byte[] bytes;
+      try {
+        bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
+      } catch (InvalidProtocolBufferException e) {
+        throw new RuntimeException(e);
+      }
+      return new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput);
+    });
+  }
+
+  private static GraphDef instrument(GraphDef graphDef) {
+    if (null == statOutput) return graphDef;
+    TensorflowUtil.validate(graphDef);
+    GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
+      String op = node.getOp();
+      if (!Arrays.asList(
+          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
+      ).contains(op)) return null;
+      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
+      if (node.getName().equalsIgnoreCase(input)) {
+        nodeInstrumentation.setImage(28, 28, 1);
+      }
+      return nodeInstrumentation;
+    });
+    TensorflowUtil.validate(graphDef);
+    return newDef;
+  }
+
   @Test
   public void dumpModelJson() throws Exception {
     byte[] protobufBinaryData = FileUtils.readFileToByteArray(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
@@ -175,18 +175,18 @@ public class SimpleTFMnist {
 
   public static class LayerTest extends LayerTestBase {
 
+    @Nullable
+    @Override
+    public Class<? extends Layer> getReferenceLayerClass() {
+      return null;
+    }
+
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
       return new int[][]{
           {28, 28}
       };
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends Layer> getReferenceLayerClass() {
-      return null;
     }
 
     @Nonnull

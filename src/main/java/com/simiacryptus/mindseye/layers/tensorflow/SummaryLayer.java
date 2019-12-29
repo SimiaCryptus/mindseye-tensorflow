@@ -45,13 +45,51 @@ public class SummaryLayer extends TFLayerBase {
     tag = json.get("tag").getAsString();
   }
 
-  @Nonnull
-  public static SummaryLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
-    return new SummaryLayer(json, rs);
+  @Override
+  public GraphDef getGraphDef() {
+    try (Graph graph = new Graph()) {
+      Ops ops = Ops.create(graph);
+      ops.withName(getOutputNode()).identity(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
+      return NodeInstrumentation.instrument(GraphDef.parseFrom(graph.toGraphDef()), getSummaryOut(),
+          node -> node.getName().equals(getInputNodes().get(0))
+              ? new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE))
+              : null);
+    } catch (InvalidProtocolBufferException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<String> getInputNodes() {
+    return Arrays.asList(tag);
+  }
+
+  @Override
+  public String getOutputNode() {
+    return "output";
+  }
+
+  @Override
+  public String getSummaryOut() {
+    return "summary";
+  }
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag;
   }
 
   public boolean isSingleBatch() {
     return false;
+  }
+
+  @Nonnull
+  @SuppressWarnings("unused")
+  public static SummaryLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+    return new SummaryLayer(json, rs);
   }
 
   @Override
@@ -63,48 +101,6 @@ public class SummaryLayer extends TFLayerBase {
 
   @Override
   protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
-    return hashSet;
-  }
-
-  @Override
-  public GraphDef getGraphDef() {
-    try (Graph graph = new Graph()) {
-      Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).identity(
-          ops.withName(getInputNodes().get(0)).placeholder(Double.class)
-      );
-      return NodeInstrumentation.instrument(
-          GraphDef.parseFrom(graph.toGraphDef()),
-          getSummaryOut(),
-          node -> node.getName().equals(getInputNodes().get(0)) ? new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE)) : null
-      );
-    } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public String getSummaryOut() {
-    return "summary";
-  }
-
-  @Override
-  public String getOutputNode() {
-    return "output";
-  }
-
-  @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList(tag);
-  }
-
-  public String getTag() {
-    return tag;
-  }
-
-  public SummaryLayer setTag(String tag) {
-    this.tag = tag;
-    return this;
+    return new HashSet<>();
   }
 }

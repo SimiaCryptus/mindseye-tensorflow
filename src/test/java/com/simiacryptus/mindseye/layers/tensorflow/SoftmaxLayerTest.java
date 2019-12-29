@@ -27,17 +27,17 @@ import java.util.Random;
 
 public class SoftmaxLayerTest extends RawTFLayerTestBase {
 
-  @NotNull
-  protected SoftmaxLayer createTFLayer() {
-    return new SoftmaxLayer();
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
     return new int[][]{
         {5}
     };
+  }
+
+  @NotNull
+  protected SoftmaxLayer createTFLayer() {
+    return new SoftmaxLayer();
   }
 
 }

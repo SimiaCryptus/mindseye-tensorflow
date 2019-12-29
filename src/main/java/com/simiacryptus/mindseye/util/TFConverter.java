@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.util;
 
 import com.google.common.collect.Streams;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.*;
@@ -48,7 +47,8 @@ import java.util.stream.IntStream;
 public class TFConverter {
 
   public static List<TFLayer> getLayers(ImageNetworkPipeline pipeline) {
-    return IntStream.range(0, pipeline.graphDefs.size()).mapToObj(i -> getLayer(pipeline, i)).collect(Collectors.toList());
+    return IntStream.range(0, pipeline.graphDefs.size()).mapToObj(i -> getLayer(pipeline, i))
+        .collect(Collectors.toList());
   }
 
   @NotNull
@@ -65,23 +65,18 @@ public class TFConverter {
     int[] intputDims = matMulLayer.getIntputDims();
     int[] outputDims = matMulLayer.getOutputDims();
 
-    int[] tfView = Streams.concat(
-        Arrays.stream(outputDims),
-        IntStream.range(0, intputDims.length)
-            .map(i -> (intputDims.length - 1) - i)
-            .map(i -> intputDims[i])
-    ).toArray();
-    int[] tfPermute = Streams.concat(
-        IntStream.range(0, intputDims.length).map(i -> outputDims.length + ((intputDims.length - 1) - i)),
-        IntStream.range(0, outputDims.length)
-    ).toArray();
-    Tensor rearranged = weights
-        .reshapeCast(tfView)
-        .permuteDimensionsAndFree(tfPermute);
+    int[] tfView = Streams
+        .concat(Arrays.stream(outputDims),
+            IntStream.range(0, intputDims.length).map(i -> (intputDims.length - 1) - i).map(i -> intputDims[i]))
+        .toArray();
+    int[] tfPermute = Streams
+        .concat(IntStream.range(0, intputDims.length).map(i -> outputDims.length + ((intputDims.length - 1) - i)),
+            IntStream.range(0, outputDims.length))
+        .toArray();
+    Tensor rearranged = weights.reshapeCast(tfView).permuteDimensions(tfPermute);
 
     FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(intputDims, outputDims);
     fullyConnectedLayer.getWeights().set(rearranged);
-    rearranged.freeRef();
     return fullyConnectedLayer;
   }
 
@@ -89,73 +84,44 @@ public class TFConverter {
   public PipelineNetwork convert(TFLayerBase tfLayer) {
     final PipelineNetwork converted = new PipelineNetwork(1);
     ConcurrentHashMap<String, DAGNode> nodes = new ConcurrentHashMap<>();
-    getNode(
-        tfLayer.getOutputNode(),
-        converted,
-        new GraphModel(tfLayer.constGraph().toByteArray()),
-        nodes
-    ).freeRef();
-    nodes.values().forEach(ReferenceCounting::freeRef);
+    getNode(tfLayer.getOutputNode(), converted, new GraphModel(tfLayer.constGraph().toByteArray()), nodes);
     return converted;
   }
 
-  protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel, ConcurrentHashMap<String, DAGNode> map) {
+  protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel,
+                            ConcurrentHashMap<String, DAGNode> map) {
     try {
       if (!map.containsKey(id)) {
         DAGNode result;
         GraphModel.GraphNode graphNode = tfModel.getChild(id);
         assert null != graphNode;
         if (graphNode.getOp().equals("Conv2D")) {
-          result = network.wrap(
-              getConv2D(graphNode),
-              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(getConv2D(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("BiasAdd")) {
-          result = network.wrap(
-              getBiasAdd(graphNode),
-              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(getBiasAdd(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("Relu")) {
-          result = network.wrap(
-              new ActivationLayer(ActivationLayer.Mode.RELU),
-              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(new ActivationLayer(ActivationLayer.Mode.RELU), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("LRN")) {
-          result = network.wrap(
-              getLRNLayer(graphNode),
-              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(getLRNLayer(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("MaxPool")) {
-          result = network.wrap(
-              getPoolingLayer(graphNode),
-              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(getPoolingLayer(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("Concat")) {
           List<String> inputKeys = graphNode.getInputKeys();
-          result = network.wrap(
-              new ImgConcatLayer(),
-              inputKeys.stream().skip(1).map(inputKey -> getNode(inputKey, network, tfModel, map)).toArray(i -> new DAGNode[i]));
+          result = network.add(new ImgConcatLayer(), inputKeys.stream().skip(1)
+              .map(inputKey -> getNode(inputKey, network, tfModel, map)).toArray(i -> new DAGNode[i]));
         } else if (graphNode.getOp().equals("Placeholder")) {
           result = network.getInput(0);
         } else {
           throw new IllegalArgumentException(graphNode.getOp());
         }
-        if (map.containsKey(id)) {
-          result.freeRef();
-        } else {
+        if (!map.containsKey(id)) {
           map.put(id, result);
         }
       }
-      return map.get(id).addRef();
+      return map.get(id);
     } catch (Throwable e) {
       throw new RuntimeException("Error converting " + id, e);
     }
-  }
-
-  @NotNull
-  private LRNLayer getLRNLayer(GraphModel.GraphNode graphNode) {
-    Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
-    long depth_radius = attrMap.get("depth_radius").getI();
-    float alpha = attrMap.get("alpha").getF();
-    float bias = attrMap.get("bias").getF();
-    float beta = attrMap.get("beta").getF();
-    long width = depth_radius * 2 + 1;
-    return new LRNLayer((int) width).setAlpha(alpha * width).setBeta(beta).setK(bias);
   }
 
   @NotNull
@@ -183,9 +149,7 @@ public class TFConverter {
     assert dataNode.getOp().equals("Const");
     double[] data = dataNode.getData();
     Tensor tensor = new Tensor(data, data.length);
-    ImgBandBiasLayer imgBandBiasLayer = new ImgBandBiasLayer(data.length).set(tensor);
-    tensor.freeRef();
-    return imgBandBiasLayer;
+    return new ImgBandBiasLayer(data.length).set(tensor);
   }
 
   protected Layer getConv2D(GraphModel.GraphNode graphNode) {
@@ -193,33 +157,22 @@ public class TFConverter {
     assert dataNode.getOp().equals("Const");
     int[] kernelDims = Arrays.stream(dataNode.getShape()).mapToInt(x -> (int) x).toArray();
     double[] data = dataNode.getData();
-    if (kernelDims.length == 0) kernelDims = new int[]{data.length};
-    Tensor sourceKernel = new Tensor(data, kernelDims[3],
-        kernelDims[2],
-        kernelDims[1],
-        kernelDims[0]).invertDimensionsAndFree();
+    if (kernelDims.length == 0)
+      kernelDims = new int[]{data.length};
+    Tensor sourceKernel = new Tensor(data, kernelDims[3], kernelDims[2], kernelDims[1], kernelDims[0])
+        .invertDimensions();
     int[] sourceKernelDimensions = sourceKernel.getDimensions();
-//    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
-    SimpleConvolutionLayer convolutionLayer = new SimpleConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
-    Tensor targetKernel = new Tensor(
-        sourceKernelDimensions[0],
-        sourceKernelDimensions[1],
-        sourceKernelDimensions[2],
-        sourceKernelDimensions[3]
-    );
+    //    ConvolutionLayer convolutionLayer = new ConvolutionLayer(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2], sourceKernelDimensions[3]);
+    SimpleConvolutionLayer convolutionLayer = new SimpleConvolutionLayer(sourceKernelDimensions[0],
+        sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
+    Tensor targetKernel = new Tensor(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2],
+        sourceKernelDimensions[3]);
     sourceKernel.coordStream(false).forEach(c -> {
       int[] coord = c.getCoords();
-      targetKernel.set(
-          (sourceKernelDimensions[0] - 1) - coord[0],
-          (sourceKernelDimensions[1] - 1) - coord[1],
-          coord[2],
-          coord[3],
-          sourceKernel.get(c)
-      );
+      targetKernel.set((sourceKernelDimensions[0] - 1) - coord[0], (sourceKernelDimensions[1] - 1) - coord[1], coord[2],
+          coord[3], sourceKernel.get(c));
     });
     convolutionLayer.getKernel().set(targetKernel);
-    targetKernel.freeRef();
-    sourceKernel.freeRef();
     AttrValue stridesArr = graphNode.getNodeDef().getAttrMap().get("strides");
     if (null != stridesArr) {
       int[] strides = stridesArr.getList().getIList().stream().mapToInt(x -> Math.toIntExact(x)).toArray();
@@ -228,16 +181,24 @@ public class TFConverter {
       if (strideX > 1 || strideY > 1) {
         convolutionLayer.setStrideX(strideX);
         convolutionLayer.setStrideY(strideY);
-        //return convolutionLayer.explodeAndFree();
         return convolutionLayer;
       } else {
-        //return convolutionLayer.explodeAndFree();
         return convolutionLayer;
       }
     } else {
-      //return convolutionLayer.explodeAndFree();
       return convolutionLayer;
     }
+  }
+
+  @NotNull
+  private LRNLayer getLRNLayer(GraphModel.GraphNode graphNode) {
+    Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
+    long depth_radius = attrMap.get("depth_radius").getI();
+    float alpha = attrMap.get("alpha").getF();
+    float bias = attrMap.get("bias").getF();
+    float beta = attrMap.get("beta").getF();
+    long width = depth_radius * 2 + 1;
+    return new LRNLayer((int) width).setAlpha(alpha * width).setBeta(beta).setK(bias);
   }
 
 }

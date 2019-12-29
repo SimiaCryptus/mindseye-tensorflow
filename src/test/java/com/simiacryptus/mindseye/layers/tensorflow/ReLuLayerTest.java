@@ -24,21 +24,17 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-
 public class ReLuLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3, 3, 1}
-    };
+    return new int[][]{{3, 3, 1}};
   }
 
   @NotNull
   protected ReLuLayer createTFLayer() {
-    ReLuLayer layer = new ReLuLayer();
-    return layer;
+    return new ReLuLayer();
   }
 
 }

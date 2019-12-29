@@ -21,11 +21,11 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
+import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
@@ -61,17 +61,27 @@ public abstract class TFLayerBase extends LayerBase {
     this.getWeights().putAll(states);
   }
 
+  public abstract GraphDef getGraphDef();
+
+  public abstract List<String> getInputNodes();
+
+  public abstract String getOutputNode();
+
+  public abstract String getSummaryOut();
+
+  public Map<String, Tensor> getWeights() {
+    return weights;
+  }
+
   @NotNull
   public TFLayer asConstLayer() {
-    return new TFLayer(constGraph().toByteArray(), new HashMap<>(), getOutputNode(), getInputNodes().toArray(new String[]{}));
+    return new TFLayer(constGraph().toByteArray(), new HashMap<>(), getOutputNode(),
+        getInputNodes().toArray(new String[]{}));
   }
 
-  public @NotNull
-  GraphDef constGraph() {
+  public @NotNull GraphDef constGraph() {
     return TFUtil.implantConstants(getGraphDef(), getWeights());
   }
-
-  protected abstract Set<String> getDataKeys(JsonObject json);
 
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
@@ -90,20 +100,27 @@ public abstract class TFLayerBase extends LayerBase {
 
   @Nullable
   @Override
-  public Result evalAndFree(Result... inputs) {
+  public Result eval(Result... inputs) {
     TFSession tfsession = new TFSession();
-    Result result = evalAndFree(tfsession, inputs);
-    tfsession.freeRef();
-    return result;
+    return eval(tfsession, inputs);
+  }
+
+  public void close() {
+  }
+
+  public boolean invertWeights() {
+    return true;
+  }
+
+  public @NotNull GraphDef getConstGraph(GraphDef graphDef) {
+    return TFUtil.implantConstants(graphDef, getWeights());
   }
 
   @NotNull
-  Result evalAndFree(TFSession tfsession, Result... inputs) {
-    tfsession.addRef();
+  Result eval(TFSession tfsession, Result... inputs) {
     List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
     Session.Runner runner = tfsession.session.runner();
     ArrayList<org.tensorflow.Tensor<?>> tensors = new ArrayList<>();
-    getWeights().values().forEach(ReferenceCountingBase::addRef);
     getWeights().forEach((nodeName, data) -> {
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
       if (floatInputs(nodeName)) {
@@ -123,7 +140,6 @@ public abstract class TFLayerBase extends LayerBase {
       } else {
         tensor = TFIO.getDoubleTensor(data);
       }
-      data.freeRef();
       runner.feed(inputNode, tensor);
       tensors.add(tensor);
     }
@@ -156,7 +172,8 @@ public abstract class TFLayerBase extends LayerBase {
         throw new RuntimeException(e);
       }
       try {
-        if (null != eventWriter) eventWriter.write(summary);
+        if (null != eventWriter)
+          eventWriter.write(summary);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -174,7 +191,6 @@ public abstract class TFLayerBase extends LayerBase {
         runner.feed(deltaOperation, tensor);
         feedbacktensors.add(tensor);
       }
-      deltaSignal.freeRef();
       Arrays.stream(gradients).forEach(runner::fetch);
       Session.Run back = runner.runAndFetchMetadata();
       for (int i = 0; i < inputs.length; i++) {
@@ -184,8 +200,10 @@ public abstract class TFLayerBase extends LayerBase {
       }
       for (int i = 0; i < stateNames.size(); i++) {
         String weightNodeName = stateNames.get(i);
-        Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()), getWeights().get(weightNodeName));
-        org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs.get(i + fwdFetches + getInputNodes().size());
+        Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()),
+            getWeights().get(weightNodeName));
+        org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs
+            .get(i + fwdFetches + getInputNodes().size());
         Tensor t;
         if (numberTensor.dataType() == DataType.FLOAT) {
           t = TFIO.getTensor(numberTensor.expect(Float.class), invertWeights());
@@ -193,56 +211,27 @@ public abstract class TFLayerBase extends LayerBase {
           t = TFIO.getTensor(numberTensor.expect(Double.class), invertWeights());
         }
         uuidDelta.addInPlace(t.getData());
-        t.freeRef();
-        uuidDelta.freeRef();
       }
       feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
     })) {
       @Override
       protected void _free() {
-        getWeights().values().forEach(ReferenceCountingBase::freeRef);
         tensors.stream().forEach(org.tensorflow.Tensor::close);
-        Arrays.stream(inputs).forEach(ReferenceCountingBase::freeRef);
-        tfsession.freeRef();
         super._free();
       }
     };
   }
 
+  protected abstract Set<String> getDataKeys(JsonObject json);
+
   protected boolean floatInputs(String key) {
     return false;
   }
 
-
   @Override
   protected void _free() {
     close();
-    getWeights().values().forEach(ReferenceCountingBase::freeRef);
     super._free();
-  }
-
-  public void close() {
-  }
-
-  public abstract GraphDef getGraphDef();
-
-  public abstract String getSummaryOut();
-
-  public abstract String getOutputNode();
-
-  public abstract List<String> getInputNodes();
-
-  public Map<String, Tensor> getWeights() {
-    return weights;
-  }
-
-  public boolean invertWeights() {
-    return true;
-  }
-
-  public @NotNull
-  GraphDef getConstGraph(GraphDef graphDef) {
-    return TFUtil.implantConstants(graphDef, getWeights());
   }
 
   class TFSession extends ReferenceCountingBase {
@@ -264,20 +253,11 @@ public abstract class TFLayerBase extends LayerBase {
         Ops ops = Ops.create(graph);
         String deltaOpName = getOutputNode() + "_delta";
         Class<? extends Number> dtype = floatInputs(deltaOpName) ? Float.class : Double.class;
-        ops.withName(deltaOpName).placeholder(
-            dtype,
-            Placeholder.shape(Shape.unknown())
-        );
-        return graph.addGradients("gradient", new Output[]{
-                TensorflowUtil.find(graph, getOutputNode()).output(0)
-            },
-            Stream.concat(
-                getInputNodes().stream(),
-                stateNames.stream()
-            ).map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
-            new Output[]{
-                TensorflowUtil.find(graph, deltaOpName).output(0)
-            });
+        ops.withName(deltaOpName).placeholder(dtype, Placeholder.shape(Shape.unknown()));
+        return graph.addGradients("gradient", new Output[]{TensorflowUtil.find(graph, getOutputNode()).output(0)},
+            Stream.concat(getInputNodes().stream(), stateNames.stream())
+                .map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
+            new Output[]{TensorflowUtil.find(graph, deltaOpName).output(0)});
       });
     }
 

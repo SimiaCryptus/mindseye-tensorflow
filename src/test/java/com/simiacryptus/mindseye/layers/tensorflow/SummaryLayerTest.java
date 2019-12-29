@@ -30,9 +30,10 @@ import java.util.Random;
 
 public class SummaryLayerTest extends LayerTestBase {
 
-  @NotNull
-  protected SummaryLayer createTFLayer() {
-    return new SummaryLayer("foo");
+  @Nullable
+  @Override
+  public Class<? extends Layer> getReferenceLayerClass() {
+    return null;
   }
 
   @Nonnull
@@ -43,16 +44,15 @@ public class SummaryLayerTest extends LayerTestBase {
     };
   }
 
-  @Nullable
-  @Override
-  public Class<? extends Layer> getReferenceLayerClass() {
-    return null;
-  }
-
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     return createTFLayer();
+  }
+
+  @NotNull
+  protected SummaryLayer createTFLayer() {
+    return new SummaryLayer("foo");
   }
 
 

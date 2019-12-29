@@ -29,16 +29,16 @@ import java.util.Random;
 public abstract class RawTFLayerTestBase extends TFLayerTestBase {
 
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return getTfLayer();
-  }
-
   @Nullable
   @Override
   public Layer getReferenceLayer() {
     return new TFConverter().convert(getTfLayer());
+  }
+
+  @Nonnull
+  @Override
+  public Layer getLayer(final int[][] inputSize, Random random) {
+    return getTfLayer();
   }
 
 }

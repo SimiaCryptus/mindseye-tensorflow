@@ -28,16 +28,16 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-
 public class AtomicTFMnist {
 
-  private static boolean summarize = false;
+  private static final boolean summarize = false;
 
   public static Layer network() {
     return network(new NullNotebookOutput());
@@ -46,42 +46,37 @@ public class AtomicTFMnist {
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
-      if (summarize) pipeline.wrap(new SummaryLayer("input")).freeRef();
-      pipeline.wrap(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45))).freeRef();
-      if (summarize) pipeline.wrap(new SummaryLayer("matmul")).freeRef();
-      pipeline.wrap(new BiasLayer(10)).freeRef();
-      if (summarize) pipeline.wrap(new SummaryLayer("bias")).freeRef();
-      pipeline.wrap(new SoftmaxLayer()).freeRef();
-      if (summarize) pipeline.wrap(new SummaryLayer("softmax")).freeRef();
+      if (summarize)
+        pipeline.add(new SummaryLayer("input"));
+      pipeline.add(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      if (summarize)
+        pipeline.add(new SummaryLayer("matmul"));
+      pipeline.add(new BiasLayer(10));
+      if (summarize)
+        pipeline.add(new SummaryLayer("bias"));
+      pipeline.add(new SoftmaxLayer());
+      if (summarize)
+        pipeline.add(new SummaryLayer("softmax"));
       return pipeline;
     });
   }
 
   public static class MnistDemo extends MnistDemoBase {
     @Override
-    protected Layer buildModel(@Nonnull NotebookOutput log) {
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
-      return network(log);
+    protected byte[] getGraphDef() {
+      return new Graph().toGraphDef();
     }
 
     @Override
-    protected byte[] getGraphDef() {
-      return new Graph().toGraphDef();
+    protected Layer buildModel(@Nonnull NotebookOutput log) {
+      log.p("This is a very simple model that performs basic logistic regression. "
+          + "It is expected to be trainable to about 91% accuracy on MNIST.");
+      return network(log);
     }
 
   }
 
   public static class LayerTest extends LayerTestBase {
-
-    @Nonnull
-    @Override
-    public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
-    }
 
     @Nullable
     @Override
@@ -91,12 +86,18 @@ public class AtomicTFMnist {
 
     @Nonnull
     @Override
+    public int[][] getSmallDims(Random random) {
+      return new int[][]{{28, 28}};
+    }
+
+    @Nonnull
+    @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       return network();
     }
 
     @Override
-    public void run(@Nonnull NotebookOutput log) {
+    public void run(@NotNull @Nonnull NotebookOutput log) {
       super.run(log);
     }
   }
