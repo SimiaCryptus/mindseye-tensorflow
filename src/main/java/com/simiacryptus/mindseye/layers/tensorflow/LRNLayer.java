@@ -28,9 +28,9 @@ import org.tensorflow.op.Ops;
 import org.tensorflow.op.core.LRN;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class LRNLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class LRNLayer extends TFLayerBase {
 
   private long radius = 5L;
   private float beta = .5f;
@@ -38,10 +38,10 @@ public class LRNLayer extends TFLayerBase {
   private float bias = 1.0f;
 
   public LRNLayer() {
-    super(new HashMap<>());
+    super(new com.simiacryptus.ref.wrappers.RefHashMap<>());
   }
 
-  public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public LRNLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     setRadius((json.get("width").getAsInt() - 1) / 2);
     setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1))));
@@ -79,10 +79,8 @@ public class LRNLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).lRN(
-          ops.withName(getInputNodes().get(0)).placeholder(Float.class),
-          LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias())
-      );
+      ops.withName(getOutputNode()).lRN(ops.withName(getInputNodes().get(0)).placeholder(Float.class),
+          LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -90,8 +88,8 @@ public class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
   }
 
   @Override
@@ -119,12 +117,30 @@ public class LRNLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static LRNLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static LRNLayer fromJson(@Nonnull final JsonObject json,
+                                  com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new LRNLayer(json, rs);
   }
 
+  public static @SuppressWarnings("unused")
+  LRNLayer[] addRefs(LRNLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef)
+        .toArray((x) -> new LRNLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  LRNLayer[][] addRefs(LRNLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs)
+        .toArray((x) -> new LRNLayer[x][]);
+  }
+
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     long width = getRadius() * 2 + 1;
     json.addProperty("width", width);
@@ -134,13 +150,23 @@ public class LRNLayer extends TFLayerBase {
     return json;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LRNLayer addRef() {
+    return (LRNLayer) super.addRef();
+  }
+
   @Override
   protected boolean floatInputs(String key) {
     return true;
   }
 
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    return new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
   }
 }

@@ -28,9 +28,9 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class MaxPoolLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MaxPoolLayer extends TFLayerBase {
 
   private long strideX = 2L;
   private long strideY = 2L;
@@ -42,7 +42,7 @@ public class MaxPoolLayer extends TFLayerBase {
     super(defaultStates());
   }
 
-  public MaxPoolLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public MaxPoolLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     strideX = json.getAsJsonPrimitive("strideX").getAsInt();
     strideY = json.getAsJsonPrimitive("strideY").getAsInt();
@@ -56,8 +56,8 @@ public class MaxPoolLayer extends TFLayerBase {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).maxPool(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          Arrays.asList(1L, getWidth(), getHeight(), 1L), Arrays.asList(1L, getStrideX(), getStrideY(), 1L),
-          getPadding());
+          com.simiacryptus.ref.wrappers.RefArrays.asList(1L, getWidth(), getHeight(), 1L),
+          com.simiacryptus.ref.wrappers.RefArrays.asList(1L, getStrideX(), getStrideY(), 1L), getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -73,8 +73,8 @@ public class MaxPoolLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
   }
 
   @Override
@@ -126,16 +126,34 @@ public class MaxPoolLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static MaxPoolLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static MaxPoolLayer fromJson(@Nonnull final JsonObject json,
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MaxPoolLayer(json, rs);
   }
 
-  private static Map<String, Tensor> defaultStates() {
-    return new HashMap<>();
+  public static @SuppressWarnings("unused")
+  MaxPoolLayer[] addRefs(MaxPoolLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRef)
+        .toArray((x) -> new MaxPoolLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MaxPoolLayer[][] addRefs(MaxPoolLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRefs)
+        .toArray((x) -> new MaxPoolLayer[x][]);
+  }
+
+  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates() {
+    return new com.simiacryptus.ref.wrappers.RefHashMap<>();
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("strideX", strideX);
     json.addProperty("strideY", strideY);
@@ -145,8 +163,18 @@ public class MaxPoolLayer extends TFLayerBase {
     return json;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MaxPoolLayer addRef() {
+    return (MaxPoolLayer) super.addRef();
+  }
+
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    return new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
   }
 }

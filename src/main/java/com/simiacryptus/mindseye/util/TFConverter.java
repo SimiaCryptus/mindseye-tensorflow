@@ -36,19 +36,15 @@ import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.AttrValue;
 import org.tensorflow.framework.GraphDef;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class TFConverter {
+public @com.simiacryptus.ref.lang.RefAware
+class TFConverter {
 
-  public static List<TFLayer> getLayers(ImageNetworkPipeline pipeline) {
-    return IntStream.range(0, pipeline.graphDefs.size()).mapToObj(i -> getLayer(pipeline, i))
-        .collect(Collectors.toList());
+  public static com.simiacryptus.ref.wrappers.RefList<TFLayer> getLayers(ImageNetworkPipeline pipeline) {
+    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, pipeline.graphDefs.size())
+        .mapToObj(i -> getLayer(pipeline, i)).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
   }
 
   @NotNull
@@ -56,7 +52,8 @@ public class TFConverter {
     GraphDef graphDef = pipeline.graphDefs.get(i);
     String output = pipeline.nodeIds().get(i);
     String input = i == 0 ? "input" : pipeline.nodeIds().get(i - 1);
-    return new TFLayer(graphDef.toByteArray(), new HashMap<>(), output, input).setFloat(true);
+    return new TFLayer(graphDef.toByteArray(), new com.simiacryptus.ref.wrappers.RefHashMap<>(), output, input)
+        .setFloat(true);
   }
 
   @NotNull
@@ -66,13 +63,13 @@ public class TFConverter {
     int[] outputDims = matMulLayer.getOutputDims();
 
     int[] tfView = Streams
-        .concat(Arrays.stream(outputDims),
-            IntStream.range(0, intputDims.length).map(i -> (intputDims.length - 1) - i).map(i -> intputDims[i]))
+        .concat(com.simiacryptus.ref.wrappers.RefArrays.stream(outputDims), com.simiacryptus.ref.wrappers.RefIntStream
+            .range(0, intputDims.length).map(i -> (intputDims.length - 1) - i).map(i -> intputDims[i]))
         .toArray();
-    int[] tfPermute = Streams
-        .concat(IntStream.range(0, intputDims.length).map(i -> outputDims.length + ((intputDims.length - 1) - i)),
-            IntStream.range(0, outputDims.length))
-        .toArray();
+    int[] tfPermute = Streams.concat(
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, intputDims.length)
+            .map(i -> outputDims.length + ((intputDims.length - 1) - i)),
+        com.simiacryptus.ref.wrappers.RefIntStream.range(0, outputDims.length)).toArray();
     Tensor rearranged = weights.reshapeCast(tfView).permuteDimensions(tfPermute);
 
     FullyConnectedLayer fullyConnectedLayer = new FullyConnectedLayer(intputDims, outputDims);
@@ -83,13 +80,13 @@ public class TFConverter {
   @NotNull
   public PipelineNetwork convert(TFLayerBase tfLayer) {
     final PipelineNetwork converted = new PipelineNetwork(1);
-    ConcurrentHashMap<String, DAGNode> nodes = new ConcurrentHashMap<>();
+    com.simiacryptus.ref.wrappers.RefConcurrentHashMap<String, DAGNode> nodes = new com.simiacryptus.ref.wrappers.RefConcurrentHashMap<>();
     getNode(tfLayer.getOutputNode(), converted, new GraphModel(tfLayer.constGraph().toByteArray()), nodes);
     return converted;
   }
 
   protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel,
-                            ConcurrentHashMap<String, DAGNode> map) {
+                            com.simiacryptus.ref.wrappers.RefConcurrentHashMap<String, DAGNode> map) {
     try {
       if (!map.containsKey(id)) {
         DAGNode result;
@@ -100,11 +97,13 @@ public class TFConverter {
         } else if (graphNode.getOp().equals("BiasAdd")) {
           result = network.add(getBiasAdd(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("Relu")) {
-          result = network.add(new ActivationLayer(ActivationLayer.Mode.RELU), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(new ActivationLayer(ActivationLayer.Mode.RELU),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("LRN")) {
           result = network.add(getLRNLayer(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("MaxPool")) {
-          result = network.add(getPoolingLayer(graphNode), getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
+          result = network.add(getPoolingLayer(graphNode),
+              getNode(graphNode.getInputKeys().get(0), network, tfModel, map));
         } else if (graphNode.getOp().equals("Concat")) {
           List<String> inputKeys = graphNode.getInputKeys();
           result = network.add(new ImgConcatLayer(), inputKeys.stream().skip(1)
@@ -155,7 +154,8 @@ public class TFConverter {
   protected Layer getConv2D(GraphModel.GraphNode graphNode) {
     GraphModel.GraphNode dataNode = graphNode.getInputs().get(1);
     assert dataNode.getOp().equals("Const");
-    int[] kernelDims = Arrays.stream(dataNode.getShape()).mapToInt(x -> (int) x).toArray();
+    int[] kernelDims = com.simiacryptus.ref.wrappers.RefArrays.stream(dataNode.getShape()).mapToInt(x -> (int) x)
+        .toArray();
     double[] data = dataNode.getData();
     if (kernelDims.length == 0)
       kernelDims = new int[]{data.length};

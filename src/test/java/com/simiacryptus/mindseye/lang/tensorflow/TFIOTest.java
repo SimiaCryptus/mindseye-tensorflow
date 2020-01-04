@@ -22,15 +22,12 @@ package com.simiacryptus.mindseye.lang.tensorflow;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertArrayEquals;
 
-public class TFIOTest {
+public @com.simiacryptus.ref.lang.RefAware
+class TFIOTest {
 
   private final double tol = 1e-4;
 
@@ -40,7 +37,7 @@ public class TFIOTest {
   }
 
   private static void assertEquals(TensorList a, TensorList b, double tol) {
-    Assert.assertEquals(a.length(), b.length());
+    com.simiacryptus.ref.wrappers.RefAssert.assertEquals(a.length(), b.length());
     for (int i = 0; i < a.length(); i++) {
       assertEquals(a.get(i), b.get(i), tol);
     }
@@ -57,9 +54,13 @@ public class TFIOTest {
   public void test(Tensor tensor) {
     org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
     org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), doubleTensor.shape());
+    assertArrayEquals(
+        com.simiacryptus.ref.wrappers.RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+        doubleTensor.shape());
     assertEquals(tensor, TFIO.getTensor(doubleTensor), tol);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), floatTensor.shape());
+    assertArrayEquals(
+        com.simiacryptus.ref.wrappers.RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+        floatTensor.shape());
     assertEquals(tensor, TFIO.getTensor(floatTensor), tol);
   }
 
@@ -71,17 +72,22 @@ public class TFIOTest {
   }
 
   public TensorArray newTensorList(int length, int... ints) {
-    return new TensorArray(IntStream.range(0, length).mapToObj(i -> new Tensor(ints).randomize(1.0)).toArray(i -> new Tensor[i]));
+    return new TensorArray(com.simiacryptus.ref.wrappers.RefIntStream.range(0, length)
+        .mapToObj(i -> new Tensor(ints).randomize(1.0)).toArray(i -> new Tensor[i]));
   }
 
   public void test(TensorList tensor) {
     org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
     org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
-    Assert.assertEquals(tensor.length(), doubleTensor.shape()[0]);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), Arrays.stream(doubleTensor.shape()).skip(1).toArray());
+    com.simiacryptus.ref.wrappers.RefAssert.assertEquals(tensor.length(), doubleTensor.shape()[0]);
+    assertArrayEquals(
+        com.simiacryptus.ref.wrappers.RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+        com.simiacryptus.ref.wrappers.RefArrays.stream(doubleTensor.shape()).skip(1).toArray());
     assertEquals(tensor, TFIO.getTensorList(doubleTensor), tol);
-    Assert.assertEquals(tensor.length(), floatTensor.shape()[0]);
-    assertArrayEquals(Arrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), Arrays.stream(floatTensor.shape()).skip(1).toArray());
+    com.simiacryptus.ref.wrappers.RefAssert.assertEquals(tensor.length(), floatTensor.shape()[0]);
+    assertArrayEquals(
+        com.simiacryptus.ref.wrappers.RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+        com.simiacryptus.ref.wrappers.RefArrays.stream(floatTensor.shape()).skip(1).toArray());
     assertEquals(tensor, TFIO.getTensorList(floatTensor), tol);
   }
 }

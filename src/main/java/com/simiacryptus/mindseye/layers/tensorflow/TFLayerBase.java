@@ -21,8 +21,8 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
@@ -39,43 +39,59 @@ import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Map;
+import java.util.UUID;
 
-public abstract class TFLayerBase extends LayerBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class TFLayerBase extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(TFLayer.class);
   public static TensorboardEventWriter eventWriter = null;
 
-  private final Map<String, Tensor> weights = new HashMap<>();
+  private final com.simiacryptus.ref.wrappers.RefMap<String, Tensor> weights = new com.simiacryptus.ref.wrappers.RefHashMap<>();
 
-  public TFLayerBase(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public TFLayerBase(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json);
-    Set<String> dataKeys = getDataKeys(json);
+    com.simiacryptus.ref.wrappers.RefSet<String> dataKeys = getDataKeys(json);
     for (String key : dataKeys) {
       this.getWeights().put(key, Tensor.fromJson(json.get(key), rs));
     }
   }
 
-  public TFLayerBase(Map<String, Tensor> states) {
+  public TFLayerBase(com.simiacryptus.ref.wrappers.RefMap<String, Tensor> states) {
     this.getWeights().putAll(states);
   }
 
   public abstract GraphDef getGraphDef();
 
-  public abstract List<String> getInputNodes();
+  public abstract com.simiacryptus.ref.wrappers.RefList<String> getInputNodes();
 
   public abstract String getOutputNode();
 
   public abstract String getSummaryOut();
 
-  public Map<String, Tensor> getWeights() {
+  public com.simiacryptus.ref.wrappers.RefMap<String, Tensor> getWeights() {
     return weights;
+  }
+
+  public static @SuppressWarnings("unused")
+  TFLayerBase[] addRefs(TFLayerBase[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRef)
+        .toArray((x) -> new TFLayerBase[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  TFLayerBase[][] addRefs(TFLayerBase[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRefs)
+        .toArray((x) -> new TFLayerBase[x][]);
   }
 
   @NotNull
   public TFLayer asConstLayer() {
-    return new TFLayer(constGraph().toByteArray(), new HashMap<>(), getOutputNode(),
+    return new TFLayer(constGraph().toByteArray(), new com.simiacryptus.ref.wrappers.RefHashMap<>(), getOutputNode(),
         getInputNodes().toArray(new String[]{}));
   }
 
@@ -84,7 +100,8 @@ public abstract class TFLayerBase extends LayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = getJsonStub();
     for (Map.Entry<String, Tensor> entry : getWeights().entrySet()) {
       json.add(entry.getKey(), entry.getValue().getJson(resources, dataSerializer));
@@ -94,14 +111,15 @@ public abstract class TFLayerBase extends LayerBase {
 
   @Nullable
   @Override
-  public List<double[]> state() {
-    return getWeights().values().stream().map(x -> x.getData()).collect(Collectors.toList());
+  public com.simiacryptus.ref.wrappers.RefList<double[]> state() {
+    return getWeights().values().stream().map(x -> x.getData())
+        .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
   }
 
   @Nullable
   @Override
   public Result eval(Result... inputs) {
-    TFSession tfsession = new TFSession();
+    TFSession tfsession = new TFSession(TFLayerBase.this);
     return eval(tfsession, inputs);
   }
 
@@ -116,11 +134,23 @@ public abstract class TFLayerBase extends LayerBase {
     return TFUtil.implantConstants(graphDef, getWeights());
   }
 
+  public void _free() {
+    close();
+    super._free();
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  TFLayerBase addRef() {
+    return (TFLayerBase) super.addRef();
+  }
+
   @NotNull
   Result eval(TFSession tfsession, Result... inputs) {
-    List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
+    com.simiacryptus.ref.wrappers.RefList<String> stateNames = getWeights().keySet().stream()
+        .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
     Session.Runner runner = tfsession.session.runner();
-    ArrayList<org.tensorflow.Tensor<?>> tensors = new ArrayList<>();
+    com.simiacryptus.ref.wrappers.RefArrayList<org.tensorflow.Tensor<?>> tensors = new com.simiacryptus.ref.wrappers.RefArrayList<>();
     getWeights().forEach((nodeName, data) -> {
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
       if (floatInputs(nodeName)) {
@@ -179,7 +209,7 @@ public abstract class TFLayerBase extends LayerBase {
       }
     }
     return new Result(resultData, ((deltaBuffer, deltaSignal) -> {
-      ArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new ArrayList<>();
+      com.simiacryptus.ref.wrappers.RefArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new com.simiacryptus.ref.wrappers.RefArrayList<>();
       Output<?>[] gradients = tfsession.getGradients();
       String deltaOperation = getOutputNode() + "_delta";
       if (floatInputs(deltaOperation)) {
@@ -191,7 +221,7 @@ public abstract class TFLayerBase extends LayerBase {
         runner.feed(deltaOperation, tensor);
         feedbacktensors.add(tensor);
       }
-      Arrays.stream(gradients).forEach(runner::fetch);
+      com.simiacryptus.ref.wrappers.RefArrays.stream(gradients).forEach(runner::fetch);
       Session.Run back = runner.runAndFetchMetadata();
       for (int i = 0; i < inputs.length; i++) {
         org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
@@ -214,34 +244,30 @@ public abstract class TFLayerBase extends LayerBase {
       }
       feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
     })) {
-      @Override
-      protected void _free() {
+      public void _free() {
         tensors.stream().forEach(org.tensorflow.Tensor::close);
         super._free();
       }
     };
   }
 
-  protected abstract Set<String> getDataKeys(JsonObject json);
+  protected abstract com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json);
 
   protected boolean floatInputs(String key) {
     return false;
   }
 
-  @Override
-  protected void _free() {
-    close();
-    super._free();
-  }
-
+  static @com.simiacryptus.ref.lang.RefAware
   class TFSession extends ReferenceCountingBase {
     public final Graph graph;
     public final Singleton<Output<?>[]> outputSingleton = new Singleton<>();
     public final Session session;
+    private final TFLayerBase parent;
 
-    public TFSession() {
+    public TFSession(TFLayerBase parent) {
       this.graph = new Graph();
-      GraphDef graphDef = getGraphDef();
+      this.parent = parent;
+      GraphDef graphDef = parent.getGraphDef();
       TensorflowUtil.validate(graphDef);
       graph.importGraphDef(graphDef.toByteArray());
       this.session = new Session(graph);
@@ -249,25 +275,40 @@ public abstract class TFLayerBase extends LayerBase {
 
     public Output<?>[] getGradients() {
       return outputSingleton.getOrInit(() -> {
-        List<String> stateNames = getWeights().keySet().stream().collect(Collectors.toList());
+        com.simiacryptus.ref.wrappers.RefList<String> stateNames = parent.getWeights().keySet().stream()
+            .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
         Ops ops = Ops.create(graph);
-        String deltaOpName = getOutputNode() + "_delta";
-        Class<? extends Number> dtype = floatInputs(deltaOpName) ? Float.class : Double.class;
+        String deltaOpName = parent.getOutputNode() + "_delta";
+        Class<? extends Number> dtype = parent.floatInputs(deltaOpName) ? Float.class : Double.class;
         ops.withName(deltaOpName).placeholder(dtype, Placeholder.shape(Shape.unknown()));
-        return graph.addGradients("gradient", new Output[]{TensorflowUtil.find(graph, getOutputNode()).output(0)},
-            Stream.concat(getInputNodes().stream(), stateNames.stream())
+        return graph.addGradients("gradient",
+            new Output[]{TensorflowUtil.find(graph, parent.getOutputNode()).output(0)},
+            com.simiacryptus.ref.wrappers.RefStream.concat(parent.getInputNodes().stream(), stateNames.stream())
                 .map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
             new Output[]{TensorflowUtil.find(graph, deltaOpName).output(0)});
       });
     }
 
-    @Override
-    protected void _free() {
+    public static @SuppressWarnings("unused")
+    TFSession[] addRefs(TFSession[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFSession::addRef)
+          .toArray((x) -> new TFSession[x]);
+    }
+
+    public void _free() {
       new Thread(() -> {
         session.close();
         graph.close();
       }).start();
       super._free();
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    TFSession addRef() {
+      return (TFSession) super.addRef();
     }
   }
 

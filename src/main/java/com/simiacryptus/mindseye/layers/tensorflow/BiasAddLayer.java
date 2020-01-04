@@ -27,15 +27,15 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class BiasAddLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class BiasAddLayer extends TFLayerBase {
 
   public BiasAddLayer(int... intputDims) {
     super(defaultStates(intputDims));
   }
 
-  public BiasAddLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public BiasAddLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -43,10 +43,8 @@ public class BiasAddLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).biasAdd(
-          ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          ops.withName("bias").placeholder(Double.class)
-      );
+      ops.withName(getOutputNode()).biasAdd(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+          ops.withName("bias").placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -54,8 +52,8 @@ public class BiasAddLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
   }
 
   @Override
@@ -74,21 +72,48 @@ public class BiasAddLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static BiasAddLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static BiasAddLayer fromJson(@Nonnull final JsonObject json,
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new BiasAddLayer(json, rs);
   }
 
-  private static Map<String, Tensor> defaultStates(int[] intputDims) {
-    HashMap<String, Tensor> map = new HashMap<>();
+  public static @SuppressWarnings("unused")
+  BiasAddLayer[] addRefs(BiasAddLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRef)
+        .toArray((x) -> new BiasAddLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasAddLayer[][] addRefs(BiasAddLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRefs)
+        .toArray((x) -> new BiasAddLayer[x][]);
+  }
+
+  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates(int[] intputDims) {
+    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
     map.put("bias", new Tensor(intputDims).setByCoord(c -> {
       return 0;
     }));
     return map;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BiasAddLayer addRef() {
+    return (BiasAddLayer) super.addRef();
+  }
+
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    com.simiacryptus.ref.wrappers.RefHashSet<String> hashSet = new com.simiacryptus.ref.wrappers.RefHashSet<>();
     hashSet.add("bias");
     return hashSet;
   }

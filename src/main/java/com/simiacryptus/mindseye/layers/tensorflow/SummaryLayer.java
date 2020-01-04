@@ -29,18 +29,18 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class SummaryLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SummaryLayer extends TFLayerBase {
 
   private String tag;
 
   public SummaryLayer(String name) {
-    super(new HashMap<>());
+    super(new com.simiacryptus.ref.wrappers.RefHashMap<>());
     this.setTag(name);
   }
 
-  public SummaryLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public SummaryLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     tag = json.get("tag").getAsString();
   }
@@ -60,8 +60,8 @@ public class SummaryLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList(tag);
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList(tag);
   }
 
   @Override
@@ -88,19 +88,47 @@ public class SummaryLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static SummaryLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SummaryLayer fromJson(@Nonnull final JsonObject json,
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SummaryLayer(json, rs);
   }
 
+  public static @SuppressWarnings("unused")
+  SummaryLayer[] addRefs(SummaryLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRef)
+        .toArray((x) -> new SummaryLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SummaryLayer[][] addRefs(SummaryLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRefs)
+        .toArray((x) -> new SummaryLayer[x][]);
+  }
+
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("tag", tag);
     return json;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SummaryLayer addRef() {
+    return (SummaryLayer) super.addRef();
+  }
+
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    return new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
   }
 }

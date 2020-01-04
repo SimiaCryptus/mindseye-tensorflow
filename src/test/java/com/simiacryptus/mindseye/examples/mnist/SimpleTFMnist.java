@@ -43,14 +43,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
-
-public class SimpleTFMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class SimpleTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
@@ -60,50 +58,33 @@ public class SimpleTFMnist {
 
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
-      ops.withName(output).softmax(
-          ops.reshape(
-              ops.transpose(
+      ops.withName(output)
+          .softmax(
+              ops.reshape(ops.transpose(
                   ops.matMul(
-                      ops.withName(weights).placeholder(
-                          Double.class,
-                          Placeholder.shape(Shape.make(10, 28 * 28))
-                      ),
+                      ops.withName(weights).placeholder(Double.class, Placeholder
+                          .shape(Shape.make(10, 28 * 28))),
                       ops.reshape(
                           ops.add(
                               ops.reshape(
-                                  ops.withName(bias).placeholder(
-                                      Double.class,
-                                      Placeholder.shape(Shape.make(1, 28, 28))
-                                  ),
-                                  ops.constant(new long[]{1, 28, 28})
-                              ),
+                                  ops.withName(bias).placeholder(Double.class,
+                                      Placeholder.shape(Shape.make(1, 28, 28))),
+                                  ops.constant(new long[]{1, 28, 28})),
                               ops.reshape(
-                                  ops.withName(input).placeholder(
-                                      Double.class,
-                                      Placeholder.shape(Shape.make(-1, 28, 28))
-                                  ),
-                                  ops.constant(new long[]{-1, 28, 28})
-                              )
-                          ),
-                          ops.constant(new long[]{-1, 28 * 28})
-                      ),
-                      MatMul.transposeB(true)
-                  ),
-                  ops.constant(new int[]{1, 0})
-              ),
-              ops.constant(new long[]{-1, 10})
-          ));
+                                  ops.withName(input).placeholder(Double.class,
+                                      Placeholder.shape(Shape.make(-1, 28, 28))),
+                                  ops.constant(new long[]{-1, 28, 28}))),
+                          ops.constant(new long[]{-1, 28 * 28})),
+                      MatMul.transposeB(true)),
+                  ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10})));
     });
   }
 
   @NotNull
-  private static HashMap<String, Tensor> getVariables() {
-    HashMap<String, Tensor> variables = new HashMap<>();
-    variables.put(weights,
-        new Tensor(10, 28 * 28)
-            .setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(bias,
-        new Tensor(1, 28, 28).setByCoord(c -> 0));
+  private static com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> getVariables() {
+    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> variables = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+    variables.put(weights, new Tensor(10, 28 * 28).setByCoord(c -> .001 * (Math.random() - 0.5)));
+    variables.put(bias, new Tensor(1, 28, 28).setByCoord(c -> 0));
     return variables;
   }
 
@@ -124,14 +105,16 @@ public class SimpleTFMnist {
   }
 
   private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput) return graphDef;
+    if (null == statOutput)
+      return graphDef;
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!Arrays.asList(
-          "MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add"
-      ).contains(op)) return null;
-      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
+      if (!com.simiacryptus.ref.wrappers.RefArrays
+          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
+        return null;
+      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
+          NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
       if (node.getName().equalsIgnoreCase(input)) {
         nodeInstrumentation.setImage(28, 28, 1);
       }
@@ -143,7 +126,8 @@ public class SimpleTFMnist {
 
   @Test
   public void dumpModelJson() throws Exception {
-    byte[] protobufBinaryData = FileUtils.readFileToByteArray(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
+    byte[] protobufBinaryData = FileUtils.readFileToByteArray(
+        new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
     GraphModel model = new GraphModel(protobufBinaryData);
     //System.out.println("Protobuf: " + model.graphDef);
     CharSequence json = toJson(model);
@@ -155,10 +139,13 @@ public class SimpleTFMnist {
 
   @Test
   public void viewModelJson() throws Exception {
-    TFUtil.launchTensorboard(new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"), p -> p.waitFor());
+    TFUtil.launchTensorboard(
+        new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\tmp\\train\\"),
+        p -> p.waitFor());
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return SimpleTFMnist.getGraphDef();
@@ -166,14 +153,15 @@ public class SimpleTFMnist {
 
     @Override
     protected Layer buildModel(@Nonnull NotebookOutput log) {
-      log.p("This is a very simple model that performs basic logistic regression. " +
-          "It is expected to be trainable to about 91% accuracy on MNIST.");
+      log.p("This is a very simple model that performs basic logistic regression. "
+          + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -181,18 +169,34 @@ public class SimpleTFMnist {
       return null;
     }
 
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
+    }
+
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{
-          {28, 28}
-      };
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       return network();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
 
   }

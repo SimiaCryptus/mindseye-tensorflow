@@ -39,11 +39,10 @@ import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
-public class ConvTFMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class ConvTFMnist {
 
   public static final String input = "image";
   public static final String fc1 = "fc1";
@@ -65,8 +64,9 @@ public class ConvTFMnist {
                   ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                   ops.withName(ConvTFMnist.conv1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, 1, bands1))),
-                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
+                  com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 2L, 2L, 1L),
+              com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 2L, 2L, 1L), "SAME")));
       int bands2 = 64;
       Operand<Double> conv2 = ops.add(
           ops.withName(bias2).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands2))),
@@ -74,8 +74,9 @@ public class ConvTFMnist {
               ops.withName("conv2d_1").conv2D(conv1,
                   ops.withName(ConvTFMnist.conv2).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, bands1, bands2))),
-                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
+                  com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 2L, 2L, 1L),
+              com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 2L, 2L, 1L), "SAME")));
       Operand<Double> fc1 = ops.add(
           ops.withName(bias3).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1024))),
           ops.relu(ops.transpose(
@@ -89,8 +90,8 @@ public class ConvTFMnist {
   }
 
   @NotNull
-  private static HashMap<String, Tensor> getVariables() {
-    HashMap<String, Tensor> variables = new HashMap<>();
+  private static com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> getVariables() {
+    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> variables = new com.simiacryptus.ref.wrappers.RefHashMap<>();
     variables.put(conv1, new Tensor(5, 5, 1, 32).randomize(.001));
     variables.put(conv2, new Tensor(5, 5, 32, 64).randomize(.001));
     variables.put(bias1, new Tensor(1, 1, 1, 32));
@@ -136,7 +137,8 @@ public class ConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!Arrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D").contains(op))
+      if (!com.simiacryptus.ref.wrappers.RefArrays
+          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D").contains(op))
         return null;
       //      if (node.getName().equalsIgnoreCase(input)) {
       //        nodeInstrumentation.setImage(28, 28, 1);
@@ -147,7 +149,8 @@ public class ConvTFMnist {
     return newDef;
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return ConvTFMnist.getGraphDef();
@@ -163,12 +166,21 @@ public class ConvTFMnist {
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
@@ -181,6 +193,16 @@ public class ConvTFMnist {
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       return network();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
 
   }

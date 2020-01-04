@@ -56,12 +56,11 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public abstract class MnistDemoBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class MnistDemoBase {
   private static final Logger log = LoggerFactory.getLogger(MnistDemoBase.class);
   protected int timeout = 60;
 
@@ -72,7 +71,7 @@ public abstract class MnistDemoBase {
     File tensorboardLocation = new File("tensorboard/tflayer_TFLayer").getAbsoluteFile();
     File[] listFiles = tensorboardLocation.getParentFile().listFiles();
     if (null != listFiles)
-      Arrays.stream(listFiles).forEach(file -> {
+      com.simiacryptus.ref.wrappers.RefArrays.stream(listFiles).forEach(file -> {
         System.out.println("Delete: " + file);
         file.delete();
       });
@@ -112,7 +111,7 @@ public abstract class MnistDemoBase {
     final Layer recognitionNetwork = buildModel(log);
 
     log.h1("Training");
-    @Nonnull final List<Step> history = new ArrayList<>();
+    @Nonnull final com.simiacryptus.ref.wrappers.RefList<Step> history = new com.simiacryptus.ref.wrappers.RefArrayList<>();
     @Nonnull final TrainingMonitor monitor = new TrainingMonitor() {
       @Override
       public void clear() {
@@ -185,16 +184,19 @@ public abstract class MnistDemoBase {
     log.h1("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
     log.eval(() -> {
-      List<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(Collectors.toList());
+      com.simiacryptus.ref.wrappers.RefList<LabeledObject<Tensor>> validation = MNIST.validationDataStream()
+          .collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
       Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
       TensorList predictionData = recognitionNetwork.eval(tensors).getData();
-      List<int[]> predicitonList = IntStream.range(0, predictionData.length()).mapToObj(rowIndex -> {
-        Tensor predictionTensor = predictionData.get(rowIndex);
-        return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(ii -> {
-          return -predictionTensor.getData()[ii];
-        })).mapToInt(x -> x).toArray();
-      }).collect(Collectors.toList());
-      return IntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
+      com.simiacryptus.ref.wrappers.RefList<int[]> predicitonList = com.simiacryptus.ref.wrappers.RefIntStream
+          .range(0, predictionData.length()).mapToObj(rowIndex -> {
+            Tensor predictionTensor = predictionData.get(rowIndex);
+            return com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
+                .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(ii -> {
+                  return -predictionTensor.getData()[ii];
+                })).mapToInt(x -> x).toArray();
+          }).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList());
+      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
         return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
       }).average().getAsDouble() * 100;
     });
@@ -205,14 +207,15 @@ public abstract class MnistDemoBase {
       MNIST.validationDataStream().map(labeledObject -> {
         final int actualCategory = parse(labeledObject.label);
         @Nullable final double[] predictionSignal = recognitionNetwork.eval(labeledObject.data).getData().get(0).getData();
-        final int[] predictionList = IntStream.range(0, 10).mapToObj(x -> x)
-            .sorted(Comparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+        final int[] predictionList = com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
+            .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
+            .toArray();
         if (predictionList[0] == actualCategory)
           return null; // We will only examine mispredicted rows
-        @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
+        @Nonnull final com.simiacryptus.ref.wrappers.RefLinkedHashMap<CharSequence, Object> row = new com.simiacryptus.ref.wrappers.RefLinkedHashMap<>();
         row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
         row.put("Prediction",
-            Arrays.stream(predictionList).limit(3)
+            com.simiacryptus.ref.wrappers.RefArrays.stream(predictionList).limit(3)
                 .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                 .reduce((a, b) -> a + ", " + b).get());
         return row;
@@ -228,8 +231,9 @@ public abstract class MnistDemoBase {
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
     Tensor tensor = network.eval(labeledObject.data).getData().get(0);
-    return IntStream.range(0, 10).mapToObj(x -> x).sorted(Comparator.comparing(i -> -tensor.getData()[i]))
-        .mapToInt(x -> x).toArray();
+    return com.simiacryptus.ref.wrappers.RefIntStream.range(0, 10).mapToObj(x -> x)
+        .sorted(com.simiacryptus.ref.wrappers.RefComparator.comparing(i -> -tensor.getData()[i])).mapToInt(x -> x)
+        .toArray();
   }
 
   protected abstract Layer buildModel(@Nonnull NotebookOutput log);

@@ -26,8 +26,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public abstract class RawTFLayerTestBase extends TFLayerTestBase {
-
+public abstract @com.simiacryptus.ref.lang.RefAware
+class RawTFLayerTestBase extends TFLayerTestBase {
 
   @Nullable
   @Override
@@ -35,10 +35,36 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
     return new TFConverter().convert(getTfLayer());
   }
 
+  public static @SuppressWarnings("unused")
+  RawTFLayerTestBase[] addRefs(RawTFLayerTestBase[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
+        .toArray((x) -> new RawTFLayerTestBase[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  RawTFLayerTestBase[][] addRefs(RawTFLayerTestBase[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRefs)
+        .toArray((x) -> new RawTFLayerTestBase[x][]);
+  }
+
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     return getTfLayer();
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  RawTFLayerTestBase addRef() {
+    return (RawTFLayerTestBase) super.addRef();
   }
 
 }

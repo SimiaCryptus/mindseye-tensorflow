@@ -37,11 +37,10 @@ import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
-public class FloatTFMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class FloatTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
@@ -75,8 +74,8 @@ public class FloatTFMnist {
   }
 
   @NotNull
-  private static HashMap<String, Tensor> getVariables() {
-    HashMap<String, Tensor> variables = new HashMap<>();
+  private static com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> getVariables() {
+    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> variables = new com.simiacryptus.ref.wrappers.RefHashMap<>();
     variables.put(weights, new Tensor(10, 28 * 28).setByCoord(c -> .001 * (Math.random() - 0.5)));
     variables.put(bias, new Tensor(1, 28, 28).setByCoord(c -> 0));
     return variables;
@@ -104,7 +103,8 @@ public class FloatTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!Arrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
+      if (!com.simiacryptus.ref.wrappers.RefArrays
+          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
         return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
           NodeInstrumentation.getDataType(node, DataType.DT_FLOAT));
@@ -117,7 +117,8 @@ public class FloatTFMnist {
     return newDef;
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return FloatTFMnist.getGraphDef();
@@ -132,12 +133,21 @@ public class FloatTFMnist {
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
@@ -150,6 +160,16 @@ public class FloatTFMnist {
     @Override
     public Layer getLayer(final int[][] inputSize, Random random) {
       return network();
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
 
   }

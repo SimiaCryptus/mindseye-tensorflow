@@ -36,7 +36,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class CudnnJavaMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class CudnnJavaMnist {
 
   private static final boolean tensorboard = false;
 
@@ -68,7 +69,7 @@ public class CudnnJavaMnist {
 
       pipeline.add(new AssertDimensionsLayer(7, 7, bands2));
       pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{7, 7, bands2},
-            new int[]{1024}).set(() -> 0.001 * (Math.random() - 0.45)).explode());
+          new int[]{1024}).set(() -> 0.001 * (Math.random() - 0.45)).explode());
       pipeline.add(new BiasLayer(1024));
       pipeline.add(new ReLuActivationLayer());
       if (tensorboard)
@@ -76,7 +77,8 @@ public class CudnnJavaMnist {
 
       PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
       stochasticTerminal.add(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5)));
-      stochasticTerminal.add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      stochasticTerminal
+          .add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
       stochasticTerminal.add(new BiasLayer(10));
       stochasticTerminal.add(new SoftmaxLayer());
       pipeline.add(new StochasticSamplingSubnetLayer(stochasticTerminal, 5));
@@ -87,7 +89,8 @@ public class CudnnJavaMnist {
     });
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -103,12 +106,21 @@ public class CudnnJavaMnist {
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
@@ -126,6 +138,16 @@ public class CudnnJavaMnist {
     @Override
     public void run(@NotNull @Nonnull NotebookOutput log) {
       super.run(log);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
 
     @Override

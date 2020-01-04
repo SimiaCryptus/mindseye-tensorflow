@@ -24,17 +24,41 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-
-public class MatMulLayerTest extends RawTFLayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MatMulLayerTest extends RawTFLayerTestBase {
 
   private final int[] inputDim = {2, 2};
+
+  public static @SuppressWarnings("unused")
+  MatMulLayerTest[] addRefs(MatMulLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRef)
+        .toArray((x) -> new MatMulLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MatMulLayerTest[][] addRefs(MatMulLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRefs)
+        .toArray((x) -> new MatMulLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        inputDim
-    };
+    return new int[][]{inputDim};
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MatMulLayerTest addRef() {
+    return (MatMulLayerTest) super.addRef();
   }
 
   @NotNull

@@ -31,11 +31,10 @@ import org.tensorflow.op.Ops;
 import org.tensorflow.op.core.MatMul;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 import java.util.function.DoubleSupplier;
-import java.util.stream.IntStream;
 
-public class MatMulLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class MatMulLayer extends TFLayerBase {
 
   private final int[] intputDims;
   private final int[] outputDims;
@@ -46,7 +45,7 @@ public class MatMulLayer extends TFLayerBase {
     this.outputDims = outputDims;
   }
 
-  public MatMulLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public MatMulLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     intputDims = JsonUtil.toIntArray(json.get("inputDims").getAsJsonArray());
     outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
@@ -63,7 +62,9 @@ public class MatMulLayer extends TFLayerBase {
                       ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})),
-          ops.constant(IntStream.concat(IntStream.of(-1), Arrays.stream(getOutputDims())).toArray()));
+          ops.constant(
+              com.simiacryptus.ref.wrappers.RefIntStream.concat(com.simiacryptus.ref.wrappers.RefIntStream.of(-1),
+                  com.simiacryptus.ref.wrappers.RefArrays.stream(getOutputDims())).toArray()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -71,8 +72,8 @@ public class MatMulLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
   }
 
   public int[] getIntputDims() {
@@ -99,12 +100,30 @@ public class MatMulLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static MatMulLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static MatMulLayer fromJson(@Nonnull final JsonObject json,
+                                     com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new MatMulLayer(json, rs);
   }
 
-  private static Map<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
-    HashMap<String, Tensor> map = new HashMap<>();
+  public static @SuppressWarnings("unused")
+  MatMulLayer[] addRefs(MatMulLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef)
+        .toArray((x) -> new MatMulLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  MatMulLayer[][] addRefs(MatMulLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs)
+        .toArray((x) -> new MatMulLayer[x][]);
+  }
+
+  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates(int[] intputDims,
+                                                                                    int[] outputDims) {
+    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
     map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
@@ -117,21 +136,32 @@ public class MatMulLayer extends TFLayerBase {
 
   @Nonnull
   public MatMulLayer set(@Nonnull final DoubleSupplier f) {
-    Arrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
+    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
     return this;
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
     json.add("outputDims", JsonUtil.toIntArray(getOutputDims()));
     return json;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  MatMulLayer addRef() {
+    return (MatMulLayer) super.addRef();
+  }
+
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    HashSet<String> hashSet = new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    com.simiacryptus.ref.wrappers.RefHashSet<String> hashSet = new com.simiacryptus.ref.wrappers.RefHashSet<>();
     hashSet.add("weights");
     return hashSet;
   }

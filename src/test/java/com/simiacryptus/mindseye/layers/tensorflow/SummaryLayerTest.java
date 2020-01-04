@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-
-public class SummaryLayerTest extends LayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SummaryLayerTest extends LayerTestBase {
 
   @Nullable
   @Override
@@ -36,12 +36,26 @@ public class SummaryLayerTest extends LayerTestBase {
     return null;
   }
 
+  public static @SuppressWarnings("unused")
+  SummaryLayerTest[] addRefs(SummaryLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
+        .toArray((x) -> new SummaryLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SummaryLayerTest[][] addRefs(SummaryLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRefs)
+        .toArray((x) -> new SummaryLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {5}
-    };
+    return new int[][]{{5}};
   }
 
   @Nonnull
@@ -50,10 +64,19 @@ public class SummaryLayerTest extends LayerTestBase {
     return createTFLayer();
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SummaryLayerTest addRef() {
+    return (SummaryLayerTest) super.addRef();
+  }
+
   @NotNull
   protected SummaryLayer createTFLayer() {
     return new SummaryLayer("foo");
   }
-
 
 }

@@ -34,11 +34,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class TFUtil {
+public @com.simiacryptus.ref.lang.RefAware
+class TFUtil {
 
   public static void launchTensorboard(File logDir, UncheckedConsumer<Process> waiter)
       throws IOException, URISyntaxException {
@@ -65,7 +63,8 @@ public class TFUtil {
   }
 
   @NotNull
-  public static GraphDef implantConstants(GraphDef graphDef, Map<String, Tensor> weights) {
+  public static GraphDef implantConstants(GraphDef graphDef,
+                                          com.simiacryptus.ref.wrappers.RefMap<String, Tensor> weights) {
     graphDef = TensorflowUtil.editGraph(graphDef, graphBuilder -> {
       weights.forEach((key, value) -> {
         TensorflowUtil.editNode(graphBuilder, key, (NodeDef.Builder node) -> {
@@ -93,8 +92,8 @@ public class TFUtil {
               //                tensor.addAllDoubleVal(Arrays.stream(data).mapToObj(x -> x).collect(Collectors.toList()));
             } else if (type == DataType.DT_FLOAT) {
               tensor.setDtype(type);
-              float[] floats = Floats
-                  .toArray(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
+              float[] floats = Floats.toArray(com.simiacryptus.ref.wrappers.RefArrays.stream(data)
+                  .mapToObj(x -> (float) x).collect(com.simiacryptus.ref.wrappers.RefCollectors.toList()));
               ByteString byteString = ByteString.copyFrom(GraphModel.putFloats(floats));
               tensor.setTensorContent(byteString);
               //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));

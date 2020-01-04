@@ -24,22 +24,45 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+public @com.simiacryptus.ref.lang.RefAware
+class BiasAddLayerTest extends RawTFLayerTestBase {
 
-public class BiasAddLayerTest extends RawTFLayerTestBase {
+  public static @SuppressWarnings("unused")
+  BiasAddLayerTest[] addRefs(BiasAddLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRef)
+        .toArray((x) -> new BiasAddLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasAddLayerTest[][] addRefs(BiasAddLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRefs)
+        .toArray((x) -> new BiasAddLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 2, 3}
-    };
+    return new int[][]{{2, 2, 3}};
   }
 
-  public @NotNull
-  TFLayerBase createTFLayer() {
+  public @NotNull TFLayerBase createTFLayer() {
     BiasAddLayer biasLayer = new BiasAddLayer(3);
     biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
     return biasLayer;
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BiasAddLayerTest addRef() {
+    return (BiasAddLayerTest) super.addRef();
   }
 
 }

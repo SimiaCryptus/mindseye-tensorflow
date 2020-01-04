@@ -27,30 +27,32 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Base64;
 
-public class TFLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class TFLayer extends TFLayerBase {
 
   private final byte[] graphDef;
   private boolean isFloat = false;
   private String outputNode;
-  private List<String> inputNodes;
+  private com.simiacryptus.ref.wrappers.RefList<String> inputNodes;
   private String summaryOut = "";
 
-  public TFLayer(byte[] graphDef, Map<String, Tensor> states, String output, String... input) {
+  public TFLayer(byte[] graphDef, com.simiacryptus.ref.wrappers.RefMap<String, Tensor> states, String output,
+                 String... input) {
     super(states);
     this.setOutputNode(output);
-    setInputNodes(Arrays.asList(input));
+    setInputNodes(com.simiacryptus.ref.wrappers.RefArrays.asList(input));
     this.graphDef = graphDef;
   }
 
-  public TFLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public TFLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
     graphDef = Base64.getDecoder().decode(json.get("graphDef").getAsString());
     setFloat(json.get("isFloat").getAsBoolean());
     setOutputNode(json.get("output").getAsString());
     JsonArray jsonArray = json.get("input").getAsJsonArray();
-    ArrayList<String> inputNodes = new ArrayList<>();
+    com.simiacryptus.ref.wrappers.RefArrayList<String> inputNodes = new com.simiacryptus.ref.wrappers.RefArrayList<>();
     for (int i = 0; i < jsonArray.size(); i++) {
       inputNodes.add(jsonArray.get(i).getAsString());
     }
@@ -67,11 +69,11 @@ public class TFLayer extends TFLayerBase {
     }
   }
 
-  public List<String> getInputNodes() {
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
     return inputNodes;
   }
 
-  public void setInputNodes(List<String> inputNodes) {
+  public void setInputNodes(com.simiacryptus.ref.wrappers.RefList<String> inputNodes) {
     this.inputNodes = inputNodes;
   }
 
@@ -103,12 +105,29 @@ public class TFLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static TFLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static TFLayer fromJson(@Nonnull final JsonObject json,
+                                 com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new TFLayer(json, rs);
   }
 
+  public static @SuppressWarnings("unused")
+  TFLayer[] addRefs(TFLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRef).toArray((x) -> new TFLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  TFLayer[][] addRefs(TFLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRefs)
+        .toArray((x) -> new TFLayer[x][]);
+  }
+
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+                            DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("graphDef", Base64.getEncoder().encodeToString(graphDef));
     JsonArray array = new JsonArray();
@@ -123,15 +142,25 @@ public class TFLayer extends TFLayerBase {
     return json;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  TFLayer addRef() {
+    return (TFLayer) super.addRef();
+  }
+
   @Override
   protected boolean floatInputs(String key) {
     return isFloat();
   }
 
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
     JsonArray dataKeys = json.get("dataKeys").getAsJsonArray();
-    HashSet<String> hashSet = new HashSet<>();
+    com.simiacryptus.ref.wrappers.RefHashSet<String> hashSet = new com.simiacryptus.ref.wrappers.RefHashSet<>();
     for (int i = 0; i < dataKeys.size(); i++) {
       hashSet.add(dataKeys.get(i).getAsString());
     }

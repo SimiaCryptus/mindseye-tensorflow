@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-
-public class LRNLayerTest extends RawTFLayerTestBase {
+public @com.simiacryptus.ref.lang.RefAware
+class LRNLayerTest extends RawTFLayerTestBase {
 
   private final TFLayerBase tfLayer = createTFLayer();
 
@@ -33,22 +33,41 @@ public class LRNLayerTest extends RawTFLayerTestBase {
     validateDifferentials = false;
   }
 
+  public static @SuppressWarnings("unused")
+  LRNLayerTest[] addRefs(LRNLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef)
+        .toArray((x) -> new LRNLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  LRNLayerTest[][] addRefs(LRNLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRefs)
+        .toArray((x) -> new LRNLayerTest[x][]);
+  }
+
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {2, 3, 20}
-    };
+    return new int[][]{{2, 3, 20}};
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  LRNLayerTest addRef() {
+    return (LRNLayerTest) super.addRef();
   }
 
   @NotNull
   protected TFLayerBase createTFLayer() {
-    return new LRNLayer()
-        .setRadius(5)
-        .setAlpha(1e-4f)
-        .setBias(2)
-        ;
+    return new LRNLayer().setRadius(5).setAlpha(1e-4f).setBias(2);
   }
-
 
 }

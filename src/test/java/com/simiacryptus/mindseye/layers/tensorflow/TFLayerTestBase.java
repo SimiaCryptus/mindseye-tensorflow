@@ -33,7 +33,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public abstract class TFLayerTestBase extends LayerTestBase {
+public abstract @com.simiacryptus.ref.lang.RefAware
+class TFLayerTestBase extends LayerTestBase {
 
   private volatile @NotNull TFLayerBase tfLayer = null;
 
@@ -54,6 +55,22 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return (TFLayerBase) tfLayer.copy();
   }
 
+  public static @SuppressWarnings("unused")
+  TFLayerTestBase[] addRefs(TFLayerTestBase[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRef)
+        .toArray((x) -> new TFLayerTestBase[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  TFLayerTestBase[][] addRefs(TFLayerTestBase[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRefs)
+        .toArray((x) -> new TFLayerTestBase[x][]);
+  }
+
   @Override
   public void run(@NotNull @Nonnull NotebookOutput log) {
     log.eval(() -> {
@@ -70,6 +87,16 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   public Layer getLayer(final int[][] inputSize, Random random) {
     TFLayerBase tfLayer = getTfLayer();
     return new TFConverter().convert(tfLayer);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  TFLayerTestBase addRef() {
+    return (TFLayerTestBase) super.addRef();
   }
 
   protected abstract @NotNull TFLayerBase createTFLayer();

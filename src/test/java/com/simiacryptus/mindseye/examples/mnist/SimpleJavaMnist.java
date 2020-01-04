@@ -35,7 +35,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class SimpleJavaMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class SimpleJavaMnist {
 
   private static final boolean tensorboard = false;
 
@@ -48,7 +49,8 @@ public class SimpleJavaMnist {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
         pipeline.add(new SummaryLayer("input"));
-      pipeline.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      pipeline.add(
+          new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply"));
       pipeline.add(new BiasLayer(10));
@@ -61,7 +63,8 @@ public class SimpleJavaMnist {
     });
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -76,12 +79,21 @@ public class SimpleJavaMnist {
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
@@ -99,6 +111,16 @@ public class SimpleJavaMnist {
     @Override
     public void run(@NotNull @Nonnull NotebookOutput log) {
       super.run(log);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
   }
 

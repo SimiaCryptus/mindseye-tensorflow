@@ -26,15 +26,15 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class SoftmaxLayer extends TFLayerBase {
+public @com.simiacryptus.ref.lang.RefAware
+class SoftmaxLayer extends TFLayerBase {
 
   public SoftmaxLayer() {
-    super(new HashMap<>());
+    super(new com.simiacryptus.ref.wrappers.RefHashMap<>());
   }
 
-  public SoftmaxLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public SoftmaxLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -50,8 +50,8 @@ public class SoftmaxLayer extends TFLayerBase {
   }
 
   @Override
-  public List<String> getInputNodes() {
-    return Arrays.asList("input");
+  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
+    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
   }
 
   @Override
@@ -70,13 +70,40 @@ public class SoftmaxLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
+  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json,
+                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
     return new SoftmaxLayer(json, rs);
   }
 
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
+        .toArray((x) -> new SoftmaxLayer[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
+        .toArray((x) -> new SoftmaxLayer[x][]);
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayer addRef() {
+    return (SoftmaxLayer) super.addRef();
+  }
+
   @Override
-  protected Set<String> getDataKeys(JsonObject json) {
-    return new HashSet<>();
+  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
+    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
   }
 
 }

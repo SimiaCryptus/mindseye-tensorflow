@@ -24,15 +24,39 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+public @com.simiacryptus.ref.lang.RefAware
+class SoftmaxLayerTest extends RawTFLayerTestBase {
 
-public class SoftmaxLayerTest extends RawTFLayerTestBase {
+  public static @SuppressWarnings("unused")
+  SoftmaxLayerTest[] addRefs(SoftmaxLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
+        .toArray((x) -> new SoftmaxLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  SoftmaxLayerTest[][] addRefs(SoftmaxLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
+        .toArray((x) -> new SoftmaxLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {5}
-    };
+    return new int[][]{{5}};
+  }
+
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayerTest addRef() {
+    return (SoftmaxLayerTest) super.addRef();
   }
 
   @NotNull

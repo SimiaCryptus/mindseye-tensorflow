@@ -24,15 +24,29 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
+public @com.simiacryptus.ref.lang.RefAware
+class BiasLayerTest extends RawTFLayerTestBase {
 
-public class BiasLayerTest extends RawTFLayerTestBase {
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[] addRefs(BiasLayerTest[] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
+        .toArray((x) -> new BiasLayerTest[x]);
+  }
+
+  public static @SuppressWarnings("unused")
+  BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
+    if (array == null)
+      return null;
+    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
+        .toArray((x) -> new BiasLayerTest[x][]);
+  }
 
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{
-        {3, 3}
-    };
+    return new int[][]{{3, 3}};
   }
 
   @NotNull
@@ -42,5 +56,14 @@ public class BiasLayerTest extends RawTFLayerTestBase {
     return biasLayer;
   }
 
+  public @SuppressWarnings("unused")
+  void _free() {
+  }
+
+  public @Override
+  @SuppressWarnings("unused")
+  BiasLayerTest addRef() {
+    return (BiasLayerTest) super.addRef();
+  }
 
 }

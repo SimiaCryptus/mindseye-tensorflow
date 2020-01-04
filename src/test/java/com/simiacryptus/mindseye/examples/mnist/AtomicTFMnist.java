@@ -35,7 +35,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class AtomicTFMnist {
+public @com.simiacryptus.ref.lang.RefAware
+class AtomicTFMnist {
 
   private static final boolean summarize = false;
 
@@ -48,7 +49,8 @@ public class AtomicTFMnist {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if (summarize)
         pipeline.add(new SummaryLayer("input"));
-      pipeline.add(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      pipeline
+          .add(new MatMulLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
       if (summarize)
         pipeline.add(new SummaryLayer("matmul"));
       pipeline.add(new BiasLayer(10));
@@ -61,7 +63,8 @@ public class AtomicTFMnist {
     });
   }
 
-  public static class MnistDemo extends MnistDemoBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -76,12 +79,21 @@ public class AtomicTFMnist {
 
   }
 
-  public static class LayerTest extends LayerTestBase {
+  public static @com.simiacryptus.ref.lang.RefAware
+  class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
       return null;
+    }
+
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(LayerTest[] array) {
+      if (array == null)
+        return null;
+      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+          .toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
@@ -99,6 +111,16 @@ public class AtomicTFMnist {
     @Override
     public void run(@NotNull @Nonnull NotebookOutput log) {
       super.run(log);
+    }
+
+    public @SuppressWarnings("unused")
+    void _free() {
+    }
+
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
+      return (LayerTest) super.addRef();
     }
   }
 
