@@ -211,41 +211,44 @@ class TFLayerBase extends LayerBase {
         throw new RuntimeException(e);
       }
     }
-    return new Result(resultData, ((deltaBuffer, deltaSignal) -> {
-      RefArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new RefArrayList<>();
-      Output<?>[] gradients = tfsession.getGradients();
-      String deltaOperation = getOutputNode() + "_delta";
-      if (floatInputs(deltaOperation)) {
-        org.tensorflow.Tensor<Float> tensor = TFIO.getFloatTensor(deltaSignal);
-        runner.feed(deltaOperation, tensor);
-        feedbacktensors.add(tensor);
-      } else {
-        org.tensorflow.Tensor<Double> tensor = TFIO.getDoubleTensor(deltaSignal);
-        runner.feed(deltaOperation, tensor);
-        feedbacktensors.add(tensor);
-      }
-      RefArrays.stream(gradients).forEach(runner::fetch);
-      Session.Run back = runner.runAndFetchMetadata();
-      for (int i = 0; i < inputs.length; i++) {
-        org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
-        inputs[i].getAccumulator().accept(deltaBuffer, TFIO.getTensorList(tensor));
-        feedbacktensors.add(tensor);
-      }
-      for (int i = 0; i < stateNames.size(); i++) {
-        String weightNodeName = stateNames.get(i);
-        Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((getId() + "_" + weightNodeName).getBytes()),
-            getWeights().get(weightNodeName));
-        org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs
-            .get(i + fwdFetches + getInputNodes().size());
-        Tensor t;
-        if (numberTensor.dataType() == DataType.FLOAT) {
-          t = TFIO.getTensor(numberTensor.expect(Float.class), invertWeights());
+    return new Result(resultData, (new Result.Accumulator() {
+      @Override
+      public void accept(DeltaSet<UUID> deltaBuffer, TensorList deltaSignal) {
+        RefArrayList<org.tensorflow.Tensor<?>> feedbacktensors = new RefArrayList<>();
+        Output<?>[] gradients = tfsession.getGradients();
+        String deltaOperation = TFLayerBase.this.getOutputNode() + "_delta";
+        if (TFLayerBase.this.floatInputs(deltaOperation)) {
+          org.tensorflow.Tensor<Float> tensor = TFIO.getFloatTensor(deltaSignal);
+          runner.feed(deltaOperation, tensor);
+          feedbacktensors.add(tensor);
         } else {
-          t = TFIO.getTensor(numberTensor.expect(Double.class), invertWeights());
+          org.tensorflow.Tensor<Double> tensor = TFIO.getDoubleTensor(deltaSignal);
+          runner.feed(deltaOperation, tensor);
+          feedbacktensors.add(tensor);
         }
-        uuidDelta.addInPlace(t.getData());
+        RefArrays.stream(gradients).forEach(runner::fetch);
+        Session.Run back = runner.runAndFetchMetadata();
+        for (int i = 0; i < inputs.length; i++) {
+          org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
+          inputs[i].getAccumulator().accept(deltaBuffer, TFIO.getTensorList(tensor));
+          feedbacktensors.add(tensor);
+        }
+        for (int i = 0; i < stateNames.size(); i++) {
+          String weightNodeName = stateNames.get(i);
+          Delta<UUID> uuidDelta = deltaBuffer.get(UUID.nameUUIDFromBytes((TFLayerBase.this.getId() + "_" + weightNodeName).getBytes()),
+              TFLayerBase.this.getWeights().get(weightNodeName));
+          org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs
+              .get(i + fwdFetches + TFLayerBase.this.getInputNodes().size());
+          Tensor t;
+          if (numberTensor.dataType() == DataType.FLOAT) {
+            t = TFIO.getTensor(numberTensor.expect(Float.class), TFLayerBase.this.invertWeights());
+          } else {
+            t = TFIO.getTensor(numberTensor.expect(Double.class), TFLayerBase.this.invertWeights());
+          }
+          uuidDelta.addInPlace(t.getData());
+        }
+        feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
       }
-      feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
     })) {
       public void _free() {
         tensors.stream().forEach(org.tensorflow.Tensor::close);
