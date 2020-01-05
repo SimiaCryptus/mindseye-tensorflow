@@ -24,6 +24,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
@@ -59,16 +60,17 @@ class MatMulLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
+      RefList<String> temp_17_0002 = getInputNodes();
       ops.withName(getOutputNode()).reshape(
           ops.transpose(
               ops.matMul(ops.withName("weights").placeholder(Double.class),
-                  ops.reshape(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+                  ops.reshape(ops.withName(temp_17_0002.get(0)).placeholder(Double.class),
                       ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})),
-          ops.constant(
-              RefIntStream.concat(RefIntStream.of(-1),
-                  RefArrays.stream(getOutputDims())).toArray()));
+          ops.constant(RefIntStream.concat(RefIntStream.of(-1), RefArrays.stream(getOutputDims())).toArray()));
+      if (null != temp_17_0002)
+        temp_17_0002.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -104,8 +106,7 @@ class MatMulLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static MatMulLayer fromJson(@Nonnull final JsonObject json,
-                                     Map<CharSequence, byte[]> rs) {
+  public static MatMulLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MatMulLayer(json, rs);
   }
 
@@ -125,28 +126,35 @@ class MatMulLayer extends TFLayerBase {
         .toArray((x) -> new MatMulLayer[x][]);
   }
 
-  private static RefMap<String, Tensor> defaultStates(int[] intputDims,
-                                                      int[] outputDims) {
+  private static RefMap<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
-    map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
+    Tensor temp_17_0001 = new Tensor(outs, inputs);
+    RefUtil.freeRef(map.put("weights", temp_17_0001.setByCoord(c -> {
       final double ratio = Math.sqrt(6. / (inputs + outs + 1));
       final double fate = Util.R.get().nextDouble();
       return (1 - 2 * fate) * ratio;
-    }));
+    })));
+    if (null != temp_17_0001)
+      temp_17_0001.freeRef();
     return map;
   }
 
   @Nonnull
   public MatMulLayer set(@Nonnull final DoubleSupplier f) {
-    RefArrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
-    return this;
+    RefMap<String, Tensor> temp_17_0003 = getWeights();
+    Tensor temp_17_0004 = temp_17_0003.get("weights");
+    RefArrays.parallelSetAll(temp_17_0004.getData(), i -> f.getAsDouble());
+    if (null != temp_17_0004)
+      temp_17_0004.freeRef();
+    if (null != temp_17_0003)
+      temp_17_0003.freeRef();
+    return this.addRef();
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
     json.add("outputDims", JsonUtil.toIntArray(getOutputDims()));

@@ -25,6 +25,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.framework.GraphDef;
 
@@ -42,9 +43,10 @@ class TFLayer extends TFLayerBase {
   private RefList<String> inputNodes;
   private String summaryOut = "";
 
-  public TFLayer(byte[] graphDef, RefMap<String, Tensor> states, String output,
-                 String... input) {
+  public TFLayer(byte[] graphDef, RefMap<String, Tensor> states, String output, String... input) {
     super(states);
+    if (null != states)
+      states.freeRef();
     this.setOutputNode(output);
     setInputNodes(RefArrays.asList(input));
     this.graphDef = graphDef;
@@ -53,15 +55,17 @@ class TFLayer extends TFLayerBase {
   public TFLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     graphDef = Base64.getDecoder().decode(json.get("graphDef").getAsString());
-    setFloat(json.get("isFloat").getAsBoolean());
+    RefUtil.freeRef(setFloat(json.get("isFloat").getAsBoolean()));
     setOutputNode(json.get("output").getAsString());
     JsonArray jsonArray = json.get("input").getAsJsonArray();
     RefArrayList<String> inputNodes = new RefArrayList<>();
     for (int i = 0; i < jsonArray.size(); i++) {
       inputNodes.add(jsonArray.get(i).getAsString());
     }
-    setInputNodes(inputNodes);
-    setSummaryOut(json.get("summaryOut").getAsString());
+    setInputNodes(inputNodes == null ? null : inputNodes.addRef());
+    if (null != inputNodes)
+      inputNodes.freeRef();
+    RefUtil.freeRef(setSummaryOut(json.get("summaryOut").getAsString()));
   }
 
   @Override
@@ -74,11 +78,21 @@ class TFLayer extends TFLayerBase {
   }
 
   public RefList<String> getInputNodes() {
-    return inputNodes;
+    return inputNodes == null ? null : inputNodes.addRef();
   }
 
   public void setInputNodes(RefList<String> inputNodes) {
-    this.inputNodes = inputNodes;
+    {
+      RefList<String> temp_02_0001 = inputNodes == null ? null
+          : inputNodes.addRef();
+      if (null != this.inputNodes)
+        this.inputNodes.freeRef();
+      this.inputNodes = temp_02_0001 == null ? null : temp_02_0001.addRef();
+      if (null != temp_02_0001)
+        temp_02_0001.freeRef();
+    }
+    if (null != inputNodes)
+      inputNodes.freeRef();
   }
 
   public String getOutputNode() {
@@ -95,7 +109,7 @@ class TFLayer extends TFLayerBase {
 
   public TFLayer setSummaryOut(String summaryOut) {
     this.summaryOut = summaryOut;
-    return this;
+    return this.addRef();
   }
 
   public boolean isFloat() {
@@ -104,13 +118,12 @@ class TFLayer extends TFLayerBase {
 
   public TFLayer setFloat(boolean aFloat) {
     isFloat = aFloat;
-    return this;
+    return this.addRef();
   }
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static TFLayer fromJson(@Nonnull final JsonObject json,
-                                 Map<CharSequence, byte[]> rs) {
+  public static TFLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new TFLayer(json, rs);
   }
 
@@ -130,16 +143,24 @@ class TFLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("graphDef", Base64.getEncoder().encodeToString(graphDef));
     JsonArray array = new JsonArray();
-    getWeights().keySet().forEach(array::add);
+    RefMap<String, Tensor> temp_02_0002 = getWeights();
+    RefSet<String> temp_02_0003 = temp_02_0002.keySet();
+    temp_02_0003.forEach(array::add);
+    if (null != temp_02_0003)
+      temp_02_0003.freeRef();
+    if (null != temp_02_0002)
+      temp_02_0002.freeRef();
     json.add("dataKeys", array);
     json.addProperty("output", getOutputNode());
     JsonArray jsonArray = new JsonArray();
-    getInputNodes().forEach(jsonArray::add);
+    RefList<String> temp_02_0004 = getInputNodes();
+    temp_02_0004.forEach(jsonArray::add);
+    if (null != temp_02_0004)
+      temp_02_0004.freeRef();
     json.add("input", jsonArray);
     json.addProperty("isFloat", isFloat());
     json.addProperty("summaryOut", getSummaryOut());
@@ -148,6 +169,9 @@ class TFLayer extends TFLayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    if (null != inputNodes)
+      inputNodes.freeRef();
+    inputNodes = null;
   }
 
   public @Override

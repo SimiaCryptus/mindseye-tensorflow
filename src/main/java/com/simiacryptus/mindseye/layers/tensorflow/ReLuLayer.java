@@ -47,7 +47,10 @@ class ReLuLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).relu(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
+      RefList<String> temp_22_0001 = getInputNodes();
+      ops.withName(getOutputNode()).relu(ops.withName(temp_22_0001.get(0)).placeholder(Double.class));
+      if (null != temp_22_0001)
+        temp_22_0001.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -75,8 +78,7 @@ class ReLuLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static ReLuLayer fromJson(@Nonnull final JsonObject json,
-                                   Map<CharSequence, byte[]> rs) {
+  public static ReLuLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new ReLuLayer(json, rs);
   }
 

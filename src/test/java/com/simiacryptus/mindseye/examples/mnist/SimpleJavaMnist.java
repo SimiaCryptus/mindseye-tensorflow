@@ -29,6 +29,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
@@ -51,14 +52,17 @@ class SimpleJavaMnist {
       @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
         pipeline.add(new SummaryLayer("input"));
-      pipeline.add(
-          new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer temp_20_0001 = new FullyConnectedLayer(
+          new int[]{28, 28, 1}, new int[]{10});
+      RefUtil.freeRef(pipeline.add(temp_20_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_20_0001)
+        temp_20_0001.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply"));
-      pipeline.add(new BiasLayer(10));
+      RefUtil.freeRef(pipeline.add(new BiasLayer(10)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("bias"));
-      pipeline.add(new SoftmaxLayer());
+      RefUtil.freeRef(pipeline.add(new SoftmaxLayer()));
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax"));
       return pipeline;

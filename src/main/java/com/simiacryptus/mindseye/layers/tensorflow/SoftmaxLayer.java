@@ -46,7 +46,10 @@ class SoftmaxLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).softmax(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
+      RefList<String> temp_24_0001 = getInputNodes();
+      ops.withName(getOutputNode()).softmax(ops.withName(temp_24_0001.get(0)).placeholder(Double.class));
+      if (null != temp_24_0001)
+        temp_24_0001.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -74,8 +77,7 @@ class SoftmaxLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static SoftmaxLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SoftmaxLayer(json, rs);
   }
 

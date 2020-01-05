@@ -59,6 +59,8 @@ class LRNLayerTest extends RawTFLayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    if (null != tfLayer)
+      tfLayer.freeRef();
   }
 
   public @Override
@@ -69,7 +71,17 @@ class LRNLayerTest extends RawTFLayerTestBase {
 
   @NotNull
   protected TFLayerBase createTFLayer() {
-    return new LRNLayer().setRadius(5).setAlpha(1e-4f).setBias(2);
+    LRNLayer temp_21_0002 = new LRNLayer();
+    LRNLayer temp_21_0003 = temp_21_0002.setRadius(5);
+    LRNLayer temp_21_0004 = temp_21_0003.setAlpha(1e-4f);
+    LRNLayer temp_21_0001 = temp_21_0004.setBias(2);
+    if (null != temp_21_0004)
+      temp_21_0004.freeRef();
+    if (null != temp_21_0003)
+      temp_21_0003.freeRef();
+    if (null != temp_21_0002)
+      temp_21_0002.freeRef();
+    return temp_21_0001;
   }
 
 }

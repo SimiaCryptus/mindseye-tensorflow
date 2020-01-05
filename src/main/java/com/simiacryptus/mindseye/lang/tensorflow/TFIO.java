@@ -70,7 +70,10 @@ class TFIO {
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(Tensor data) {
-    return getFloatTensor(data, true);
+    org.tensorflow.Tensor<Float> temp_03_0006 = getFloatTensor(data == null ? null : data.addRef(), true);
+    if (null != data)
+      data.freeRef();
+    return temp_03_0006;
   }
 
   @NotNull
@@ -84,21 +87,30 @@ class TFIO {
       invertDimensions = null;
       buffer = data.getData();
     }
-    return org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), FloatBuffer.wrap(Util.getFloats(buffer)));
+    if (null != invertDimensions)
+      invertDimensions.freeRef();
+    org.tensorflow.Tensor<Float> temp_03_0007 = org.tensorflow.Tensor
+        .create(Util.toLong(data.getDimensions()), FloatBuffer.wrap(Util.getFloats(buffer)));
+    if (null != data)
+      data.freeRef();
+    return temp_03_0007;
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(TensorList data) {
-    return getFloatTensor(data, true);
+    org.tensorflow.Tensor<Float> temp_03_0008 = getFloatTensor(data == null ? null : data.addRef(), true);
+    if (null != data)
+      data.freeRef();
+    return temp_03_0008;
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(TensorList data, boolean invertRanks) {
-    double[] buffer = getDoubles(data, invertRanks);
+    double[] buffer = getDoubles(data == null ? null : data.addRef(), invertRanks);
     long[] shape = RefLongStream
-        .concat(RefLongStream.of(data.length()),
-            RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
-        .toArray();
+        .concat(RefLongStream.of(data.length()), RefArrays.stream(data.getDimensions()).mapToLong(x -> x)).toArray();
+    if (null != data)
+      data.freeRef();
     @NotNull
     org.tensorflow.@NotNull Tensor<Float> tensor = org.tensorflow.Tensor.create(shape,
         FloatBuffer.wrap(Util.getFloats(buffer)));
@@ -108,7 +120,10 @@ class TFIO {
 
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(Tensor data) {
-    return getDoubleTensor(data, true);
+    org.tensorflow.Tensor<Double> temp_03_0009 = getDoubleTensor(data == null ? null : data.addRef(), true);
+    if (null != data)
+      data.freeRef();
+    return temp_03_0009;
   }
 
   @NotNull
@@ -122,21 +137,30 @@ class TFIO {
       invertDimensions = null;
       buffer = data.getData();
     }
-    return org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()), DoubleBuffer.wrap(buffer));
+    if (null != invertDimensions)
+      invertDimensions.freeRef();
+    org.tensorflow.Tensor<Double> temp_03_0010 = org.tensorflow.Tensor
+        .create(Util.toLong(data.getDimensions()), DoubleBuffer.wrap(buffer));
+    if (null != data)
+      data.freeRef();
+    return temp_03_0010;
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(TensorList data) {
-    return getDoubleTensor(data, true);
+    org.tensorflow.Tensor<Double> temp_03_0011 = getDoubleTensor(data == null ? null : data.addRef(), true);
+    if (null != data)
+      data.freeRef();
+    return temp_03_0011;
   }
 
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(TensorList data, boolean invertRanks) {
-    double[] buffer = getDoubles(data, invertRanks);
+    double[] buffer = getDoubles(data == null ? null : data.addRef(), invertRanks);
     long[] shape = RefLongStream
-        .concat(RefLongStream.of(data.length()),
-            RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
-        .toArray();
+        .concat(RefLongStream.of(data.length()), RefArrays.stream(data.getDimensions()).mapToLong(x -> x)).toArray();
+    if (null != data)
+      data.freeRef();
     org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(buffer));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
@@ -158,17 +182,15 @@ class TFIO {
     if (shape.length == 1) {
       return RecycleBin.FLOATS.obtain(shape[0]);
     } else if (shape.length == 2) {
-      return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> new float[(int) shape[1]]).toArray(s -> new float[s][]);
+      return RefIntStream.range(0, (int) shape[0]).mapToObj(i -> new float[(int) shape[1]])
+          .toArray(s -> new float[s][]);
     } else if (shape.length == 3) {
-      return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> new float[(int) shape[2]]).toArray(s -> new float[s][]))
-          .toArray(s -> new float[s][][]);
+      return RefIntStream.range(0, (int) shape[0]).mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+          .mapToObj(j -> new float[(int) shape[2]]).toArray(s -> new float[s][])).toArray(s -> new float[s][][]);
     } else if (shape.length == 4) {
       return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
+          .mapToObj(i -> RefIntStream
+              .range(0, (int) shape[1]).mapToObj(j -> RefIntStream.range(0, (int) shape[2])
                   .mapToObj(k -> new float[(int) shape[3]]).toArray(s -> new float[s][]))
               .toArray(s -> new float[s][][]))
           .toArray(s -> new float[s][][][]);
@@ -176,22 +198,20 @@ class TFIO {
       return RefIntStream.range(0, (int) shape[0])
           .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
               .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> RefIntStream.range(0, (int) shape[3])
-                      .mapToObj(l -> new float[(int) shape[4]]).toArray(s -> new float[s][]))
+                  .mapToObj(k -> RefIntStream.range(0, (int) shape[3]).mapToObj(l -> new float[(int) shape[4]])
+                      .toArray(s -> new float[s][]))
                   .toArray(s -> new float[s][][]))
               .toArray(s -> new float[s][][][]))
           .toArray(s -> new float[s][][][][]);
     } else if (shape.length == 6) {
-      return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> RefIntStream.range(0, (int) shape[3])
-                      .mapToObj(l -> RefIntStream.range(0, (int) shape[4])
-                          .mapToObj(m -> new float[(int) shape[5]]).toArray(s -> new float[s][]))
-                      .toArray(s -> new float[s][][]))
-                  .toArray(s -> new float[s][][][]))
-              .toArray(s -> new float[s][][][][]))
-          .toArray(s -> new float[s][][][][][]);
+      return RefIntStream.range(0, (int) shape[0]).mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+          .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
+              .mapToObj(k -> RefIntStream.range(0, (int) shape[3])
+                  .mapToObj(l -> RefIntStream.range(0, (int) shape[4]).mapToObj(m -> new float[(int) shape[5]])
+                      .toArray(s -> new float[s][]))
+                  .toArray(s -> new float[s][][]))
+              .toArray(s -> new float[s][][][]))
+          .toArray(s -> new float[s][][][][])).toArray(s -> new float[s][][][][][]);
     } else {
       throw new RuntimeException("Rank " + shape.length);
     }
@@ -201,19 +221,18 @@ class TFIO {
     if (shape.length == 1) {
       return RecycleBin.DOUBLES.obtain(shape[0]);
     } else if (shape.length == 2) {
-      return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> new double[(int) shape[1]]).toArray(s -> new double[s][]);
+      return RefIntStream.range(0, (int) shape[0]).mapToObj(i -> new double[(int) shape[1]])
+          .toArray(s -> new double[s][]);
     } else if (shape.length == 3) {
-      return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> new double[(int) shape[2]]).toArray(s -> new double[s][]))
-          .toArray(s -> new double[s][][]);
+      return RefIntStream.range(0, (int) shape[0]).mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+          .mapToObj(j -> new double[(int) shape[2]]).toArray(s -> new double[s][])).toArray(s -> new double[s][][]);
     } else if (shape.length == 4) {
       return RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> new double[(int) shape[3]]).toArray(s -> new double[s][]))
-              .toArray(s -> new double[s][][]))
+          .mapToObj(
+              i -> RefIntStream.range(0, (int) shape[1])
+                  .mapToObj(j -> RefIntStream.range(0, (int) shape[2]).mapToObj(k -> new double[(int) shape[3]])
+                      .toArray(s -> new double[s][]))
+                  .toArray(s -> new double[s][][]))
           .toArray(s -> new double[s][][][]);
     } else {
       throw new RuntimeException("Rank " + shape.length);
@@ -243,14 +262,25 @@ class TFIO {
     double[] buffer = RecycleBin.DOUBLES.obtain(data.length() * Tensor.length(data.getDimensions()));
     DoubleBuffer inputBuffer = DoubleBuffer.wrap(buffer);
     if (invertRanks) {
-      data.stream().map(x -> x.invertDimensions()).forEach(t -> {
+      data.stream().map(x -> {
+        Tensor temp_03_0001 = x.invertDimensions();
+        if (null != x)
+          x.freeRef();
+        return temp_03_0001;
+      }).forEach(t -> {
         inputBuffer.put(t.getData());
+        if (null != t)
+          t.freeRef();
       });
     } else {
       data.stream().forEach(t -> {
         inputBuffer.put(t.getData());
+        if (null != t)
+          t.freeRef();
       });
     }
+    if (null != data)
+      data.freeRef();
     return buffer;
   }
 
@@ -259,23 +289,25 @@ class TFIO {
     float[] doubles = getFloats(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
-    TensorArray resultData = new TensorArray(
-        RefIntStream.range(0, batches).mapToObj(i -> {
-          int offset = i * Tensor.length(dims);
-          if (invertRanks) {
-            Tensor returnValue = new Tensor(Tensor.reverse(dims));
-            for (int j = 0; j < returnValue.length(); j++) {
-              returnValue.getData()[j] = doubles[j + offset];
-            }
-            return returnValue.invertDimensions();
-          } else {
-            Tensor returnValue = new Tensor(dims);
-            for (int j = 0; j < returnValue.length(); j++) {
-              returnValue.getData()[j] = doubles[j + offset];
-            }
-            return returnValue;
-          }
-        }).toArray(i -> new Tensor[i]));
+    TensorArray resultData = new TensorArray(RefIntStream.range(0, batches).mapToObj(i -> {
+      int offset = i * Tensor.length(dims);
+      if (invertRanks) {
+        Tensor returnValue = new Tensor(Tensor.reverse(dims));
+        for (int j = 0; j < returnValue.length(); j++) {
+          returnValue.getData()[j] = doubles[j + offset];
+        }
+        Tensor temp_03_0002 = returnValue.invertDimensions();
+        if (null != returnValue)
+          returnValue.freeRef();
+        return temp_03_0002;
+      } else {
+        Tensor returnValue = new Tensor(dims);
+        for (int j = 0; j < returnValue.length(); j++) {
+          returnValue.getData()[j] = doubles[j + offset];
+        }
+        return returnValue;
+      }
+    }).toArray(i -> new Tensor[i]));
     RecycleBin.FLOATS.recycle(doubles, doubles.length);
     return resultData;
   }
@@ -291,7 +323,10 @@ class TFIO {
         returnValue.getData()[j] = doubles[j];
       }
       RecycleBin.FLOATS.recycle(doubles, doubles.length);
-      return returnValue.invertDimensions();
+      Tensor temp_03_0003 = returnValue.invertDimensions();
+      if (null != returnValue)
+        returnValue.freeRef();
+      return temp_03_0003;
     } else {
       Tensor returnValue = new Tensor(dims);
       for (int j = 0; j < returnValue.length(); j++) {
@@ -307,18 +342,20 @@ class TFIO {
     double[] doubles = getDoubles(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
-    TensorArray resultData = new TensorArray(
-        RefIntStream.range(0, batches).mapToObj(i -> {
-          if (invertRanks) {
-            Tensor returnValue = new Tensor(Tensor.reverse(dims));
-            System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
-            return returnValue.invertDimensions();
-          } else {
-            Tensor returnValue = new Tensor(dims);
-            System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
-            return returnValue;
-          }
-        }).toArray(i -> new Tensor[i]));
+    TensorArray resultData = new TensorArray(RefIntStream.range(0, batches).mapToObj(i -> {
+      if (invertRanks) {
+        Tensor returnValue = new Tensor(Tensor.reverse(dims));
+        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        Tensor temp_03_0004 = returnValue.invertDimensions();
+        if (null != returnValue)
+          returnValue.freeRef();
+        return temp_03_0004;
+      } else {
+        Tensor returnValue = new Tensor(dims);
+        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        return returnValue;
+      }
+    }).toArray(i -> new Tensor[i]));
     RecycleBin.DOUBLES.recycle(doubles, doubles.length);
     return resultData;
   }
@@ -330,7 +367,10 @@ class TFIO {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
       System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
       RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-      return returnValue.invertDimensions();
+      Tensor temp_03_0005 = returnValue.invertDimensions();
+      if (null != returnValue)
+        returnValue.freeRef();
+      return temp_03_0005;
     } else {
       Tensor returnValue = new Tensor(dims);
       System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());

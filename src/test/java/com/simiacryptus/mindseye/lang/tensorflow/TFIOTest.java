@@ -38,6 +38,10 @@ class TFIOTest {
   private static void assertEquals(Tensor a, Tensor b, double tol) {
     assertArrayEquals(a.getDimensions(), b.getDimensions());
     assertArrayEquals(a.getData(), b.getData(), tol);
+    if (null != b)
+      b.freeRef();
+    if (null != a)
+      a.freeRef();
   }
 
   private static void assertEquals(TensorList a, TensorList b, double tol) {
@@ -45,27 +49,41 @@ class TFIOTest {
     for (int i = 0; i < a.length(); i++) {
       assertEquals(a.get(i), b.get(i), tol);
     }
+    if (null != b)
+      b.freeRef();
+    if (null != a)
+      a.freeRef();
   }
 
   @Test
   public void testTensor() {
-    test(new Tensor(7).randomize(1.0));
-    test(new Tensor(3, 2).randomize(1.0));
-    test(new Tensor(3, 5, 2).randomize(1.0));
-    test(new Tensor(5, 3, 2, 1).randomize(1.0));
+    Tensor temp_19_0001 = new Tensor(7);
+    test(temp_19_0001.randomize(1.0));
+    if (null != temp_19_0001)
+      temp_19_0001.freeRef();
+    Tensor temp_19_0002 = new Tensor(3, 2);
+    test(temp_19_0002.randomize(1.0));
+    if (null != temp_19_0002)
+      temp_19_0002.freeRef();
+    Tensor temp_19_0003 = new Tensor(3, 5, 2);
+    test(temp_19_0003.randomize(1.0));
+    if (null != temp_19_0003)
+      temp_19_0003.freeRef();
+    Tensor temp_19_0004 = new Tensor(5, 3, 2, 1);
+    test(temp_19_0004.randomize(1.0));
+    if (null != temp_19_0004)
+      temp_19_0004.freeRef();
   }
 
   public void test(Tensor tensor) {
-    org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
-    org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
-    assertArrayEquals(
-        RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
-        doubleTensor.shape());
-    assertEquals(tensor, TFIO.getTensor(doubleTensor), tol);
-    assertArrayEquals(
-        RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
-        floatTensor.shape());
-    assertEquals(tensor, TFIO.getTensor(floatTensor), tol);
+    org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor == null ? null : tensor.addRef());
+    org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor == null ? null : tensor.addRef());
+    assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), doubleTensor.shape());
+    assertEquals(tensor == null ? null : tensor.addRef(), TFIO.getTensor(doubleTensor), tol);
+    assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(), floatTensor.shape());
+    assertEquals(tensor == null ? null : tensor.addRef(), TFIO.getTensor(floatTensor), tol);
+    if (null != tensor)
+      tensor.freeRef();
   }
 
   @Test
@@ -76,22 +94,23 @@ class TFIOTest {
   }
 
   public TensorArray newTensorList(int length, int... ints) {
-    return new TensorArray(RefIntStream.range(0, length)
-        .mapToObj(i -> new Tensor(ints).randomize(1.0)).toArray(i -> new Tensor[i]));
+    return new TensorArray(RefIntStream.range(0, length).mapToObj(i -> {
+      return new Tensor(ints).randomize(1.0);
+    }).toArray(i -> new Tensor[i]));
   }
 
   public void test(TensorList tensor) {
-    org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor);
-    org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor);
+    org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor == null ? null : tensor.addRef());
+    org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor == null ? null : tensor.addRef());
     RefAssert.assertEquals(tensor.length(), doubleTensor.shape()[0]);
-    assertArrayEquals(
-        RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+    assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
         RefArrays.stream(doubleTensor.shape()).skip(1).toArray());
-    assertEquals(tensor, TFIO.getTensorList(doubleTensor), tol);
+    assertEquals(tensor == null ? null : tensor.addRef(), TFIO.getTensorList(doubleTensor), tol);
     RefAssert.assertEquals(tensor.length(), floatTensor.shape()[0]);
-    assertArrayEquals(
-        RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
+    assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
         RefArrays.stream(floatTensor.shape()).skip(1).toArray());
-    assertEquals(tensor, TFIO.getTensorList(floatTensor), tol);
+    assertEquals(tensor == null ? null : tensor.addRef(), TFIO.getTensorList(floatTensor), tol);
+    if (null != tensor)
+      tensor.freeRef();
   }
 }

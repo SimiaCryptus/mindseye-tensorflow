@@ -24,6 +24,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -56,10 +57,15 @@ class Conv2DLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).conv2D(ops.withName(getInputNodes().get(0)).placeholder(dtype),
-          ops.withName("kernel").placeholder(dtype),
-          RefArrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
-          getPadding());
+      RefList<String> temp_11_0002 = getInputNodes();
+      RefList<Long> temp_11_0003 = RefArrays.asList(1L, (long) getStrideX(),
+          (long) getStrideY(), 1L);
+      ops.withName(getOutputNode()).conv2D(ops.withName(temp_11_0002.get(0)).placeholder(dtype),
+          ops.withName("kernel").placeholder(dtype), temp_11_0003, getPadding());
+      if (null != temp_11_0003)
+        temp_11_0003.freeRef();
+      if (null != temp_11_0002)
+        temp_11_0002.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -82,7 +88,7 @@ class Conv2DLayer extends TFLayerBase {
 
   public Conv2DLayer setPadding(String padding) {
     this.padding = padding;
-    return this;
+    return this.addRef();
   }
 
   public int getStrideX() {
@@ -91,7 +97,7 @@ class Conv2DLayer extends TFLayerBase {
 
   public Conv2DLayer setStrideX(int strideX) {
     this.strideX = strideX;
-    return this;
+    return this.addRef();
   }
 
   public int getStrideY() {
@@ -100,7 +106,7 @@ class Conv2DLayer extends TFLayerBase {
 
   public Conv2DLayer setStrideY(int strideY) {
     this.strideY = strideY;
-    return this;
+    return this.addRef();
   }
 
   @Override
@@ -110,8 +116,7 @@ class Conv2DLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static Conv2DLayer fromJson(@Nonnull final JsonObject json,
-                                     Map<CharSequence, byte[]> rs) {
+  public static Conv2DLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new Conv2DLayer(json, rs);
   }
 
@@ -133,15 +138,17 @@ class Conv2DLayer extends TFLayerBase {
 
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
-    map.put("kernel", new Tensor(intputDims).setByCoord(c -> {
+    Tensor temp_11_0001 = new Tensor(intputDims);
+    RefUtil.freeRef(map.put("kernel", temp_11_0001.setByCoord(c -> {
       return 0;
-    }));
+    })));
+    if (null != temp_11_0001)
+      temp_11_0001.freeRef();
     return map;
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("strideX", strideX);
     json.addProperty("strideY", strideY);

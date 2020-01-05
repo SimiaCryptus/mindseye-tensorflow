@@ -24,8 +24,10 @@ import com.google.protobuf.ByteString;
 import com.simiacryptus.lang.UncheckedConsumer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefCollectors;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
@@ -67,50 +69,61 @@ class TFUtil {
   }
 
   @NotNull
-  public static GraphDef implantConstants(GraphDef graphDef,
-                                          RefMap<String, Tensor> weights) {
-    graphDef = TensorflowUtil.editGraph(graphDef, graphBuilder -> {
-      weights.forEach((key, value) -> {
-        TensorflowUtil.editNode(graphBuilder, key, (NodeDef.Builder node) -> {
-          DataType type = node.getAttrMap().get("dtype").getType();
-          TensorProto.Builder tensor = TensorProto.newBuilder();
-          Tensor inverted = value.invertDimensions();
-          {
-            double[] data = inverted.getData();
-            //                double[] data = value.getData();
-            AttrValue shape = node.getAttrMap().get("shape");
-            if (null == shape || shape.getShape().getDimList().size() <= 0) {
-              TensorShapeProto.Builder shapeBuilder = TensorShapeProto.newBuilder();
-              for (int i : value.getDimensions()) {
-                shapeBuilder.addDim(TensorShapeProto.Dim.newBuilder().setSize(i).build());
-              }
-              tensor.setTensorShape(shapeBuilder.build());
-            } else {
-              tensor.setTensorShape(shape.getShape());
-            }
-            if (type == DataType.DT_DOUBLE) {
-              tensor.setDtype(type);
-              ByteBuffer bytes = GraphModel.putDoubles(data);
-              ByteString byteString = ByteString.copyFrom(bytes);
-              tensor.setTensorContent(byteString);
-              //                tensor.addAllDoubleVal(Arrays.stream(data).mapToObj(x -> x).collect(Collectors.toList()));
-            } else if (type == DataType.DT_FLOAT) {
-              tensor.setDtype(type);
-              float[] floats = Floats.toArray(RefArrays.stream(data)
-                  .mapToObj(x -> (float) x).collect(RefCollectors.toList()));
-              ByteString byteString = ByteString.copyFrom(GraphModel.putFloats(floats));
-              tensor.setTensorContent(byteString);
-              //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
-            } else {
-              throw new UnsupportedOperationException(type.toString());
-            }
-            return node.removeAttr("shape").putAttr("value", AttrValue.newBuilder().setTensor(tensor.build()).build())
-                .setOp("Const");
-          }
-        });
-      });
-      return graphBuilder;
-    });
+  public static GraphDef implantConstants(GraphDef graphDef, RefMap<String, Tensor> weights) {
+    graphDef = TensorflowUtil.editGraph(graphDef, RefUtil.wrapInterface(
+        graphBuilder -> {
+          weights.forEach((key, value) -> {
+            TensorflowUtil.editNode(graphBuilder, key, RefUtil.wrapInterface(
+                (
+                    NodeDef.Builder node) -> {
+                  DataType type = node.getAttrMap().get("dtype").getType();
+                  TensorProto.Builder tensor = TensorProto.newBuilder();
+                  Tensor inverted = value.invertDimensions();
+                  {
+                    double[] data = inverted.getData();
+                    //                double[] data = value.getData();
+                    AttrValue shape = node.getAttrMap().get("shape");
+                    if (null == shape || shape.getShape().getDimList().size() <= 0) {
+                      TensorShapeProto.Builder shapeBuilder = TensorShapeProto.newBuilder();
+                      for (int i : value.getDimensions()) {
+                        shapeBuilder.addDim(TensorShapeProto.Dim.newBuilder().setSize(i).build());
+                      }
+                      tensor.setTensorShape(shapeBuilder.build());
+                    } else {
+                      tensor.setTensorShape(shape.getShape());
+                    }
+                    if (type == DataType.DT_DOUBLE) {
+                      tensor.setDtype(type);
+                      ByteBuffer bytes = GraphModel.putDoubles(data);
+                      ByteString byteString = ByteString.copyFrom(bytes);
+                      tensor.setTensorContent(byteString);
+                      //                tensor.addAllDoubleVal(Arrays.stream(data).mapToObj(x -> x).collect(Collectors.toList()));
+                    } else if (type == DataType.DT_FLOAT) {
+                      tensor.setDtype(type);
+                      RefList<Float> temp_27_0001 = RefArrays.stream(data)
+                          .mapToObj(x -> (float) x).collect(RefCollectors.toList());
+                      float[] floats = Floats.toArray(temp_27_0001);
+                      if (null != temp_27_0001)
+                        temp_27_0001.freeRef();
+                      ByteString byteString = ByteString.copyFrom(GraphModel.putFloats(floats));
+                      tensor.setTensorContent(byteString);
+                      //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
+                    } else {
+                      throw new UnsupportedOperationException(type.toString());
+                    }
+                    if (null != inverted)
+                      inverted.freeRef();
+                    return node.removeAttr("shape")
+                        .putAttr("value", AttrValue.newBuilder().setTensor(tensor.build()).build()).setOp("Const");
+                  }
+                }, value == null ? null : value.addRef()));
+            if (null != value)
+              value.freeRef();
+          });
+          return graphBuilder;
+        }, weights == null ? null : weights.addRef()));
+    if (null != weights)
+      weights.freeRef();
     return graphDef;
   }
 

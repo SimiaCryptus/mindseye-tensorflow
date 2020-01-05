@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -47,8 +48,11 @@ class BiasAddLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).biasAdd(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+      RefList<String> temp_10_0002 = getInputNodes();
+      ops.withName(getOutputNode()).biasAdd(ops.withName(temp_10_0002.get(0)).placeholder(Double.class),
           ops.withName("bias").placeholder(Double.class));
+      if (null != temp_10_0002)
+        temp_10_0002.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -76,8 +80,7 @@ class BiasAddLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static BiasAddLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static BiasAddLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new BiasAddLayer(json, rs);
   }
 
@@ -99,9 +102,12 @@ class BiasAddLayer extends TFLayerBase {
 
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
-    map.put("bias", new Tensor(intputDims).setByCoord(c -> {
+    Tensor temp_10_0001 = new Tensor(intputDims);
+    RefUtil.freeRef(map.put("bias", temp_10_0001.setByCoord(c -> {
       return 0;
-    }));
+    })));
+    if (null != temp_10_0001)
+      temp_10_0001.freeRef();
     return map;
   }
 

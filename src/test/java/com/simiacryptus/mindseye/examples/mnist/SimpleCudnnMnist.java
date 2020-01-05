@@ -31,6 +31,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
@@ -55,11 +56,22 @@ class SimpleCudnnMnist {
         pipeline.add(new SummaryLayer("input"));
 
       int bands1 = 5;
-      pipeline.add(new SimpleConvolutionLayer(5, 5, 1 * bands1).set(() -> 0.001 * (Math.random() - 0.45)));
-      pipeline.add(new FullyConnectedLayer(new int[]{28, 28, bands1}, new int[]{10})
-          .set(() -> 0.001 * (Math.random() - 0.45)).explode());
-      pipeline.add(new BiasLayer(10));
-      pipeline.add(new SoftmaxLayer());
+      SimpleConvolutionLayer temp_09_0001 = new SimpleConvolutionLayer(5, 5,
+          1 * bands1);
+      RefUtil.freeRef(pipeline.add(temp_09_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_09_0001)
+        temp_09_0001.freeRef();
+      FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(
+          new int[]{28, 28, bands1}, new int[]{10});
+      FullyConnectedLayer temp_09_0003 = temp_09_0002
+          .set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_09_0003.explode()));
+      if (null != temp_09_0003)
+        temp_09_0003.freeRef();
+      if (null != temp_09_0002)
+        temp_09_0002.freeRef();
+      RefUtil.freeRef(pipeline.add(new BiasLayer(10)));
+      RefUtil.freeRef(pipeline.add(new SoftmaxLayer()));
 
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax"));

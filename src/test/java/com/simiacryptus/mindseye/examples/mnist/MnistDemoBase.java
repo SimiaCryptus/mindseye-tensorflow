@@ -19,9 +19,11 @@
 
 package com.simiacryptus.mindseye.examples.mnist;
 
+import com.simiacryptus.lang.UncheckedSupplier;
 import com.simiacryptus.mindseye.eval.SampledArrayTrainable;
 import com.simiacryptus.mindseye.eval.Trainable;
 import com.simiacryptus.mindseye.lang.Layer;
+import com.simiacryptus.mindseye.lang.Result;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
@@ -40,6 +42,8 @@ import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.TableOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
@@ -60,6 +64,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
 public abstract @RefAware
 class MnistDemoBase {
@@ -105,8 +111,10 @@ class MnistDemoBase {
     final Tensor[][] trainingData = MNIST.trainingDataStream().map(labeledObject1 -> {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
       final int category = parse(labeledObject1.label);
-      categoryTensor.set(category, 1);
-      return new Tensor[]{labeledObject1.data, categoryTensor};
+      RefUtil.freeRef(categoryTensor.set(category, 1));
+      Tensor[] temp_06_0001 = new Tensor[]{labeledObject1.data,
+          categoryTensor == null ? null : categoryTensor};
+      return temp_06_0001;
     }).toArray(i1 -> new Tensor[i1][]);
 
     log.h1("Model");
@@ -138,36 +146,77 @@ class MnistDemoBase {
         if (null != TFLayerBase.eventWriter) {
           TFLayerBase.eventWriter.setStep(currentPoint.iteration);
         }
-        history.add(currentPoint);
+        history.add(currentPoint == null ? null : currentPoint.addRef());
         super.onStepComplete(currentPoint);
+        if (null != currentPoint)
+          currentPoint.freeRef();
       }
     };
-    log.eval(() -> {
-      EntropyLossLayer loss = new EntropyLossLayer();
-      @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(recognitionNetwork, loss);
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(trainingData, supervisedNetwork, 1000, 1000);
-      //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
-      return new IterativeTrainer(trainable).setMonitor(monitor).setOrientation(new LBFGS())
-          //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
-          .setLineSearchFactory(n -> new QuadraticSearch()).setTimeout(timeout, TimeUnit.SECONDS).setMaxIterations(200)
-          .setIterationsPerSample(20).run();
-    });
+    log.eval(RefUtil
+        .wrapInterface((UncheckedSupplier<Double>) () -> {
+              EntropyLossLayer loss = new EntropyLossLayer();
+              @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(
+                  recognitionNetwork == null ? null : recognitionNetwork.addRef(), loss == null ? null : loss.addRef());
+              if (null != loss)
+                loss.freeRef();
+              @Nonnull final Trainable trainable = new SampledArrayTrainable(
+                  Tensor.addRefs(trainingData),
+                  supervisedNetwork == null ? null : supervisedNetwork, 1000, 1000);
+              IterativeTrainer temp_06_0008 = new IterativeTrainer(
+                  trainable == null ? null : trainable);
+              IterativeTrainer temp_06_0009 = temp_06_0008.setMonitor(monitor);
+              IterativeTrainer temp_06_0010 = temp_06_0009.setOrientation(new LBFGS());
+              IterativeTrainer temp_06_0011 = temp_06_0010
+                  //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+                  .setLineSearchFactory(n -> new QuadraticSearch());
+              IterativeTrainer temp_06_0012 = temp_06_0011.setTimeout(timeout,
+                  TimeUnit.SECONDS);
+              IterativeTrainer temp_06_0013 = temp_06_0012.setMaxIterations(200);
+              IterativeTrainer temp_06_0014 = temp_06_0013.setIterationsPerSample(20);
+              double temp_06_0002 = temp_06_0014.run();
+              if (null != temp_06_0014)
+                temp_06_0014.freeRef();
+              if (null != temp_06_0013)
+                temp_06_0013.freeRef();
+              if (null != temp_06_0012)
+                temp_06_0012.freeRef();
+              if (null != temp_06_0011)
+                temp_06_0011.freeRef();
+              if (null != temp_06_0010)
+                temp_06_0010.freeRef();
+              if (null != temp_06_0009)
+                temp_06_0009.freeRef();
+              if (null != temp_06_0008)
+                temp_06_0008.freeRef();
+              //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+              return temp_06_0002;
+            }, Tensor.addRefs(trainingData),
+            recognitionNetwork == null ? null : recognitionNetwork.addRef()));
+    if (null != trainingData)
+      ReferenceCounting.freeRefs(trainingData);
     if (!history.isEmpty()) {
-      log.eval(() -> {
-        @Nonnull final PlotCanvas plot = ScatterPlot
-            .plot(history.stream().map(step -> new double[]{step.iteration, Math.log10(step.point.getMean())})
-                .toArray(i -> new double[i][]));
-        plot.setTitle("Convergence Plot");
-        plot.setAxisLabels("Iteration", "log10(Fitness)");
-        plot.setSize(600, 400);
-        return plot;
-      });
+      log.eval(RefUtil
+          .wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
+            @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> {
+              double[] temp_06_0003 = new double[]{step.iteration, Math.log10(step.point.getMean())};
+              if (null != step)
+                step.freeRef();
+              return temp_06_0003;
+            }).toArray(i -> new double[i][]));
+            plot.setTitle("Convergence Plot");
+            plot.setAxisLabels("Iteration", "log10(Fitness)");
+            plot.setSize(600, 400);
+            return plot;
+          }, history == null ? null : history.addRef()));
     }
 
+    history.freeRef();
     if (recognitionNetwork instanceof DAGNetwork) {
       ((DAGNetwork) recognitionNetwork).visitLayers(layer -> {
         if (layer instanceof StochasticComponent)
           ((StochasticComponent) layer).clearNoise();
+        if (null != layer)
+          layer.freeRef();
       });
     }
 
@@ -185,45 +234,86 @@ class MnistDemoBase {
 
     log.h1("Validation");
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
-    log.eval(() -> {
-      RefList<LabeledObject<Tensor>> validation = MNIST.validationDataStream()
-          .collect(RefCollectors.toList());
-      Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
-      TensorList predictionData = recognitionNetwork.eval(tensors).getData();
-      RefList<int[]> predicitonList = RefIntStream
-          .range(0, predictionData.length()).mapToObj(rowIndex -> {
-            Tensor predictionTensor = predictionData.get(rowIndex);
-            return RefIntStream.range(0, 10).mapToObj(x -> x)
-                .sorted(RefComparator.comparing(ii -> {
-                  return -predictionTensor.getData()[ii];
-                })).mapToInt(x -> x).toArray();
-          }).collect(RefCollectors.toList());
-      return RefIntStream.range(0, predictionData.length()).mapToDouble(rowIndex -> {
-        return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
-      }).average().getAsDouble() * 100;
-    });
+    log.eval(RefUtil
+        .wrapInterface((UncheckedSupplier<Double>) () -> {
+          RefList<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(RefCollectors.toList());
+          Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
+          Result temp_06_0015 = recognitionNetwork
+              .eval(Tensor.addRefs(tensors));
+          TensorList predictionData = temp_06_0015.getData();
+          if (null != temp_06_0015)
+            temp_06_0015.freeRef();
+          if (null != tensors)
+            ReferenceCounting.freeRefs(tensors);
+          RefList<int[]> predicitonList = RefIntStream.range(0, predictionData.length())
+              .mapToObj(RefUtil
+                  .wrapInterface((IntFunction<? extends int[]>) rowIndex -> {
+                    Tensor predictionTensor = predictionData.get(rowIndex);
+                    int[] temp_06_0005 = RefIntStream.range(0, 10).mapToObj(x -> x)
+                        .sorted(RefComparator.comparing(RefUtil.wrapInterface(
+                            (Function<? super Integer, ? extends Double>) ii -> {
+                              return -predictionTensor.getData()[ii];
+                            }, predictionTensor == null ? null : predictionTensor.addRef())))
+                        .mapToInt(x -> x).toArray();
+                    if (null != predictionTensor)
+                      predictionTensor.freeRef();
+                    return temp_06_0005;
+                  }, predictionData == null ? null : predictionData.addRef()))
+              .collect(RefCollectors.toList());
+          double temp_06_0004 = RefIntStream.range(0, predictionData.length()).mapToDouble(
+              RefUtil.wrapInterface(rowIndex -> {
+                    return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
+                  }, validation == null ? null : validation.addRef(),
+                  predicitonList == null ? null : predicitonList.addRef()))
+              .average().getAsDouble() * 100;
+          if (null != predicitonList)
+            predicitonList.freeRef();
+          if (null != predictionData)
+            predictionData.freeRef();
+          if (null != validation)
+            validation.freeRef();
+          return temp_06_0004;
+        }, recognitionNetwork == null ? null : recognitionNetwork.addRef()));
 
     log.p("Let's examine some incorrectly predicted results in more detail:");
-    log.eval(() -> {
-      @Nonnull final TableOutput table = new TableOutput();
-      MNIST.validationDataStream().map(labeledObject -> {
-        final int actualCategory = parse(labeledObject.label);
-        @Nullable final double[] predictionSignal = recognitionNetwork.eval(labeledObject.data).getData().get(0).getData();
-        final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
-            .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x)
-            .toArray();
-        if (predictionList[0] == actualCategory)
-          return null; // We will only examine mispredicted rows
-        @Nonnull final RefLinkedHashMap<CharSequence, Object> row = new RefLinkedHashMap<>();
-        row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
-        row.put("Prediction",
-            RefArrays.stream(predictionList).limit(3)
-                .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
-                .reduce((a, b) -> a + ", " + b).get());
-        return row;
-      }).filter(x -> null != x).limit(10).forEach(table::putRow);
-      return table;
-    });
+    log.eval(RefUtil
+        .wrapInterface((UncheckedSupplier<TableOutput>) () -> {
+          @Nonnull final TableOutput table = new TableOutput();
+          MNIST.validationDataStream().map(RefUtil.wrapInterface(
+              (Function<? super LabeledObject<Tensor>, ? extends RefLinkedHashMap<CharSequence, Object>>) labeledObject -> {
+                final int actualCategory = parse(labeledObject.label);
+                Result temp_06_0016 = recognitionNetwork
+                    .eval(labeledObject.data.addRef());
+                TensorList temp_06_0017 = temp_06_0016.getData();
+                Tensor temp_06_0018 = temp_06_0017.get(0);
+                @Nullable final double[] predictionSignal = temp_06_0018.getData();
+                if (null != temp_06_0018)
+                  temp_06_0018.freeRef();
+                if (null != temp_06_0017)
+                  temp_06_0017.freeRef();
+                if (null != temp_06_0016)
+                  temp_06_0016.freeRef();
+                final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
+                    .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+                if (predictionList[0] == actualCategory)
+                  return null; // We will only examine mispredicted rows
+                @Nonnull final RefLinkedHashMap<CharSequence, Object> row = new RefLinkedHashMap<>();
+                row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
+                row.put("Prediction",
+                    RefArrays.stream(predictionList).limit(3)
+                        .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                        .reduce((a, b) -> a + ", " + b).get());
+                return row;
+              }, recognitionNetwork == null ? null : recognitionNetwork.addRef())).filter(x -> {
+            boolean temp_06_0006 = null != x;
+            if (null != x)
+              x.freeRef();
+            return temp_06_0006;
+          }).limit(10).forEach(table::putRow);
+          return table;
+        }, recognitionNetwork == null ? null : recognitionNetwork.addRef()));
+    if (null != recognitionNetwork)
+      recognitionNetwork.freeRef();
 
   }
 
@@ -232,10 +322,23 @@ class MnistDemoBase {
   }
 
   public int[] predict(@Nonnull final Layer network, @Nonnull final LabeledObject<Tensor> labeledObject) {
-    Tensor tensor = network.eval(labeledObject.data).getData().get(0);
-    return RefIntStream.range(0, 10).mapToObj(x -> x)
-        .sorted(RefComparator.comparing(i -> -tensor.getData()[i])).mapToInt(x -> x)
-        .toArray();
+    Result temp_06_0019 = network.eval(labeledObject.data.addRef());
+    TensorList temp_06_0020 = temp_06_0019.getData();
+    Tensor tensor = temp_06_0020.get(0);
+    if (null != temp_06_0020)
+      temp_06_0020.freeRef();
+    if (null != temp_06_0019)
+      temp_06_0019.freeRef();
+    network.freeRef();
+    int[] temp_06_0007 = RefIntStream.range(0, 10).mapToObj(x -> x)
+        .sorted(RefComparator.comparing(RefUtil.wrapInterface(
+            (Function<? super Integer, ? extends Double>) i -> -tensor
+                .getData()[i],
+            tensor == null ? null : tensor.addRef())))
+        .mapToInt(x -> x).toArray();
+    if (null != tensor)
+      tensor.freeRef();
+    return temp_06_0007;
   }
 
   protected abstract Layer buildModel(@Nonnull NotebookOutput log);

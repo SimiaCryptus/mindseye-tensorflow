@@ -59,9 +59,19 @@ class MaxPoolLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).maxPool(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          RefArrays.asList(1L, getWidth(), getHeight(), 1L),
-          RefArrays.asList(1L, getStrideX(), getStrideY(), 1L), getPadding());
+      RefList<String> temp_29_0001 = getInputNodes();
+      RefList<Long> temp_29_0002 = RefArrays.asList(1L, getWidth(), getHeight(),
+          1L);
+      RefList<Long> temp_29_0003 = RefArrays.asList(1L, getStrideX(),
+          getStrideY(), 1L);
+      ops.withName(getOutputNode()).maxPool(ops.withName(temp_29_0001.get(0)).placeholder(Double.class), temp_29_0002,
+          temp_29_0003, getPadding());
+      if (null != temp_29_0003)
+        temp_29_0003.freeRef();
+      if (null != temp_29_0002)
+        temp_29_0002.freeRef();
+      if (null != temp_29_0001)
+        temp_29_0001.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -92,7 +102,7 @@ class MaxPoolLayer extends TFLayerBase {
 
   public MaxPoolLayer setPadding(String padding) {
     this.padding = padding;
-    return this;
+    return this.addRef();
   }
 
   public long getStrideX() {
@@ -130,8 +140,7 @@ class MaxPoolLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static MaxPoolLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static MaxPoolLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new MaxPoolLayer(json, rs);
   }
 
@@ -156,8 +165,7 @@ class MaxPoolLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("strideX", strideX);
     json.addProperty("strideY", strideY);

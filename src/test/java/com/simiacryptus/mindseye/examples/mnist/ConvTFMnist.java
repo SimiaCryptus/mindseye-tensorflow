@@ -28,8 +28,10 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +63,9 @@ class ConvTFMnist {
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
       int bands1 = 32;
+      RefList<Long> temp_16_0007 = RefArrays.asList(1L, 1L, 1L, 1L);
+      RefList<Long> temp_16_0008 = RefArrays.asList(1L, 2L, 2L, 1L);
+      RefList<Long> temp_16_0009 = RefArrays.asList(1L, 2L, 2L, 1L);
       Operand<Double> conv1 = ops.add(
           ops.withName(bias1).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands1))),
           ops.relu(ops.maxPool(
@@ -68,19 +73,32 @@ class ConvTFMnist {
                   ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                   ops.withName(ConvTFMnist.conv1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, 1, bands1))),
-                  RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              RefArrays.asList(1L, 2L, 2L, 1L),
-              RefArrays.asList(1L, 2L, 2L, 1L), "SAME")));
+                  temp_16_0007, "SAME"),
+              temp_16_0008, temp_16_0009, "SAME")));
+      if (null != temp_16_0009)
+        temp_16_0009.freeRef();
+      if (null != temp_16_0008)
+        temp_16_0008.freeRef();
+      if (null != temp_16_0007)
+        temp_16_0007.freeRef();
       int bands2 = 64;
+      RefList<Long> temp_16_0010 = RefArrays.asList(1L, 1L, 1L, 1L);
+      RefList<Long> temp_16_0011 = RefArrays.asList(1L, 2L, 2L, 1L);
+      RefList<Long> temp_16_0012 = RefArrays.asList(1L, 2L, 2L, 1L);
       Operand<Double> conv2 = ops.add(
           ops.withName(bias2).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands2))),
           ops.relu(ops.maxPool(
               ops.withName("conv2d_1").conv2D(conv1,
                   ops.withName(ConvTFMnist.conv2).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, bands1, bands2))),
-                  RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              RefArrays.asList(1L, 2L, 2L, 1L),
-              RefArrays.asList(1L, 2L, 2L, 1L), "SAME")));
+                  temp_16_0010, "SAME"),
+              temp_16_0011, temp_16_0012, "SAME")));
+      if (null != temp_16_0012)
+        temp_16_0012.freeRef();
+      if (null != temp_16_0011)
+        temp_16_0011.freeRef();
+      if (null != temp_16_0010)
+        temp_16_0010.freeRef();
       Operand<Double> fc1 = ops.add(
           ops.withName(bias3).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1024))),
           ops.relu(ops.transpose(
@@ -96,12 +114,21 @@ class ConvTFMnist {
   @NotNull
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
-    variables.put(conv1, new Tensor(5, 5, 1, 32).randomize(.001));
-    variables.put(conv2, new Tensor(5, 5, 32, 64).randomize(.001));
-    variables.put(bias1, new Tensor(1, 1, 1, 32));
-    variables.put(bias2, new Tensor(1, 1, 1, 64));
-    variables.put(bias3, new Tensor(1, 1024));
-    variables.put(fc1, new Tensor(1024, 7 * 7 * 64).randomize(.001));
+    Tensor temp_16_0001 = new Tensor(5, 5, 1, 32);
+    RefUtil.freeRef(variables.put(conv1, temp_16_0001.randomize(.001)));
+    if (null != temp_16_0001)
+      temp_16_0001.freeRef();
+    Tensor temp_16_0002 = new Tensor(5, 5, 32, 64);
+    RefUtil.freeRef(variables.put(conv2, temp_16_0002.randomize(.001)));
+    if (null != temp_16_0002)
+      temp_16_0002.freeRef();
+    RefUtil.freeRef(variables.put(bias1, new Tensor(1, 1, 1, 32)));
+    RefUtil.freeRef(variables.put(bias2, new Tensor(1, 1, 1, 64)));
+    RefUtil.freeRef(variables.put(bias3, new Tensor(1, 1024)));
+    Tensor temp_16_0003 = new Tensor(1024, 7 * 7 * 64);
+    RefUtil.freeRef(variables.put(fc1, temp_16_0003.randomize(.001)));
+    if (null != temp_16_0003)
+      temp_16_0003.freeRef();
     return variables;
   }
 
@@ -117,21 +144,35 @@ class ConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return stochasticClassificationLayer(new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput),
-          Math.pow(0.5, 1.0), 5, 0.001);
+      TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output,
+          input);
+      Layer temp_16_0004 = stochasticClassificationLayer(
+          temp_16_0005.setSummaryOut(statOutput), Math.pow(0.5, 1.0), 5, 0.001);
+      if (null != temp_16_0005)
+        temp_16_0005.freeRef();
+      return temp_16_0004;
     });
   }
 
   @NotNull
   public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
     PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
-    stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density));
-    stochasticTerminal.add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).randomize(initialWeight));
-    stochasticTerminal.add(new BiasLayer(10));
-    stochasticTerminal.add(new SoftmaxLayer());
+    RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density)));
+    FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[]{1024},
+        new int[]{10});
+    RefUtil.freeRef(stochasticTerminal.add(temp_16_0006.randomize(initialWeight)));
+    if (null != temp_16_0006)
+      temp_16_0006.freeRef();
+    RefUtil.freeRef(stochasticTerminal.add(new BiasLayer(10)));
+    RefUtil.freeRef(stochasticTerminal.add(new SoftmaxLayer()));
     PipelineNetwork pipeline = new PipelineNetwork(1);
-    pipeline.add(inner);
-    pipeline.add(new StochasticSamplingSubnetLayer(stochasticTerminal, samples));
+    RefUtil.freeRef(pipeline.add(inner == null ? null : inner.addRef()));
+    if (null != inner)
+      inner.freeRef();
+    RefUtil.freeRef(pipeline.add(
+        new StochasticSamplingSubnetLayer(stochasticTerminal == null ? null : stochasticTerminal.addRef(), samples)));
+    if (null != stochasticTerminal)
+      stochasticTerminal.freeRef();
     return pipeline;
   }
 
@@ -141,9 +182,12 @@ class ConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!RefArrays
-          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add", "Conv2D").contains(op))
+      RefList<String> temp_16_0013 = RefArrays.asList("MatMul", "BatchMatMul",
+          "Const", "Placeholder", "Softmax", "Add", "Conv2D");
+      if (!temp_16_0013.contains(op))
         return null;
+      if (null != temp_16_0013)
+        temp_16_0013.freeRef();
       //      if (node.getName().equalsIgnoreCase(input)) {
       //        nodeInstrumentation.setImage(28, 28, 1);
       //      }

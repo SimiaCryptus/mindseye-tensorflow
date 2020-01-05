@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
+import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
@@ -50,7 +51,14 @@ class TFLayerTestBase extends LayerTestBase {
     if (null == tfLayer) {
       synchronized (this) {
         if (null == tfLayer) {
-          tfLayer = createTFLayer();
+          {
+            TFLayerBase temp_01_0001 = createTFLayer();
+            if (null != tfLayer)
+              tfLayer.freeRef();
+            tfLayer = temp_01_0001 == null ? null : temp_01_0001.addRef();
+            if (null != temp_01_0001)
+              temp_01_0001.freeRef();
+          }
         }
       }
     }
@@ -78,6 +86,8 @@ class TFLayerTestBase extends LayerTestBase {
     log.eval(() -> {
       TFLayerBase tfLayer = getTfLayer();
       GraphDef graphDef = tfLayer.constGraph();
+      if (null != tfLayer)
+        tfLayer.freeRef();
       GraphModel graphModel = new GraphModel(graphDef.toByteArray());
       return JsonUtil.toJson(graphModel);
     });
@@ -88,11 +98,18 @@ class TFLayerTestBase extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     TFLayerBase tfLayer = getTfLayer();
-    return new TFConverter().convert(tfLayer);
+    PipelineNetwork temp_01_0002 = new TFConverter()
+        .convert(tfLayer == null ? null : tfLayer.addRef());
+    if (null != tfLayer)
+      tfLayer.freeRef();
+    return temp_01_0002;
   }
 
   public @SuppressWarnings("unused")
   void _free() {
+    if (null != tfLayer)
+      tfLayer.freeRef();
+    tfLayer = null;
   }
 
   public @Override

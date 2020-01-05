@@ -31,6 +31,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
@@ -55,37 +56,65 @@ class CudnnJavaMnist {
         pipeline.add(new SummaryLayer("input"));
 
       int bands1 = 64;
-      pipeline.add(new SimpleConvolutionLayer(5, 5, 1 * bands1).set(() -> 0.001 * (Math.random() - 0.45)));
-      pipeline.add(new ImgBandBiasLayer(bands1));
-      pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
-      pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
+      SimpleConvolutionLayer temp_12_0001 = new SimpleConvolutionLayer(5, 5,
+          1 * bands1);
+      RefUtil.freeRef(pipeline.add(temp_12_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_12_0001)
+        temp_12_0001.freeRef();
+      RefUtil.freeRef(pipeline.add(new ImgBandBiasLayer(bands1)));
+      PoolingLayer temp_12_0002 = new PoolingLayer();
+      RefUtil.freeRef(pipeline.add(temp_12_0002.setMode(PoolingLayer.PoolingMode.Max)));
+      if (null != temp_12_0002)
+        temp_12_0002.freeRef();
+      RefUtil.freeRef(pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout1"));
 
       int bands2 = 32;
-      pipeline.add(new SimpleConvolutionLayer(5, 5, bands1 * bands2).set(() -> 0.001 * (Math.random() - 0.45)));
-      pipeline.add(new ImgBandBiasLayer(bands2));
-      pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
-      pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
+      SimpleConvolutionLayer temp_12_0003 = new SimpleConvolutionLayer(5, 5,
+          bands1 * bands2);
+      RefUtil.freeRef(pipeline.add(temp_12_0003.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_12_0003)
+        temp_12_0003.freeRef();
+      RefUtil.freeRef(pipeline.add(new ImgBandBiasLayer(bands2)));
+      PoolingLayer temp_12_0004 = new PoolingLayer();
+      RefUtil.freeRef(pipeline.add(temp_12_0004.setMode(PoolingLayer.PoolingMode.Max)));
+      if (null != temp_12_0004)
+        temp_12_0004.freeRef();
+      RefUtil.freeRef(pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout2"));
 
-      pipeline.add(new AssertDimensionsLayer(7, 7, bands2));
-      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(new int[]{7, 7, bands2},
-          new int[]{1024}).set(() -> 0.001 * (Math.random() - 0.45)).explode());
-      pipeline.add(new BiasLayer(1024));
-      pipeline.add(new ReLuActivationLayer());
+      RefUtil.freeRef(pipeline.add(new AssertDimensionsLayer(7, 7, bands2)));
+      com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer temp_12_0005 = new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(
+          new int[]{7, 7, bands2}, new int[]{1024});
+      com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer temp_12_0007 = temp_12_0005
+          .set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_12_0007.explode()));
+      if (null != temp_12_0007)
+        temp_12_0007.freeRef();
+      if (null != temp_12_0005)
+        temp_12_0005.freeRef();
+      RefUtil.freeRef(pipeline.add(new BiasLayer(1024)));
+      RefUtil.freeRef(pipeline.add(new ReLuActivationLayer()));
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout3"));
 
       PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
-      stochasticTerminal.add(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5)));
-      stochasticTerminal
-          .add(new FullyConnectedLayer(new int[]{1024}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
-      stochasticTerminal.add(new BiasLayer(10));
-      stochasticTerminal.add(new SoftmaxLayer());
-      pipeline.add(new StochasticSamplingSubnetLayer(stochasticTerminal, 5));
+      RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5))));
+      FullyConnectedLayer temp_12_0006 = new FullyConnectedLayer(
+          new int[]{1024}, new int[]{10});
+      RefUtil
+          .freeRef(stochasticTerminal.add(temp_12_0006.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_12_0006)
+        temp_12_0006.freeRef();
+      RefUtil.freeRef(stochasticTerminal.add(new BiasLayer(10)));
+      RefUtil.freeRef(stochasticTerminal.add(new SoftmaxLayer()));
+      RefUtil.freeRef(pipeline
+          .add(new StochasticSamplingSubnetLayer(stochasticTerminal == null ? null : stochasticTerminal.addRef(), 5)));
 
+      if (null != stochasticTerminal)
+        stochasticTerminal.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax"));
       return pipeline;

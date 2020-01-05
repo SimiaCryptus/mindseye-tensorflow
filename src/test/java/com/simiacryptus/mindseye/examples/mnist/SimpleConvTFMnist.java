@@ -28,8 +28,10 @@ import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
@@ -63,6 +65,7 @@ class SimpleConvTFMnist {
 
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
+      RefList<Long> temp_08_0006 = RefArrays.asList(1L, 1L, 1L, 1L);
       ops.withName(output).softmax(ops.add(
           ops.withName(bias).placeholder(Double.class, Placeholder.shape(Shape.make(1, 10))),
           ops.reshape(ops.transpose(
@@ -73,19 +76,32 @@ class SimpleConvTFMnist {
                           ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                           ops.withName(weights_conv1).placeholder(Double.class,
                               Placeholder.shape(Shape.make(5, 5, 1, 5))),
-                          RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
+                          temp_08_0006, "SAME"),
                       ops.constant(new long[]{-1, 28 * 28 * 5})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10}))));
+      if (null != temp_08_0006)
+        temp_08_0006.freeRef();
     });
   }
 
   @NotNull
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
-    variables.put(weights_conv1, new Tensor(5, 5, 1, 5).setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(weights, new Tensor(10, 28 * 28 * 5).setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(bias, new Tensor(10).setByCoord(c -> 0));
+    Tensor temp_08_0001 = new Tensor(5, 5, 1, 5);
+    RefUtil
+        .freeRef(variables.put(weights_conv1, temp_08_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    if (null != temp_08_0001)
+      temp_08_0001.freeRef();
+    Tensor temp_08_0002 = new Tensor(10, 28 * 28 * 5);
+    RefUtil
+        .freeRef(variables.put(weights, temp_08_0002.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    if (null != temp_08_0002)
+      temp_08_0002.freeRef();
+    Tensor temp_08_0003 = new Tensor(10);
+    RefUtil.freeRef(variables.put(bias, temp_08_0003.setByCoord(c -> 0)));
+    if (null != temp_08_0003)
+      temp_08_0003.freeRef();
     return variables;
   }
 
@@ -101,7 +117,12 @@ class SimpleConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setSummaryOut(statOutput);
+      TFLayer temp_08_0005 = new TFLayer(bytes, getVariables(), output,
+          input);
+      TFLayer temp_08_0004 = temp_08_0005.setSummaryOut(statOutput);
+      if (null != temp_08_0005)
+        temp_08_0005.freeRef();
+      return temp_08_0004;
     });
   }
 
@@ -111,9 +132,12 @@ class SimpleConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!RefArrays
-          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
+      RefList<String> temp_08_0007 = RefArrays.asList("MatMul", "BatchMatMul",
+          "Const", "Placeholder", "Softmax", "Add");
+      if (!temp_08_0007.contains(op))
         return null;
+      if (null != temp_08_0007)
+        temp_08_0007.freeRef();
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
           NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
       if (node.getName().equalsIgnoreCase(input)) {

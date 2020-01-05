@@ -27,8 +27,10 @@ import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
@@ -80,8 +82,15 @@ class FloatTFMnist {
   @NotNull
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
-    variables.put(weights, new Tensor(10, 28 * 28).setByCoord(c -> .001 * (Math.random() - 0.5)));
-    variables.put(bias, new Tensor(1, 28, 28).setByCoord(c -> 0));
+    Tensor temp_13_0001 = new Tensor(10, 28 * 28);
+    RefUtil
+        .freeRef(variables.put(weights, temp_13_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    if (null != temp_13_0001)
+      temp_13_0001.freeRef();
+    Tensor temp_13_0002 = new Tensor(1, 28, 28);
+    RefUtil.freeRef(variables.put(bias, temp_13_0002.setByCoord(c -> 0)));
+    if (null != temp_13_0002)
+      temp_13_0002.freeRef();
     return variables;
   }
 
@@ -97,7 +106,15 @@ class FloatTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      return new TFLayer(bytes, getVariables(), output, input).setFloat(true).setSummaryOut(statOutput);
+      TFLayer temp_13_0004 = new TFLayer(bytes, getVariables(), output,
+          input);
+      TFLayer temp_13_0005 = temp_13_0004.setFloat(true);
+      TFLayer temp_13_0003 = temp_13_0005.setSummaryOut(statOutput);
+      if (null != temp_13_0005)
+        temp_13_0005.freeRef();
+      if (null != temp_13_0004)
+        temp_13_0004.freeRef();
+      return temp_13_0003;
     });
   }
 
@@ -107,9 +124,12 @@ class FloatTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!RefArrays
-          .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
+      RefList<String> temp_13_0006 = RefArrays.asList("MatMul", "BatchMatMul",
+          "Const", "Placeholder", "Softmax", "Add");
+      if (!temp_13_0006.contains(op))
         return null;
+      if (null != temp_13_0006)
+        temp_13_0006.freeRef();
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
           NodeInstrumentation.getDataType(node, DataType.DT_FLOAT));
       if (node.getName().equalsIgnoreCase(input)) {

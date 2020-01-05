@@ -19,7 +19,10 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.wrappers.RefMap;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -53,7 +56,14 @@ class BiasAddLayerTest extends RawTFLayerTestBase {
 
   public @NotNull TFLayerBase createTFLayer() {
     BiasAddLayer biasLayer = new BiasAddLayer(3);
-    biasLayer.getWeights().get("bias").setByCoord(c -> Math.random());
+    RefMap<String, Tensor> temp_23_0001 = biasLayer
+        .getWeights();
+    Tensor temp_23_0002 = temp_23_0001.get("bias");
+    RefUtil.freeRef(temp_23_0002.setByCoord(c -> Math.random()));
+    if (null != temp_23_0002)
+      temp_23_0002.freeRef();
+    if (null != temp_23_0001)
+      temp_23_0001.freeRef();
     return biasLayer;
   }
 

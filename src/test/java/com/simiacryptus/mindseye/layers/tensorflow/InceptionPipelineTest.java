@@ -31,8 +31,7 @@ import java.util.Random;
 
 public abstract @RefAware
 class InceptionPipelineTest extends TFLayerTestBase {
-  public static final RefList<TFLayer> layers = TFConverter
-      .getLayers(ImageNetworkPipeline.inception5h());
+  public static final RefList<TFLayer> layers = TFConverter.getLayers(ImageNetworkPipeline.inception5h());
 
   public InceptionPipelineTest() {
     validateDifferentials = false;

@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
@@ -47,10 +48,11 @@ class LRNLayer extends TFLayerBase {
 
   public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    setRadius((json.get("width").getAsInt() - 1) / 2);
-    setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1))));
+    RefUtil.freeRef(setRadius((json.get("width").getAsInt() - 1) / 2));
+    RefUtil
+        .freeRef(setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1)))));
     setBeta((float) json.get("beta").getAsDouble());
-    setBias((float) json.get("k").getAsDouble());
+    RefUtil.freeRef(setBias((float) json.get("k").getAsDouble()));
   }
 
   public float getAlpha() {
@@ -59,7 +61,7 @@ class LRNLayer extends TFLayerBase {
 
   public LRNLayer setAlpha(float alpha) {
     this.alpha = alpha;
-    return this;
+    return this.addRef();
   }
 
   public float getBeta() {
@@ -76,15 +78,18 @@ class LRNLayer extends TFLayerBase {
 
   public LRNLayer setBias(float bias) {
     this.bias = bias;
-    return this;
+    return this.addRef();
   }
 
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).lRN(ops.withName(getInputNodes().get(0)).placeholder(Float.class),
+      RefList<String> temp_25_0001 = getInputNodes();
+      ops.withName(getOutputNode()).lRN(ops.withName(temp_25_0001.get(0)).placeholder(Float.class),
           LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
+      if (null != temp_25_0001)
+        temp_25_0001.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -107,7 +112,7 @@ class LRNLayer extends TFLayerBase {
 
   public LRNLayer setRadius(long radius) {
     this.radius = radius;
-    return this;
+    return this.addRef();
   }
 
   @Override
@@ -121,8 +126,7 @@ class LRNLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static LRNLayer fromJson(@Nonnull final JsonObject json,
-                                  Map<CharSequence, byte[]> rs) {
+  public static LRNLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new LRNLayer(json, rs);
   }
 
@@ -143,8 +147,7 @@ class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     long width = getRadius() * 2 + 1;
     json.addProperty("width", width);

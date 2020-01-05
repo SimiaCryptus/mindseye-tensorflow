@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
@@ -50,43 +51,54 @@ class NoiseJavaMnist {
         pipeline.add(new SummaryLayer("input"));
 
       int size1 = 100;
-      pipeline.add(new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{size1})
-          .set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer temp_04_0002 = new FullyConnectedLayer(
+          new int[]{28, 28, 1}, new int[]{size1});
+      RefUtil.freeRef(pipeline.add(temp_04_0002.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_04_0002)
+        temp_04_0002.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply1"));
-      pipeline.add(new BiasLayer(size1));
+      RefUtil.freeRef(pipeline.add(new BiasLayer(size1)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("bias1"));
-      pipeline.add(new ReLuActivationLayer());
-      pipeline.add(BinaryNoiseLayer.maskLayer(0.6));
+      RefUtil.freeRef(pipeline.add(new ReLuActivationLayer()));
+      RefUtil.freeRef(pipeline.add(BinaryNoiseLayer.maskLayer(0.6)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout1"));
 
       int size2 = 100;
-      pipeline.add(
-          new FullyConnectedLayer(new int[]{size1}, new int[]{size2}).set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer temp_04_0003 = new FullyConnectedLayer(
+          new int[]{size1}, new int[]{size2});
+      RefUtil.freeRef(pipeline.add(temp_04_0003.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_04_0003)
+        temp_04_0003.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply2"));
-      pipeline.add(new BiasLayer(size2));
+      RefUtil.freeRef(pipeline.add(new BiasLayer(size2)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("bias2"));
-      pipeline.add(new ReLuActivationLayer());
-      pipeline.add(BinaryNoiseLayer.maskLayer(0.6));
+      RefUtil.freeRef(pipeline.add(new ReLuActivationLayer()));
+      RefUtil.freeRef(pipeline.add(BinaryNoiseLayer.maskLayer(0.6)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout2"));
 
-      pipeline.add(
-          new FullyConnectedLayer(new int[]{size2}, new int[]{10}).set(() -> 0.001 * (Math.random() - 0.45)));
+      FullyConnectedLayer temp_04_0004 = new FullyConnectedLayer(
+          new int[]{size2}, new int[]{10});
+      RefUtil.freeRef(pipeline.add(temp_04_0004.set(() -> 0.001 * (Math.random() - 0.45))));
+      if (null != temp_04_0004)
+        temp_04_0004.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply3"));
-      pipeline.add(new BiasLayer(10));
+      RefUtil.freeRef(pipeline.add(new BiasLayer(10)));
       if (tensorboard)
         pipeline.add(new SummaryLayer("bias3"));
-      pipeline.add(new SoftmaxLayer());
+      RefUtil.freeRef(pipeline.add(new SoftmaxLayer()));
 
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax"));
-      return new StochasticSamplingSubnetLayer(pipeline, 5);
+      StochasticSamplingSubnetLayer temp_04_0001 = new StochasticSamplingSubnetLayer(
+          pipeline == null ? null : pipeline, 5);
+      return temp_04_0001;
     });
   }
 

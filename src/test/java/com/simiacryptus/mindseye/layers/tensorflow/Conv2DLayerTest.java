@@ -24,6 +24,8 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.tensorflow.GraphModel;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,12 +59,27 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   @NotNull
   public TFLayerBase createTFLayer() {
-    Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(2).setStrideY(2);
-    Tensor kernel = layer.getWeights().get("kernel");
-    kernel.randomize(1.0);
+    Conv2DLayer temp_07_0007 = new Conv2DLayer(3, 3, 1, 1);
+    Conv2DLayer temp_07_0014 = temp_07_0007.setStrideX(2);
+    Conv2DLayer layer = temp_07_0014.setStrideY(2);
+    if (null != temp_07_0014)
+      temp_07_0014.freeRef();
+    if (null != temp_07_0007)
+      temp_07_0007.freeRef();
+    RefMap<String, Tensor> temp_07_0015 = layer
+        .getWeights();
+    Tensor kernel = temp_07_0015.get("kernel");
+    if (null != temp_07_0015)
+      temp_07_0015.freeRef();
+    RefUtil.freeRef(kernel.randomize(1.0));
+    if (null != kernel)
+      kernel.freeRef();
+    TFLayer temp_07_0001 = layer.asConstLayer();
+    if (null != layer)
+      layer.freeRef();
     //    kernel.set(new int[]{1,1,0}, 1.0);
     //    kernel.set(new int[]{0,0,0}, 1.0);
-    return layer.asConstLayer();
+    return temp_07_0001;
   }
 
   @Nonnull
@@ -152,9 +169,21 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     @NotNull
     @Override
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(2).setStrideY(2);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
+      Conv2DLayer temp_07_0008 = new Conv2DLayer(3, 3, 1, 1);
+      Conv2DLayer temp_07_0016 = temp_07_0008.setStrideX(2);
+      Conv2DLayer layer = temp_07_0016.setStrideY(2);
+      if (null != temp_07_0016)
+        temp_07_0016.freeRef();
+      if (null != temp_07_0008)
+        temp_07_0008.freeRef();
+      RefMap<String, Tensor> temp_07_0017 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0017.get("kernel");
+      if (null != temp_07_0017)
+        temp_07_0017.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
       //    kernel.set(new int[]{0,0,0}, 1.0);
       return layer;
     }
@@ -189,10 +218,25 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @NotNull
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 2).setStrideX(1).setStrideY(1);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
-      return layer.asConstLayer();
+      Conv2DLayer temp_07_0009 = new Conv2DLayer(3, 3, 1, 2);
+      Conv2DLayer temp_07_0018 = temp_07_0009.setStrideX(1);
+      Conv2DLayer layer = temp_07_0018.setStrideY(1);
+      if (null != temp_07_0018)
+        temp_07_0018.freeRef();
+      if (null != temp_07_0009)
+        temp_07_0009.freeRef();
+      RefMap<String, Tensor> temp_07_0019 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0019.get("kernel");
+      if (null != temp_07_0019)
+        temp_07_0019.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
+      TFLayer temp_07_0002 = layer.asConstLayer();
+      if (null != layer)
+        layer.freeRef();
+      return temp_07_0002;
     }
 
     public @SuppressWarnings("unused")
@@ -226,10 +270,25 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @NotNull
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(3, 3, 2, 2).setStrideX(1).setStrideY(1);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
-      return layer.asConstLayer();
+      Conv2DLayer temp_07_0010 = new Conv2DLayer(3, 3, 2, 2);
+      Conv2DLayer temp_07_0020 = temp_07_0010.setStrideX(1);
+      Conv2DLayer layer = temp_07_0020.setStrideY(1);
+      if (null != temp_07_0020)
+        temp_07_0020.freeRef();
+      if (null != temp_07_0010)
+        temp_07_0010.freeRef();
+      RefMap<String, Tensor> temp_07_0021 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0021.get("kernel");
+      if (null != temp_07_0021)
+        temp_07_0021.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
+      TFLayer temp_07_0003 = layer.asConstLayer();
+      if (null != layer)
+        layer.freeRef();
+      return temp_07_0003;
     }
 
     public @SuppressWarnings("unused")
@@ -254,8 +313,8 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          convolutionLayer.setPaddingX(padding);
-          convolutionLayer.setPaddingY(padding);
+          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
+          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -276,10 +335,25 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @NotNull
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(7, 7, 3, 64).setStrideX(2).setStrideY(2);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
-      return layer.asConstLayer();
+      Conv2DLayer temp_07_0011 = new Conv2DLayer(7, 7, 3, 64);
+      Conv2DLayer temp_07_0022 = temp_07_0011.setStrideX(2);
+      Conv2DLayer layer = temp_07_0022.setStrideY(2);
+      if (null != temp_07_0022)
+        temp_07_0022.freeRef();
+      if (null != temp_07_0011)
+        temp_07_0011.freeRef();
+      RefMap<String, Tensor> temp_07_0023 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0023.get("kernel");
+      if (null != temp_07_0023)
+        temp_07_0023.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
+      TFLayer temp_07_0004 = layer.asConstLayer();
+      if (null != layer)
+        layer.freeRef();
+      return temp_07_0004;
       //      return tfLayer;
     }
 
@@ -313,8 +387,8 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          convolutionLayer.setPaddingX(padding);
-          convolutionLayer.setPaddingY(padding);
+          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
+          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -336,11 +410,26 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @NotNull
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(3).setStrideY(3);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
+      Conv2DLayer temp_07_0012 = new Conv2DLayer(3, 3, 1, 1);
+      Conv2DLayer temp_07_0024 = temp_07_0012.setStrideX(3);
+      Conv2DLayer layer = temp_07_0024.setStrideY(3);
+      if (null != temp_07_0024)
+        temp_07_0024.freeRef();
+      if (null != temp_07_0012)
+        temp_07_0012.freeRef();
+      RefMap<String, Tensor> temp_07_0025 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0025.get("kernel");
+      if (null != temp_07_0025)
+        temp_07_0025.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
+      TFLayer temp_07_0005 = layer.asConstLayer();
+      if (null != layer)
+        layer.freeRef();
       //      kernel.set(new int[]{0,0,0}, 1.0);
-      return layer.asConstLayer();
+      return temp_07_0005;
       //return tfLayer;
     }
 
@@ -407,8 +496,8 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          convolutionLayer.setPaddingX(padding);
-          convolutionLayer.setPaddingY(padding);
+          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
+          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -430,11 +519,26 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @NotNull
     public TFLayerBase createTFLayer() {
-      Conv2DLayer layer = new Conv2DLayer(3, 3, 1, 1).setStrideX(4).setStrideY(4);
-      Tensor kernel = layer.getWeights().get("kernel");
-      kernel.randomize(1.0);
+      Conv2DLayer temp_07_0013 = new Conv2DLayer(3, 3, 1, 1);
+      Conv2DLayer temp_07_0026 = temp_07_0013.setStrideX(4);
+      Conv2DLayer layer = temp_07_0026.setStrideY(4);
+      if (null != temp_07_0026)
+        temp_07_0026.freeRef();
+      if (null != temp_07_0013)
+        temp_07_0013.freeRef();
+      RefMap<String, Tensor> temp_07_0027 = layer
+          .getWeights();
+      Tensor kernel = temp_07_0027.get("kernel");
+      if (null != temp_07_0027)
+        temp_07_0027.freeRef();
+      RefUtil.freeRef(kernel.randomize(1.0));
+      if (null != kernel)
+        kernel.freeRef();
+      TFLayer temp_07_0006 = layer.asConstLayer();
+      if (null != layer)
+        layer.freeRef();
       //      kernel.set(new int[]{0,0,0}, 1.0);
-      return layer.asConstLayer();
+      return temp_07_0006;
       //return tfLayer;
     }
 

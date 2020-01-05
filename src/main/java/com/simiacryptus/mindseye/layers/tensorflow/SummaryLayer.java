@@ -53,11 +53,15 @@ class SummaryLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).identity(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
-      return NodeInstrumentation.instrument(GraphDef.parseFrom(graph.toGraphDef()), getSummaryOut(),
-          node -> node.getName().equals(getInputNodes().get(0))
-              ? new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE))
-              : null);
+      RefList<String> temp_26_0001 = getInputNodes();
+      ops.withName(getOutputNode()).identity(ops.withName(temp_26_0001.get(0)).placeholder(Double.class));
+      if (null != temp_26_0001)
+        temp_26_0001.freeRef();
+      return NodeInstrumentation.instrument(GraphDef.parseFrom(graph.toGraphDef()), getSummaryOut(), node -> {
+        return node.getName().equals(getInputNodes().get(0))
+            ? new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE))
+            : null;
+      });
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
     }
@@ -92,8 +96,7 @@ class SummaryLayer extends TFLayerBase {
 
   @Nonnull
   @SuppressWarnings("unused")
-  public static SummaryLayer fromJson(@Nonnull final JsonObject json,
-                                      Map<CharSequence, byte[]> rs) {
+  public static SummaryLayer fromJson(@Nonnull final JsonObject json, Map<CharSequence, byte[]> rs) {
     return new SummaryLayer(json, rs);
   }
 
@@ -114,8 +117,7 @@ class SummaryLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources,
-                            DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("tag", tag);
     return json;
