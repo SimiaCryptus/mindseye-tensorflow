@@ -19,19 +19,21 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ReLuLayerTest extends RawTFLayerTestBase {
 
   public static @SuppressWarnings("unused")
   ReLuLayerTest[] addRefs(ReLuLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRef)
         .toArray((x) -> new ReLuLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class ReLuLayerTest extends RawTFLayerTestBase {
   ReLuLayerTest[][] addRefs(ReLuLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRefs)
         .toArray((x) -> new ReLuLayerTest[x][]);
   }
 

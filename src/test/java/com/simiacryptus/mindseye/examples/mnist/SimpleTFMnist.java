@@ -27,6 +27,9 @@ import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
@@ -43,11 +46,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SimpleTFMnist {
 
   public static final String input = "image";
@@ -81,8 +85,8 @@ class SimpleTFMnist {
   }
 
   @NotNull
-  private static com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> getVariables() {
-    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> variables = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  private static RefHashMap<String, Tensor> getVariables() {
+    RefHashMap<String, Tensor> variables = new RefHashMap<>();
     variables.put(weights, new Tensor(10, 28 * 28).setByCoord(c -> .001 * (Math.random() - 0.5)));
     variables.put(bias, new Tensor(1, 28, 28).setByCoord(c -> 0));
     return variables;
@@ -110,7 +114,7 @@ class SimpleTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!com.simiacryptus.ref.wrappers.RefArrays
+      if (!RefArrays
           .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
         return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
@@ -144,7 +148,7 @@ class SimpleTFMnist {
         p -> p.waitFor());
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -160,7 +164,7 @@ class SimpleTFMnist {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class LayerTest extends LayerTestBase {
 
     @Nullable
@@ -173,7 +177,7 @@ class SimpleTFMnist {
     LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
           .toArray((x) -> new LayerTest[x]);
     }
 

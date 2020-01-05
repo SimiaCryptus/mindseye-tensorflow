@@ -19,19 +19,21 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class MaxPoolLayerTest extends RawTFLayerTestBase {
 
   public static @SuppressWarnings("unused")
   MaxPoolLayerTest[] addRefs(MaxPoolLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRef)
         .toArray((x) -> new MaxPoolLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class MaxPoolLayerTest extends RawTFLayerTestBase {
   MaxPoolLayerTest[][] addRefs(MaxPoolLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRefs)
         .toArray((x) -> new MaxPoolLayerTest[x][]);
   }
 
@@ -59,13 +61,13 @@ class MaxPoolLayerTest extends RawTFLayerTestBase {
     return (MaxPoolLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Test0 extends MaxPoolLayerTest {
     public static @SuppressWarnings("unused")
     Test0[] addRefs(Test0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Test0::addRef).toArray((x) -> new Test0[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Test0::addRef).toArray((x) -> new Test0[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -90,13 +92,13 @@ class MaxPoolLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Test1 extends MaxPoolLayerTest {
     public static @SuppressWarnings("unused")
     Test1[] addRefs(Test1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Test1::addRef).toArray((x) -> new Test1[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Test1::addRef).toArray((x) -> new Test1[x]);
     }
 
     public @SuppressWarnings("unused")
@@ -121,13 +123,13 @@ class MaxPoolLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Test2 extends MaxPoolLayerTest {
     public static @SuppressWarnings("unused")
     Test2[] addRefs(Test2[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Test2::addRef).toArray((x) -> new Test2[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Test2::addRef).toArray((x) -> new Test2[x]);
     }
 
     public @SuppressWarnings("unused")

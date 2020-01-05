@@ -23,13 +23,17 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class Conv2DLayer extends TFLayerBase {
 
   private final Class<Double> dtype = Double.class;
@@ -41,7 +45,7 @@ class Conv2DLayer extends TFLayerBase {
     super(defaultStates(intputDims));
   }
 
-  public Conv2DLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  public Conv2DLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     strideX = json.get("strideX").getAsInt();
     strideY = json.get("strideY").getAsInt();
@@ -54,7 +58,7 @@ class Conv2DLayer extends TFLayerBase {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).conv2D(ops.withName(getInputNodes().get(0)).placeholder(dtype),
           ops.withName("kernel").placeholder(dtype),
-          com.simiacryptus.ref.wrappers.RefArrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
+          RefArrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
           getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
@@ -63,8 +67,8 @@ class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
+  public RefList<String> getInputNodes() {
+    return RefArrays.asList("input");
   }
 
   @Override
@@ -107,7 +111,7 @@ class Conv2DLayer extends TFLayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static Conv2DLayer fromJson(@Nonnull final JsonObject json,
-                                     com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                     Map<CharSequence, byte[]> rs) {
     return new Conv2DLayer(json, rs);
   }
 
@@ -115,7 +119,7 @@ class Conv2DLayer extends TFLayerBase {
   Conv2DLayer[] addRefs(Conv2DLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef)
         .toArray((x) -> new Conv2DLayer[x]);
   }
 
@@ -123,12 +127,12 @@ class Conv2DLayer extends TFLayerBase {
   Conv2DLayer[][] addRefs(Conv2DLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs)
         .toArray((x) -> new Conv2DLayer[x][]);
   }
 
-  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates(int[] intputDims) {
-    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
+    RefHashMap<String, Tensor> map = new RefHashMap<>();
     map.put("kernel", new Tensor(intputDims).setByCoord(c -> {
       return 0;
     }));
@@ -136,7 +140,7 @@ class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.addProperty("strideX", strideX);
@@ -161,8 +165,8 @@ class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
-    com.simiacryptus.ref.wrappers.RefHashSet<String> hashSet = new com.simiacryptus.ref.wrappers.RefHashSet<>();
+  protected RefSet<String> getDataKeys(JsonObject json) {
+    RefHashSet<String> hashSet = new RefHashSet<>();
     hashSet.add("kernel");
     return hashSet;
   }

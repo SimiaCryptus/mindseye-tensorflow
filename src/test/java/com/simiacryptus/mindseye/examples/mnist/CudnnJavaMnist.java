@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.examples.mnist;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.LayerTestBase;
 import com.simiacryptus.mindseye.layers.cudnn.ActivationLayer;
+import com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer;
 import com.simiacryptus.mindseye.layers.cudnn.PoolingLayer;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.layers.java.*;
@@ -29,14 +30,16 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class CudnnJavaMnist {
 
   private static final boolean tensorboard = false;
@@ -53,7 +56,7 @@ class CudnnJavaMnist {
 
       int bands1 = 64;
       pipeline.add(new SimpleConvolutionLayer(5, 5, 1 * bands1).set(() -> 0.001 * (Math.random() - 0.45)));
-      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands1));
+      pipeline.add(new ImgBandBiasLayer(bands1));
       pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
       pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
       if (tensorboard)
@@ -61,7 +64,7 @@ class CudnnJavaMnist {
 
       int bands2 = 32;
       pipeline.add(new SimpleConvolutionLayer(5, 5, bands1 * bands2).set(() -> 0.001 * (Math.random() - 0.45)));
-      pipeline.add(new com.simiacryptus.mindseye.layers.cudnn.ImgBandBiasLayer(bands2));
+      pipeline.add(new ImgBandBiasLayer(bands2));
       pipeline.add(new PoolingLayer().setMode(PoolingLayer.PoolingMode.Max));
       pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU));
       if (tensorboard)
@@ -89,7 +92,7 @@ class CudnnJavaMnist {
     });
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -106,7 +109,7 @@ class CudnnJavaMnist {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class LayerTest extends LayerTestBase {
 
     @Nullable
@@ -119,7 +122,7 @@ class CudnnJavaMnist {
     LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
           .toArray((x) -> new LayerTest[x]);
     }
 

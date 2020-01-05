@@ -24,6 +24,7 @@ import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +32,10 @@ import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class TFLayerTestBase extends LayerTestBase {
 
   private volatile @NotNull TFLayerBase tfLayer = null;
@@ -59,7 +61,7 @@ class TFLayerTestBase extends LayerTestBase {
   TFLayerTestBase[] addRefs(TFLayerTestBase[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRef)
         .toArray((x) -> new TFLayerTestBase[x]);
   }
 
@@ -67,7 +69,7 @@ class TFLayerTestBase extends LayerTestBase {
   TFLayerTestBase[][] addRefs(TFLayerTestBase[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRefs)
         .toArray((x) -> new TFLayerTestBase[x][]);
   }
 

@@ -23,6 +23,8 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
@@ -31,9 +33,11 @@ import org.tensorflow.op.Ops;
 import org.tensorflow.op.core.MatMul;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MatMulLayer extends TFLayerBase {
 
   private final int[] intputDims;
@@ -45,7 +49,7 @@ class MatMulLayer extends TFLayerBase {
     this.outputDims = outputDims;
   }
 
-  public MatMulLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  public MatMulLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     intputDims = JsonUtil.toIntArray(json.get("inputDims").getAsJsonArray());
     outputDims = JsonUtil.toIntArray(json.get("outputDims").getAsJsonArray());
@@ -63,8 +67,8 @@ class MatMulLayer extends TFLayerBase {
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})),
           ops.constant(
-              com.simiacryptus.ref.wrappers.RefIntStream.concat(com.simiacryptus.ref.wrappers.RefIntStream.of(-1),
-                  com.simiacryptus.ref.wrappers.RefArrays.stream(getOutputDims())).toArray()));
+              RefIntStream.concat(RefIntStream.of(-1),
+                  RefArrays.stream(getOutputDims())).toArray()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -72,8 +76,8 @@ class MatMulLayer extends TFLayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
+  public RefList<String> getInputNodes() {
+    return RefArrays.asList("input");
   }
 
   public int[] getIntputDims() {
@@ -101,7 +105,7 @@ class MatMulLayer extends TFLayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static MatMulLayer fromJson(@Nonnull final JsonObject json,
-                                     com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                     Map<CharSequence, byte[]> rs) {
     return new MatMulLayer(json, rs);
   }
 
@@ -109,7 +113,7 @@ class MatMulLayer extends TFLayerBase {
   MatMulLayer[] addRefs(MatMulLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef)
         .toArray((x) -> new MatMulLayer[x]);
   }
 
@@ -117,13 +121,13 @@ class MatMulLayer extends TFLayerBase {
   MatMulLayer[][] addRefs(MatMulLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs)
         .toArray((x) -> new MatMulLayer[x][]);
   }
 
-  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates(int[] intputDims,
-                                                                                    int[] outputDims) {
-    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> map = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  private static RefMap<String, Tensor> defaultStates(int[] intputDims,
+                                                      int[] outputDims) {
+    RefHashMap<String, Tensor> map = new RefHashMap<>();
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
     map.put("weights", new Tensor(outs, inputs).setByCoord(c -> {
@@ -136,12 +140,12 @@ class MatMulLayer extends TFLayerBase {
 
   @Nonnull
   public MatMulLayer set(@Nonnull final DoubleSupplier f) {
-    com.simiacryptus.ref.wrappers.RefArrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
+    RefArrays.parallelSetAll(getWeights().get("weights").getData(), i -> f.getAsDouble());
     return this;
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     json.add("inputDims", JsonUtil.toIntArray(getIntputDims()));
@@ -160,8 +164,8 @@ class MatMulLayer extends TFLayerBase {
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
-    com.simiacryptus.ref.wrappers.RefHashSet<String> hashSet = new com.simiacryptus.ref.wrappers.RefHashSet<>();
+  protected RefSet<String> getDataKeys(JsonObject json) {
+    RefHashSet<String> hashSet = new RefHashSet<>();
     hashSet.add("weights");
     return hashSet;
   }

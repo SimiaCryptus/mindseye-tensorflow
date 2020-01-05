@@ -22,14 +22,18 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 import org.tensorflow.op.core.LRN;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class LRNLayer extends TFLayerBase {
 
   private long radius = 5L;
@@ -38,10 +42,10 @@ class LRNLayer extends TFLayerBase {
   private float bias = 1.0f;
 
   public LRNLayer() {
-    super(new com.simiacryptus.ref.wrappers.RefHashMap<>());
+    super(new RefHashMap<>());
   }
 
-  public LRNLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     setRadius((json.get("width").getAsInt() - 1) / 2);
     setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1))));
@@ -88,8 +92,8 @@ class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
+  public RefList<String> getInputNodes() {
+    return RefArrays.asList("input");
   }
 
   @Override
@@ -118,7 +122,7 @@ class LRNLayer extends TFLayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static LRNLayer fromJson(@Nonnull final JsonObject json,
-                                  com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                  Map<CharSequence, byte[]> rs) {
     return new LRNLayer(json, rs);
   }
 
@@ -126,7 +130,7 @@ class LRNLayer extends TFLayerBase {
   LRNLayer[] addRefs(LRNLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef)
         .toArray((x) -> new LRNLayer[x]);
   }
 
@@ -134,12 +138,12 @@ class LRNLayer extends TFLayerBase {
   LRNLayer[][] addRefs(LRNLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs)
         .toArray((x) -> new LRNLayer[x][]);
   }
 
   @Override
-  public JsonObject getJson(com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> resources,
+  public JsonObject getJson(Map<CharSequence, byte[]> resources,
                             DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
     long width = getRadius() * 2 + 1;
@@ -166,7 +170,7 @@ class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
-    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
+  protected RefSet<String> getDataKeys(JsonObject json) {
+    return new RefHashSet<>();
   }
 }

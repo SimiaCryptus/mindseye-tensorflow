@@ -22,20 +22,24 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class ReLuLayer extends TFLayerBase {
 
   public ReLuLayer() {
     super(defaultStates());
   }
 
-  public ReLuLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  public ReLuLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -51,8 +55,8 @@ class ReLuLayer extends TFLayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
+  public RefList<String> getInputNodes() {
+    return RefArrays.asList("input");
   }
 
   @Override
@@ -72,7 +76,7 @@ class ReLuLayer extends TFLayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static ReLuLayer fromJson(@Nonnull final JsonObject json,
-                                   com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                   Map<CharSequence, byte[]> rs) {
     return new ReLuLayer(json, rs);
   }
 
@@ -80,7 +84,7 @@ class ReLuLayer extends TFLayerBase {
   ReLuLayer[] addRefs(ReLuLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef)
         .toArray((x) -> new ReLuLayer[x]);
   }
 
@@ -88,12 +92,12 @@ class ReLuLayer extends TFLayerBase {
   ReLuLayer[][] addRefs(ReLuLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs)
         .toArray((x) -> new ReLuLayer[x][]);
   }
 
-  private static com.simiacryptus.ref.wrappers.RefMap<String, Tensor> defaultStates() {
-    return new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  private static RefMap<String, Tensor> defaultStates() {
+    return new RefHashMap<>();
   }
 
   public @SuppressWarnings("unused")
@@ -107,8 +111,8 @@ class ReLuLayer extends TFLayerBase {
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
-    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
+  protected RefSet<String> getDataKeys(JsonObject json) {
+    return new RefHashSet<>();
   }
 
 }

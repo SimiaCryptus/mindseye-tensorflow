@@ -23,13 +23,15 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.cudnn.conv.SimpleConvolutionLayer;
 import com.simiacryptus.mindseye.util.TFConverter;
+import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.tensorflow.GraphModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class Conv2DLayerTest extends RawTFLayerTestBase {
 
   public Conv2DLayerTest() {
@@ -41,7 +43,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
   Conv2DLayerTest[] addRefs(Conv2DLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRef)
         .toArray((x) -> new Conv2DLayerTest[x]);
   }
 
@@ -49,7 +51,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
   Conv2DLayerTest[][] addRefs(Conv2DLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRefs)
         .toArray((x) -> new Conv2DLayerTest[x][]);
   }
 
@@ -77,13 +79,13 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     return (Conv2DLayerTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Small_0 extends Conv2DLayerTest {
     public static @SuppressWarnings("unused")
     Small_0[] addRefs(Small_0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Small_0::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Small_0::addRef)
           .toArray((x) -> new Small_0[x]);
     }
 
@@ -104,13 +106,13 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Small_1 extends Conv2DLayerTest {
     public static @SuppressWarnings("unused")
     Small_1[] addRefs(Small_1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Small_1::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Small_1::addRef)
           .toArray((x) -> new Small_1[x]);
     }
 
@@ -131,13 +133,13 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Direct_1 extends Conv2DLayerTest {
     public static @SuppressWarnings("unused")
     Direct_1[] addRefs(Direct_1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Direct_1::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Direct_1::addRef)
           .toArray((x) -> new Direct_1[x]);
     }
 
@@ -168,14 +170,14 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Multiband_0 extends Conv2DLayerTest {
 
     public static @SuppressWarnings("unused")
     Multiband_0[] addRefs(Multiband_0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Multiband_0::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Multiband_0::addRef)
           .toArray((x) -> new Multiband_0[x]);
     }
 
@@ -205,14 +207,14 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Multiband_1 extends Conv2DLayerTest {
 
     public static @SuppressWarnings("unused")
     Multiband_1[] addRefs(Multiband_1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Multiband_1::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Multiband_1::addRef)
           .toArray((x) -> new Multiband_1[x]);
     }
 
@@ -242,7 +244,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Img_0 extends Conv2DLayerTest {
     protected final int padding = 3;
 
@@ -263,7 +265,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Img_0[] addRefs(Img_0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Img_0::addRef).toArray((x) -> new Img_0[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Img_0::addRef).toArray((x) -> new Img_0[x]);
     }
 
     @Nonnull
@@ -292,7 +294,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride3_0 extends Conv2DLayerTest {
 
     private final int padding;
@@ -322,7 +324,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride3_0[] addRefs(Stride3_0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride3_0::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride3_0::addRef)
           .toArray((x) -> new Stride3_0[x]);
     }
 
@@ -353,7 +355,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride3_1 extends Stride3_0 {
 
     public Stride3_1() {
@@ -364,7 +366,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride3_1[] addRefs(Stride3_1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride3_1::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride3_1::addRef)
           .toArray((x) -> new Stride3_1[x]);
     }
 
@@ -386,7 +388,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride4_0 extends Conv2DLayerTest {
 
     private final int padding;
@@ -416,7 +418,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_0[] addRefs(Stride4_0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride4_0::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_0::addRef)
           .toArray((x) -> new Stride4_0[x]);
     }
 
@@ -447,7 +449,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     }
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride4_1 extends Stride4_0 {
 
     public Stride4_1() {
@@ -458,7 +460,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_1[] addRefs(Stride4_1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride4_1::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_1::addRef)
           .toArray((x) -> new Stride4_1[x]);
     }
 
@@ -480,7 +482,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride4_2 extends Stride4_0 {
 
     public Stride4_2() {
@@ -491,7 +493,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_2[] addRefs(Stride4_2[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride4_2::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_2::addRef)
           .toArray((x) -> new Stride4_2[x]);
     }
 
@@ -513,7 +515,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Stride4_3 extends Stride4_0 {
 
     public Stride4_3() {
@@ -524,7 +526,7 @@ class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_3[] addRefs(Stride4_3[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Stride4_3::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_3::addRef)
           .toArray((x) -> new Stride4_3[x]);
     }
 

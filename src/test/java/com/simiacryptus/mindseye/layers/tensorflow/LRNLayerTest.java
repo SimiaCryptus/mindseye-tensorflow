@@ -19,12 +19,14 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class LRNLayerTest extends RawTFLayerTestBase {
 
   private final TFLayerBase tfLayer = createTFLayer();
@@ -37,7 +39,7 @@ class LRNLayerTest extends RawTFLayerTestBase {
   LRNLayerTest[] addRefs(LRNLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef)
         .toArray((x) -> new LRNLayerTest[x]);
   }
 
@@ -45,7 +47,7 @@ class LRNLayerTest extends RawTFLayerTestBase {
   LRNLayerTest[][] addRefs(LRNLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRefs)
         .toArray((x) -> new LRNLayerTest[x][]);
   }
 

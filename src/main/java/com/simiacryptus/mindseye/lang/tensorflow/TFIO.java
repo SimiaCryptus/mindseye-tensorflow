@@ -24,6 +24,11 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.TensorArray;
 import com.simiacryptus.mindseye.lang.TensorList;
 import com.simiacryptus.ref.lang.RecycleBin;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefDoubleStream;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefLongStream;
 import com.simiacryptus.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.DataType;
@@ -32,7 +37,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.stream.Stream;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class TFIO {
 
   public static TensorArray getTensorList(org.tensorflow.Tensor<?> tensor) {
@@ -90,9 +95,9 @@ class TFIO {
   @NotNull
   public static org.tensorflow.Tensor<Float> getFloatTensor(TensorList data, boolean invertRanks) {
     double[] buffer = getDoubles(data, invertRanks);
-    long[] shape = com.simiacryptus.ref.wrappers.RefLongStream
-        .concat(com.simiacryptus.ref.wrappers.RefLongStream.of(data.length()),
-            com.simiacryptus.ref.wrappers.RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
+    long[] shape = RefLongStream
+        .concat(RefLongStream.of(data.length()),
+            RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
         .toArray();
     @NotNull
     org.tensorflow.@NotNull Tensor<Float> tensor = org.tensorflow.Tensor.create(shape,
@@ -128,9 +133,9 @@ class TFIO {
   @NotNull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(TensorList data, boolean invertRanks) {
     double[] buffer = getDoubles(data, invertRanks);
-    long[] shape = com.simiacryptus.ref.wrappers.RefLongStream
-        .concat(com.simiacryptus.ref.wrappers.RefLongStream.of(data.length()),
-            com.simiacryptus.ref.wrappers.RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
+    long[] shape = RefLongStream
+        .concat(RefLongStream.of(data.length()),
+            RefArrays.stream(data.getDimensions()).mapToLong(x -> x))
         .toArray();
     org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(buffer));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
@@ -145,7 +150,7 @@ class TFIO {
       float[] floats = (float[]) obj;
       RecycleBin.FLOATS.recycle(floats, floats.length);
     } else {
-      com.simiacryptus.ref.wrappers.RefArrays.stream((Object[]) obj).forEach(x -> free(x));
+      RefArrays.stream((Object[]) obj).forEach(x -> free(x));
     }
   }
 
@@ -153,35 +158,35 @@ class TFIO {
     if (shape.length == 1) {
       return RecycleBin.FLOATS.obtain(shape[0]);
     } else if (shape.length == 2) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
+      return RefIntStream.range(0, (int) shape[0])
           .mapToObj(i -> new float[(int) shape[1]]).toArray(s -> new float[s][]);
     } else if (shape.length == 3) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
               .mapToObj(j -> new float[(int) shape[2]]).toArray(s -> new float[s][]))
           .toArray(s -> new float[s][][]);
     } else if (shape.length == 4) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[2])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
                   .mapToObj(k -> new float[(int) shape[3]]).toArray(s -> new float[s][]))
               .toArray(s -> new float[s][][]))
           .toArray(s -> new float[s][][][]);
     } else if (shape.length == 5) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[3])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
+                  .mapToObj(k -> RefIntStream.range(0, (int) shape[3])
                       .mapToObj(l -> new float[(int) shape[4]]).toArray(s -> new float[s][]))
                   .toArray(s -> new float[s][][]))
               .toArray(s -> new float[s][][][]))
           .toArray(s -> new float[s][][][][]);
     } else if (shape.length == 6) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[2])
-                  .mapToObj(k -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[3])
-                      .mapToObj(l -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[4])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
+                  .mapToObj(k -> RefIntStream.range(0, (int) shape[3])
+                      .mapToObj(l -> RefIntStream.range(0, (int) shape[4])
                           .mapToObj(m -> new float[(int) shape[5]]).toArray(s -> new float[s][]))
                       .toArray(s -> new float[s][][]))
                   .toArray(s -> new float[s][][][]))
@@ -196,17 +201,17 @@ class TFIO {
     if (shape.length == 1) {
       return RecycleBin.DOUBLES.obtain(shape[0]);
     } else if (shape.length == 2) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
+      return RefIntStream.range(0, (int) shape[0])
           .mapToObj(i -> new double[(int) shape[1]]).toArray(s -> new double[s][]);
     } else if (shape.length == 3) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
               .mapToObj(j -> new double[(int) shape[2]]).toArray(s -> new double[s][]))
           .toArray(s -> new double[s][][]);
     } else if (shape.length == 4) {
-      return com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[0])
-          .mapToObj(i -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[1])
-              .mapToObj(j -> com.simiacryptus.ref.wrappers.RefIntStream.range(0, (int) shape[2])
+      return RefIntStream.range(0, (int) shape[0])
+          .mapToObj(i -> RefIntStream.range(0, (int) shape[1])
+              .mapToObj(j -> RefIntStream.range(0, (int) shape[2])
                   .mapToObj(k -> new double[(int) shape[3]]).toArray(s -> new double[s][]))
               .toArray(s -> new double[s][][]))
           .toArray(s -> new double[s][][][]);
@@ -215,13 +220,13 @@ class TFIO {
     }
   }
 
-  private static com.simiacryptus.ref.wrappers.RefDoubleStream flattenDoubles(Object obj) {
+  private static RefDoubleStream flattenDoubles(Object obj) {
     if (obj instanceof double[]) {
-      return com.simiacryptus.ref.wrappers.RefArrays.stream((double[]) obj);
+      return RefArrays.stream((double[]) obj);
     } else if (obj instanceof Double) {
-      return com.simiacryptus.ref.wrappers.RefDoubleStream.of((double) obj);
+      return RefDoubleStream.of((double) obj);
     } else {
-      return com.simiacryptus.ref.wrappers.RefArrays.stream((Object[]) obj).flatMapToDouble(TFIO::flattenDoubles);
+      return RefArrays.stream((Object[]) obj).flatMapToDouble(TFIO::flattenDoubles);
     }
   }
 
@@ -230,7 +235,7 @@ class TFIO {
       float[] array = (float[]) floats;
       return Floats.asList(array).stream();
     } else {
-      return com.simiacryptus.ref.wrappers.RefArrays.stream((Object[]) floats).flatMap(x -> flattenFloats(x));
+      return RefArrays.stream((Object[]) floats).flatMap(x -> flattenFloats(x));
     }
   }
 
@@ -252,10 +257,10 @@ class TFIO {
   private static TensorArray getTensorArray_Float(org.tensorflow.Tensor<Float> tensor, long[] shape,
                                                   boolean invertRanks) {
     float[] doubles = getFloats(tensor);
-    int[] dims = com.simiacryptus.ref.wrappers.RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
+    int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
     TensorArray resultData = new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, batches).mapToObj(i -> {
+        RefIntStream.range(0, batches).mapToObj(i -> {
           int offset = i * Tensor.length(dims);
           if (invertRanks) {
             Tensor returnValue = new Tensor(Tensor.reverse(dims));
@@ -277,9 +282,9 @@ class TFIO {
 
   private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, long[] shape, boolean invertRanks) {
     if (0 == tensor.numElements())
-      return new Tensor(com.simiacryptus.ref.wrappers.RefArrays.stream(shape).mapToInt(x -> (int) x).toArray());
+      return new Tensor(RefArrays.stream(shape).mapToInt(x -> (int) x).toArray());
     float[] doubles = getFloats(tensor);
-    int[] dims = com.simiacryptus.ref.wrappers.RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
+    int[] dims = RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
       for (int j = 0; j < returnValue.length(); j++) {
@@ -300,10 +305,10 @@ class TFIO {
   private static TensorArray getTensorArray_Double(org.tensorflow.Tensor<Double> tensor, long[] shape,
                                                    boolean invertRanks) {
     double[] doubles = getDoubles(tensor);
-    int[] dims = com.simiacryptus.ref.wrappers.RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
+    int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
     TensorArray resultData = new TensorArray(
-        com.simiacryptus.ref.wrappers.RefIntStream.range(0, batches).mapToObj(i -> {
+        RefIntStream.range(0, batches).mapToObj(i -> {
           if (invertRanks) {
             Tensor returnValue = new Tensor(Tensor.reverse(dims));
             System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
@@ -320,7 +325,7 @@ class TFIO {
 
   private static Tensor getTensor_Double(org.tensorflow.Tensor<Double> tensor, long[] shape, boolean invertRanks) {
     double[] doubles = getDoubles(tensor);
-    int[] dims = com.simiacryptus.ref.wrappers.RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
+    int[] dims = RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
       System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());

@@ -21,13 +21,15 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SummaryLayerTest extends LayerTestBase {
 
   @Nullable
@@ -40,7 +42,7 @@ class SummaryLayerTest extends LayerTestBase {
   SummaryLayerTest[] addRefs(SummaryLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
         .toArray((x) -> new SummaryLayerTest[x]);
   }
 
@@ -48,7 +50,7 @@ class SummaryLayerTest extends LayerTestBase {
   SummaryLayerTest[][] addRefs(SummaryLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRefs)
         .toArray((x) -> new SummaryLayerTest[x][]);
   }
 

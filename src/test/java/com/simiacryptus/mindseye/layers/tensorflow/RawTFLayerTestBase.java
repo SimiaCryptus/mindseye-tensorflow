@@ -21,12 +21,14 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.util.TFConverter;
+import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class RawTFLayerTestBase extends TFLayerTestBase {
 
   @Nullable
@@ -39,7 +41,7 @@ class RawTFLayerTestBase extends TFLayerTestBase {
   RawTFLayerTestBase[] addRefs(RawTFLayerTestBase[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
         .toArray((x) -> new RawTFLayerTestBase[x]);
   }
 
@@ -47,7 +49,7 @@ class RawTFLayerTestBase extends TFLayerTestBase {
   RawTFLayerTestBase[][] addRefs(RawTFLayerTestBase[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRefs)
         .toArray((x) -> new RawTFLayerTestBase[x][]);
   }
 

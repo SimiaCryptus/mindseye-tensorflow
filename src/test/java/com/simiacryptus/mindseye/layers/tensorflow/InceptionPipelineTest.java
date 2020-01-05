@@ -20,15 +20,18 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.util.TFConverter;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public abstract @com.simiacryptus.ref.lang.RefAware
+public abstract @RefAware
 class InceptionPipelineTest extends TFLayerTestBase {
-  public static final com.simiacryptus.ref.wrappers.RefList<TFLayer> layers = TFConverter
+  public static final RefList<TFLayer> layers = TFConverter
       .getLayers(ImageNetworkPipeline.inception5h());
 
   public InceptionPipelineTest() {
@@ -41,7 +44,7 @@ class InceptionPipelineTest extends TFLayerTestBase {
   InceptionPipelineTest[] addRefs(InceptionPipelineTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(InceptionPipelineTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(InceptionPipelineTest::addRef)
         .toArray((x) -> new InceptionPipelineTest[x]);
   }
 
@@ -49,7 +52,7 @@ class InceptionPipelineTest extends TFLayerTestBase {
   InceptionPipelineTest[][] addRefs(InceptionPipelineTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(InceptionPipelineTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(InceptionPipelineTest::addRefs)
         .toArray((x) -> new InceptionPipelineTest[x][]);
   }
 
@@ -63,14 +66,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
     return (InceptionPipelineTest) super.addRef();
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer0 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer0[] addRefs(Layer0[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer0::addRef).toArray((x) -> new Layer0[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer0::addRef).toArray((x) -> new Layer0[x]);
     }
 
     @Nonnull
@@ -95,14 +98,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer1 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer1[] addRefs(Layer1[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer1::addRef).toArray((x) -> new Layer1[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer1::addRef).toArray((x) -> new Layer1[x]);
     }
 
     @Nonnull
@@ -127,14 +130,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer2 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer2[] addRefs(Layer2[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer2::addRef).toArray((x) -> new Layer2[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer2::addRef).toArray((x) -> new Layer2[x]);
     }
 
     @Nonnull
@@ -159,14 +162,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer3 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer3[] addRefs(Layer3[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer3::addRef).toArray((x) -> new Layer3[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer3::addRef).toArray((x) -> new Layer3[x]);
     }
 
     @Nonnull
@@ -191,14 +194,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer4 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer4[] addRefs(Layer4[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer4::addRef).toArray((x) -> new Layer4[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer4::addRef).toArray((x) -> new Layer4[x]);
     }
 
     @Nonnull
@@ -223,14 +226,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer5 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer5[] addRefs(Layer5[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer5::addRef).toArray((x) -> new Layer5[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer5::addRef).toArray((x) -> new Layer5[x]);
     }
 
     @Nonnull
@@ -255,14 +258,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer6 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer6[] addRefs(Layer6[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer6::addRef).toArray((x) -> new Layer6[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer6::addRef).toArray((x) -> new Layer6[x]);
     }
 
     @Nonnull
@@ -287,14 +290,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer7 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer7[] addRefs(Layer7[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer7::addRef).toArray((x) -> new Layer7[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer7::addRef).toArray((x) -> new Layer7[x]);
     }
 
     @Nonnull
@@ -319,14 +322,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer8 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer8[] addRefs(Layer8[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer8::addRef).toArray((x) -> new Layer8[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer8::addRef).toArray((x) -> new Layer8[x]);
     }
 
     @Nonnull
@@ -351,14 +354,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer9 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer9[] addRefs(Layer9[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer9::addRef).toArray((x) -> new Layer9[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer9::addRef).toArray((x) -> new Layer9[x]);
     }
 
     @Nonnull
@@ -383,14 +386,14 @@ class InceptionPipelineTest extends TFLayerTestBase {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class Layer10 extends InceptionPipelineTest {
 
     public static @SuppressWarnings("unused")
     Layer10[] addRefs(Layer10[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(Layer10::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(Layer10::addRef)
           .toArray((x) -> new Layer10[x]);
     }
 

@@ -21,20 +21,24 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.*;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Map;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SoftmaxLayer extends TFLayerBase {
 
   public SoftmaxLayer() {
-    super(new com.simiacryptus.ref.wrappers.RefHashMap<>());
+    super(new RefHashMap<>());
   }
 
-  public SoftmaxLayer(JsonObject json, com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+  public SoftmaxLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -50,8 +54,8 @@ class SoftmaxLayer extends TFLayerBase {
   }
 
   @Override
-  public com.simiacryptus.ref.wrappers.RefList<String> getInputNodes() {
-    return com.simiacryptus.ref.wrappers.RefArrays.asList("input");
+  public RefList<String> getInputNodes() {
+    return RefArrays.asList("input");
   }
 
   @Override
@@ -71,7 +75,7 @@ class SoftmaxLayer extends TFLayerBase {
   @Nonnull
   @SuppressWarnings("unused")
   public static SoftmaxLayer fromJson(@Nonnull final JsonObject json,
-                                      com.simiacryptus.ref.wrappers.RefMap<CharSequence, byte[]> rs) {
+                                      Map<CharSequence, byte[]> rs) {
     return new SoftmaxLayer(json, rs);
   }
 
@@ -79,7 +83,7 @@ class SoftmaxLayer extends TFLayerBase {
   SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
         .toArray((x) -> new SoftmaxLayer[x]);
   }
 
@@ -87,7 +91,7 @@ class SoftmaxLayer extends TFLayerBase {
   SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
         .toArray((x) -> new SoftmaxLayer[x][]);
   }
 
@@ -102,8 +106,8 @@ class SoftmaxLayer extends TFLayerBase {
   }
 
   @Override
-  protected com.simiacryptus.ref.wrappers.RefSet<String> getDataKeys(JsonObject json) {
-    return new com.simiacryptus.ref.wrappers.RefHashSet<>();
+  protected RefSet<String> getDataKeys(JsonObject json) {
+    return new RefHashSet<>();
   }
 
 }

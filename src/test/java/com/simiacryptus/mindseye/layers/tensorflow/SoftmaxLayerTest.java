@@ -19,19 +19,21 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SoftmaxLayerTest extends RawTFLayerTestBase {
 
   public static @SuppressWarnings("unused")
   SoftmaxLayerTest[] addRefs(SoftmaxLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
         .toArray((x) -> new SoftmaxLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class SoftmaxLayerTest extends RawTFLayerTestBase {
   SoftmaxLayerTest[][] addRefs(SoftmaxLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
         .toArray((x) -> new SoftmaxLayerTest[x][]);
   }
 

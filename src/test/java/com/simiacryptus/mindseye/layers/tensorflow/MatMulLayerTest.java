@@ -19,12 +19,14 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class MatMulLayerTest extends RawTFLayerTestBase {
 
   private final int[] inputDim = {2, 2};
@@ -33,7 +35,7 @@ class MatMulLayerTest extends RawTFLayerTestBase {
   MatMulLayerTest[] addRefs(MatMulLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRef)
         .toArray((x) -> new MatMulLayerTest[x]);
   }
 
@@ -41,7 +43,7 @@ class MatMulLayerTest extends RawTFLayerTestBase {
   MatMulLayerTest[][] addRefs(MatMulLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRefs)
         .toArray((x) -> new MatMulLayerTest[x][]);
   }
 

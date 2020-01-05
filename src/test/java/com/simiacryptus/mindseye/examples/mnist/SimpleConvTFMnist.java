@@ -27,6 +27,9 @@ import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
@@ -43,11 +46,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SimpleConvTFMnist {
 
   public static final String input = "image";
@@ -69,7 +73,7 @@ class SimpleConvTFMnist {
                           ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                           ops.withName(weights_conv1).placeholder(Double.class,
                               Placeholder.shape(Shape.make(5, 5, 1, 5))),
-                          com.simiacryptus.ref.wrappers.RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
+                          RefArrays.asList(1L, 1L, 1L, 1L), "SAME"),
                       ops.constant(new long[]{-1, 28 * 28 * 5})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10}))));
@@ -77,8 +81,8 @@ class SimpleConvTFMnist {
   }
 
   @NotNull
-  private static com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> getVariables() {
-    com.simiacryptus.ref.wrappers.RefHashMap<String, Tensor> variables = new com.simiacryptus.ref.wrappers.RefHashMap<>();
+  private static RefHashMap<String, Tensor> getVariables() {
+    RefHashMap<String, Tensor> variables = new RefHashMap<>();
     variables.put(weights_conv1, new Tensor(5, 5, 1, 5).setByCoord(c -> .001 * (Math.random() - 0.5)));
     variables.put(weights, new Tensor(10, 28 * 28 * 5).setByCoord(c -> .001 * (Math.random() - 0.5)));
     variables.put(bias, new Tensor(10).setByCoord(c -> 0));
@@ -107,7 +111,7 @@ class SimpleConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      if (!com.simiacryptus.ref.wrappers.RefArrays
+      if (!RefArrays
           .asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add").contains(op))
         return null;
       NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
@@ -141,7 +145,7 @@ class SimpleConvTFMnist {
         p -> p.waitFor());
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -157,7 +161,7 @@ class SimpleConvTFMnist {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class LayerTest extends LayerTestBase {
 
     @Nullable
@@ -170,7 +174,7 @@ class SimpleConvTFMnist {
     LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
           .toArray((x) -> new LayerTest[x]);
     }
 

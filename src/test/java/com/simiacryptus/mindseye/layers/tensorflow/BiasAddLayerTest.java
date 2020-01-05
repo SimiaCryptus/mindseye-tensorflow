@@ -19,19 +19,21 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class BiasAddLayerTest extends RawTFLayerTestBase {
 
   public static @SuppressWarnings("unused")
   BiasAddLayerTest[] addRefs(BiasAddLayerTest[] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRef)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRef)
         .toArray((x) -> new BiasAddLayerTest[x]);
   }
 
@@ -39,7 +41,7 @@ class BiasAddLayerTest extends RawTFLayerTestBase {
   BiasAddLayerTest[][] addRefs(BiasAddLayerTest[][] array) {
     if (array == null)
       return null;
-    return java.util.Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRefs)
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRefs)
         .toArray((x) -> new BiasAddLayerTest[x][]);
   }
 

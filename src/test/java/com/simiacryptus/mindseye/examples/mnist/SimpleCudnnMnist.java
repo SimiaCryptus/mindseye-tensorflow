@@ -30,14 +30,16 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
+import com.simiacryptus.ref.lang.RefAware;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
-public @com.simiacryptus.ref.lang.RefAware
+public @RefAware
 class SimpleCudnnMnist {
 
   private static final boolean tensorboard = false;
@@ -65,7 +67,7 @@ class SimpleCudnnMnist {
     });
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
@@ -82,7 +84,7 @@ class SimpleCudnnMnist {
 
   }
 
-  public static @com.simiacryptus.ref.lang.RefAware
+  public static @RefAware
   class LayerTest extends LayerTestBase {
 
     @Nullable
@@ -95,7 +97,7 @@ class SimpleCudnnMnist {
     LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return java.util.Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
           .toArray((x) -> new LayerTest[x]);
     }
 
