@@ -345,14 +345,14 @@ class TFIO {
     TensorArray resultData = new TensorArray(RefIntStream.range(0, batches).mapToObj(i -> {
       if (invertRanks) {
         Tensor returnValue = new Tensor(Tensor.reverse(dims));
-        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
         Tensor temp_03_0004 = returnValue.invertDimensions();
         if (null != returnValue)
           returnValue.freeRef();
         return temp_03_0004;
       } else {
         Tensor returnValue = new Tensor(dims);
-        System.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
         return returnValue;
       }
     }).toArray(i -> new Tensor[i]));
@@ -365,7 +365,7 @@ class TFIO {
     int[] dims = RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
-      System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
+      com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
       RecycleBin.DOUBLES.recycle(doubles, doubles.length);
       Tensor temp_03_0005 = returnValue.invertDimensions();
       if (null != returnValue)
@@ -373,7 +373,7 @@ class TFIO {
       return temp_03_0005;
     } else {
       Tensor returnValue = new Tensor(dims);
-      System.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
+      com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
       RecycleBin.DOUBLES.recycle(doubles, doubles.length);
       return returnValue;
     }

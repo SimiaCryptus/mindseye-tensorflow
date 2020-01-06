@@ -32,6 +32,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public @RefAware
@@ -53,10 +54,7 @@ class SummaryLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      RefList<String> temp_26_0001 = getInputNodes();
-      ops.withName(getOutputNode()).identity(ops.withName(temp_26_0001.get(0)).placeholder(Double.class));
-      if (null != temp_26_0001)
-        temp_26_0001.freeRef();
+      ops.withName(getOutputNode()).identity(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return NodeInstrumentation.instrument(GraphDef.parseFrom(graph.toGraphDef()), getSummaryOut(), node -> {
         return node.getName().equals(getInputNodes().get(0))
             ? new NodeInstrumentation(NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE))
@@ -68,8 +66,8 @@ class SummaryLayer extends TFLayerBase {
   }
 
   @Override
-  public RefList<String> getInputNodes() {
-    return RefArrays.asList(tag);
+  public List<String> getInputNodes() {
+    return Arrays.asList(tag);
   }
 
   @Override

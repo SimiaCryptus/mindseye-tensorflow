@@ -44,6 +44,7 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -81,7 +82,7 @@ class TFLayerBase extends LayerBase {
 
   public abstract GraphDef getGraphDef();
 
-  public abstract RefList<String> getInputNodes();
+  public abstract List<String> getInputNodes();
 
   public abstract String getOutputNode();
 
@@ -109,12 +110,8 @@ class TFLayerBase extends LayerBase {
 
   @NotNull
   public TFLayer asConstLayer() {
-    RefList<String> temp_00_0013 = getInputNodes();
-    TFLayer temp_00_0012 = new TFLayer(constGraph().toByteArray(),
-        new RefHashMap<>(), getOutputNode(), temp_00_0013.toArray(new String[]{}));
-    if (null != temp_00_0013)
-      temp_00_0013.freeRef();
-    return temp_00_0012;
+    return new TFLayer(constGraph().toByteArray(),
+        new RefHashMap<>(), getOutputNode(), getInputNodes().toArray(new String[]{}));
   }
 
   public @NotNull GraphDef constGraph() {
@@ -216,12 +213,9 @@ class TFLayerBase extends LayerBase {
         }, tensors == null ? null : tensors.addRef()));
     if (null != temp_00_0020)
       temp_00_0020.freeRef();
-    RefList<String> temp_00_0021 = getInputNodes();
-    for (int i = 0; i < temp_00_0021.size(); i++) {
-      RefList<String> temp_00_0022 = getInputNodes();
-      String inputNode = temp_00_0022.get(i);
-      if (null != temp_00_0022)
-        temp_00_0022.freeRef();
+    final List<String> inputNodes = getInputNodes();
+    for (int i = 0; i < inputNodes.size(); i++) {
+      String inputNode = inputNodes.get(i);
       TensorList data = inputs[i].getData();
       org.tensorflow.@NotNull Tensor<? extends Number> tensor;
       if (floatInputs(inputNode)) {
@@ -234,8 +228,6 @@ class TFLayerBase extends LayerBase {
       runner.feed(inputNode, tensor);
       tensors.add(tensor);
     }
-    if (null != temp_00_0021)
-      temp_00_0021.freeRef();
     runner.fetch(getOutputNode());
     boolean summaryOut = null != eventWriter && null != getSummaryOut() && !getSummaryOut().isEmpty();
     int fwdFetches;
@@ -319,12 +311,8 @@ class TFLayerBase extends LayerBase {
                         temp_00_0024.get(weightNodeName));
                     if (null != temp_00_0024)
                       temp_00_0024.freeRef();
-                    RefList<String> temp_00_0025 = TFLayerBase.this
-                        .getInputNodes();
                     org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs
-                        .get(i + fwdFetches + temp_00_0025.size());
-                    if (null != temp_00_0025)
-                      temp_00_0025.freeRef();
+                        .get(i + fwdFetches + TFLayerBase.this.getInputNodes().size());
                     Tensor t;
                     if (numberTensor.dataType() == DataType.FLOAT) {
                       t = TFIO.getTensor(numberTensor.expect(Float.class), TFLayerBase.this.invertWeights());
@@ -425,14 +413,11 @@ class TFLayerBase extends LayerBase {
         String deltaOpName = parent.getOutputNode() + "_delta";
         Class<? extends Number> dtype = parent.floatInputs(deltaOpName) ? Float.class : Double.class;
         ops.withName(deltaOpName).placeholder(dtype, Placeholder.shape(Shape.unknown()));
-        RefList<String> temp_00_0028 = parent.getInputNodes();
         Output<?>[] temp_00_0007 = graph.addGradients("gradient",
             new Output[]{TensorflowUtil.find(graph, parent.getOutputNode()).output(0)},
-            RefStream.concat(temp_00_0028.stream(), stateNames.stream())
+            RefStream.concat(parent.getInputNodes().stream(), stateNames.stream())
                 .map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
             new Output[]{TensorflowUtil.find(graph, deltaOpName).output(0)});
-        if (null != temp_00_0028)
-          temp_00_0028.freeRef();
         if (null != stateNames)
           stateNames.freeRef();
         return temp_00_0007;

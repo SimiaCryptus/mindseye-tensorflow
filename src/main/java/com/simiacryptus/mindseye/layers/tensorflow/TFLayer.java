@@ -32,6 +32,7 @@ import org.tensorflow.framework.GraphDef;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 public @RefAware
@@ -77,7 +78,7 @@ class TFLayer extends TFLayerBase {
     }
   }
 
-  public RefList<String> getInputNodes() {
+  public List<String> getInputNodes() {
     return inputNodes == null ? null : inputNodes.addRef();
   }
 
@@ -157,10 +158,7 @@ class TFLayer extends TFLayerBase {
     json.add("dataKeys", array);
     json.addProperty("output", getOutputNode());
     JsonArray jsonArray = new JsonArray();
-    RefList<String> temp_02_0004 = getInputNodes();
-    temp_02_0004.forEach(jsonArray::add);
-    if (null != temp_02_0004)
-      temp_02_0004.freeRef();
+    getInputNodes().forEach(jsonArray::add);
     json.add("input", jsonArray);
     json.addProperty("isFloat", isFloat());
     json.addProperty("summaryOut", getSummaryOut());

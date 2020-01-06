@@ -45,6 +45,7 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public @RefAware
@@ -63,9 +64,6 @@ class ConvTFMnist {
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
       int bands1 = 32;
-      RefList<Long> temp_16_0007 = RefArrays.asList(1L, 1L, 1L, 1L);
-      RefList<Long> temp_16_0008 = RefArrays.asList(1L, 2L, 2L, 1L);
-      RefList<Long> temp_16_0009 = RefArrays.asList(1L, 2L, 2L, 1L);
       Operand<Double> conv1 = ops.add(
           ops.withName(bias1).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands1))),
           ops.relu(ops.maxPool(
@@ -73,32 +71,17 @@ class ConvTFMnist {
                   ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                   ops.withName(ConvTFMnist.conv1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, 1, bands1))),
-                  temp_16_0007, "SAME"),
-              temp_16_0008, temp_16_0009, "SAME")));
-      if (null != temp_16_0009)
-        temp_16_0009.freeRef();
-      if (null != temp_16_0008)
-        temp_16_0008.freeRef();
-      if (null != temp_16_0007)
-        temp_16_0007.freeRef();
+                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
       int bands2 = 64;
-      RefList<Long> temp_16_0010 = RefArrays.asList(1L, 1L, 1L, 1L);
-      RefList<Long> temp_16_0011 = RefArrays.asList(1L, 2L, 2L, 1L);
-      RefList<Long> temp_16_0012 = RefArrays.asList(1L, 2L, 2L, 1L);
       Operand<Double> conv2 = ops.add(
           ops.withName(bias2).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands2))),
           ops.relu(ops.maxPool(
               ops.withName("conv2d_1").conv2D(conv1,
                   ops.withName(ConvTFMnist.conv2).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, bands1, bands2))),
-                  temp_16_0010, "SAME"),
-              temp_16_0011, temp_16_0012, "SAME")));
-      if (null != temp_16_0012)
-        temp_16_0012.freeRef();
-      if (null != temp_16_0011)
-        temp_16_0011.freeRef();
-      if (null != temp_16_0010)
-        temp_16_0010.freeRef();
+                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
+              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
       Operand<Double> fc1 = ops.add(
           ops.withName(bias3).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1024))),
           ops.relu(ops.transpose(

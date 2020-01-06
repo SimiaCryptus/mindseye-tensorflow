@@ -34,12 +34,16 @@ import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.*;
 
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public @RefAware
 class TFUtil {
@@ -48,8 +52,8 @@ class TFUtil {
       throws IOException, URISyntaxException {
     Process tensorboard = new ProcessBuilder()
         .command(
-            System.getProperty("tensorboard",
-                System.getProperty("user.home")
+            com.simiacryptus.ref.wrappers.RefSystem.getProperty("tensorboard",
+                com.simiacryptus.ref.wrappers.RefSystem.getProperty("user.home")
                     + "\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\tensorboard.exe"),
             "--logdir=" + logDir.getAbsolutePath())
         .start();
@@ -100,11 +104,8 @@ class TFUtil {
                       //                tensor.addAllDoubleVal(Arrays.stream(data).mapToObj(x -> x).collect(Collectors.toList()));
                     } else if (type == DataType.DT_FLOAT) {
                       tensor.setDtype(type);
-                      RefList<Float> temp_27_0001 = RefArrays.stream(data)
-                          .mapToObj(x -> (float) x).collect(RefCollectors.toList());
-                      float[] floats = Floats.toArray(temp_27_0001);
-                      if (null != temp_27_0001)
-                        temp_27_0001.freeRef();
+                      float[] floats = Floats.toArray(Arrays.stream(data)
+                          .mapToObj(x -> (float) x).collect(Collectors.toList()));
                       ByteString byteString = ByteString.copyFrom(GraphModel.putFloats(floats));
                       tensor.setTensorContent(byteString);
                       //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));

@@ -35,6 +35,7 @@ import org.tensorflow.op.core.MatMul;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
@@ -60,17 +61,14 @@ class MatMulLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      RefList<String> temp_17_0002 = getInputNodes();
       ops.withName(getOutputNode()).reshape(
           ops.transpose(
               ops.matMul(ops.withName("weights").placeholder(Double.class),
-                  ops.reshape(ops.withName(temp_17_0002.get(0)).placeholder(Double.class),
+                  ops.reshape(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
                       ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})),
           ops.constant(RefIntStream.concat(RefIntStream.of(-1), RefArrays.stream(getOutputDims())).toArray()));
-      if (null != temp_17_0002)
-        temp_17_0002.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -78,8 +76,8 @@ class MatMulLayer extends TFLayerBase {
   }
 
   @Override
-  public RefList<String> getInputNodes() {
-    return RefArrays.asList("input");
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   public int[] getIntputDims() {

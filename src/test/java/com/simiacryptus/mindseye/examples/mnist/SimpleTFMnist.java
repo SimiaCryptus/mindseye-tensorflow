@@ -150,12 +150,12 @@ class SimpleTFMnist {
     byte[] protobufBinaryData = FileUtils.readFileToByteArray(
         new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
     GraphModel model = new GraphModel(protobufBinaryData);
-    //System.out.println("Protobuf: " + model.graphDef);
+    //com.simiacryptus.ref.wrappers.RefSystem.out.println("Protobuf: " + model.graphDef);
     CharSequence json = toJson(model);
     File file = new File("model.json");
     FileUtils.write(file, json, "UTF-8");
     Desktop.getDesktop().open(file);
-    System.out.println("Model: " + json);
+    com.simiacryptus.ref.wrappers.RefSystem.out.println("Model: " + json);
   }
 
   @Test

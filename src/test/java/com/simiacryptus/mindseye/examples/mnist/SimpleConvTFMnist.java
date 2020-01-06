@@ -49,6 +49,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
@@ -65,7 +66,6 @@ class SimpleConvTFMnist {
 
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
-      RefList<Long> temp_08_0006 = RefArrays.asList(1L, 1L, 1L, 1L);
       ops.withName(output).softmax(ops.add(
           ops.withName(bias).placeholder(Double.class, Placeholder.shape(Shape.make(1, 10))),
           ops.reshape(ops.transpose(
@@ -76,12 +76,10 @@ class SimpleConvTFMnist {
                           ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                           ops.withName(weights_conv1).placeholder(Double.class,
                               Placeholder.shape(Shape.make(5, 5, 1, 5))),
-                          temp_08_0006, "SAME"),
+                          Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
                       ops.constant(new long[]{-1, 28 * 28 * 5})),
                   MatMul.transposeB(true)),
               ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10}))));
-      if (null != temp_08_0006)
-        temp_08_0006.freeRef();
     });
   }
 
@@ -154,12 +152,12 @@ class SimpleConvTFMnist {
     byte[] protobufBinaryData = FileUtils.readFileToByteArray(
         new File("H:\\SimiaCryptus\\tensorflow\\tensorflow\\examples\\tutorials\\mnist\\model\\train.pb"));
     GraphModel model = new GraphModel(protobufBinaryData);
-    //System.out.println("Protobuf: " + model.graphDef);
+    //com.simiacryptus.ref.wrappers.RefSystem.out.println("Protobuf: " + model.graphDef);
     CharSequence json = toJson(model);
     File file = new File("model.json");
     FileUtils.write(file, json, "UTF-8");
     Desktop.getDesktop().open(file);
-    System.out.println("Model: " + json);
+    com.simiacryptus.ref.wrappers.RefSystem.out.println("Model: " + json);
   }
 
   @Test

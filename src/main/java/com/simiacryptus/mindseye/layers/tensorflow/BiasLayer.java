@@ -31,6 +31,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public @RefAware
@@ -48,11 +49,8 @@ class BiasLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      RefList<String> temp_15_0002 = getInputNodes();
       ops.withName(getOutputNode()).add(ops.withName("bias").placeholder(Double.class),
-          ops.withName(temp_15_0002.get(0)).placeholder(Double.class));
-      if (null != temp_15_0002)
-        temp_15_0002.freeRef();
+          ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -60,8 +58,8 @@ class BiasLayer extends TFLayerBase {
   }
 
   @Override
-  public RefList<String> getInputNodes() {
-    return RefArrays.asList("input");
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override

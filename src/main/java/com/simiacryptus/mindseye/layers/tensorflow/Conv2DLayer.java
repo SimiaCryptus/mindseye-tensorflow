@@ -32,6 +32,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public @RefAware
@@ -57,15 +58,9 @@ class Conv2DLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      RefList<String> temp_11_0002 = getInputNodes();
-      RefList<Long> temp_11_0003 = RefArrays.asList(1L, (long) getStrideX(),
-          (long) getStrideY(), 1L);
-      ops.withName(getOutputNode()).conv2D(ops.withName(temp_11_0002.get(0)).placeholder(dtype),
-          ops.withName("kernel").placeholder(dtype), temp_11_0003, getPadding());
-      if (null != temp_11_0003)
-        temp_11_0003.freeRef();
-      if (null != temp_11_0002)
-        temp_11_0002.freeRef();
+      ops.withName(getOutputNode()).conv2D(ops.withName(getInputNodes().get(0)).placeholder(dtype),
+          ops.withName("kernel").placeholder(dtype), Arrays.asList(1L, (long) getStrideX(),
+              (long) getStrideY(), 1L), getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -73,8 +68,8 @@ class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  public RefList<String> getInputNodes() {
-    return RefArrays.asList("input");
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override

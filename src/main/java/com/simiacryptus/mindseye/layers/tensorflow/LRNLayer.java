@@ -32,6 +32,7 @@ import org.tensorflow.op.core.LRN;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public @RefAware
@@ -85,11 +86,8 @@ class LRNLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      RefList<String> temp_25_0001 = getInputNodes();
-      ops.withName(getOutputNode()).lRN(ops.withName(temp_25_0001.get(0)).placeholder(Float.class),
+      ops.withName(getOutputNode()).lRN(ops.withName(getInputNodes().get(0)).placeholder(Float.class),
           LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
-      if (null != temp_25_0001)
-        temp_25_0001.freeRef();
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -97,8 +95,8 @@ class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  public RefList<String> getInputNodes() {
-    return RefArrays.asList("input");
+  public List<String> getInputNodes() {
+    return Arrays.asList("input");
   }
 
   @Override

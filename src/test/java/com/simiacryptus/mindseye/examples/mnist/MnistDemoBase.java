@@ -80,14 +80,14 @@ class MnistDemoBase {
     File[] listFiles = tensorboardLocation.getParentFile().listFiles();
     if (null != listFiles)
       RefArrays.stream(listFiles).forEach(file -> {
-        System.out.println("Delete: " + file);
+        com.simiacryptus.ref.wrappers.RefSystem.out.println("Delete: " + file);
         file.delete();
       });
     byte[] graphDef = getGraphDef();
     if (null != graphDef) {
       TFLayerBase.eventWriter = new TensorboardEventWriter(tensorboardLocation, GraphDef.parseFrom(graphDef));
     }
-    File reportFile = new File(String.format("target/reports/%s/%s/test", getClass().getSimpleName(),
+    File reportFile = new File(RefString.format("target/reports/%s/%s/test", getClass().getSimpleName(),
         new SimpleDateFormat("yyyyMMddHHmm").format(new Date())));
     MarkdownNotebookOutput log = new MarkdownNotebookOutput(reportFile, true);
     try (CodeUtil.LogInterception ignored = CodeUtil.intercept(log, ReferenceCountingBase.class.getCanonicalName())) {
@@ -301,7 +301,7 @@ class MnistDemoBase {
                 row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
                 row.put("Prediction",
                     RefArrays.stream(predictionList).limit(3)
-                        .mapToObj(i -> String.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                        .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                         .reduce((a, b) -> a + ", " + b).get());
                 return row;
               }, recognitionNetwork == null ? null : recognitionNetwork.addRef())).filter(x -> {
