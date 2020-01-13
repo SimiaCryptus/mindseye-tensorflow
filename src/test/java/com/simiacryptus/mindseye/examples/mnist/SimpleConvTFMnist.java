@@ -49,13 +49,11 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
-public @RefAware
-class SimpleConvTFMnist {
+public class SimpleConvTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
@@ -77,9 +75,9 @@ class SimpleConvTFMnist {
                           ops.withName(weights_conv1).placeholder(Double.class,
                               Placeholder.shape(Shape.make(5, 5, 1, 5))),
                           Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
-                      ops.constant(new long[]{-1, 28 * 28 * 5})),
+                      ops.constant(new long[] { -1, 28 * 28 * 5 })),
                   MatMul.transposeB(true)),
-              ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10}))));
+              ops.constant(new int[] { 1, 0 })), ops.constant(new long[] { -1, 10 }))));
     });
   }
 
@@ -87,13 +85,11 @@ class SimpleConvTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_08_0001 = new Tensor(5, 5, 1, 5);
-    RefUtil
-        .freeRef(variables.put(weights_conv1, temp_08_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    RefUtil.freeRef(variables.put(weights_conv1, temp_08_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
     if (null != temp_08_0001)
       temp_08_0001.freeRef();
     Tensor temp_08_0002 = new Tensor(10, 28 * 28 * 5);
-    RefUtil
-        .freeRef(variables.put(weights, temp_08_0002.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    RefUtil.freeRef(variables.put(weights, temp_08_0002.setByCoord(c -> .001 * (Math.random() - 0.5))));
     if (null != temp_08_0002)
       temp_08_0002.freeRef();
     Tensor temp_08_0003 = new Tensor(10);
@@ -115,8 +111,7 @@ class SimpleConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      TFLayer temp_08_0005 = new TFLayer(bytes, getVariables(), output,
-          input);
+      TFLayer temp_08_0005 = new TFLayer(bytes, getVariables(), output, input);
       TFLayer temp_08_0004 = temp_08_0005.setSummaryOut(statOutput);
       if (null != temp_08_0005)
         temp_08_0005.freeRef();
@@ -130,8 +125,8 @@ class SimpleConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      RefList<String> temp_08_0007 = RefArrays.asList("MatMul", "BatchMatMul",
-          "Const", "Placeholder", "Softmax", "Add");
+      RefList<String> temp_08_0007 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax",
+          "Add");
       if (!temp_08_0007.contains(op))
         return null;
       if (null != temp_08_0007)
@@ -167,8 +162,7 @@ class SimpleConvTFMnist {
         p -> p.waitFor());
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return SimpleConvTFMnist.getGraphDef();
@@ -183,8 +177,7 @@ class SimpleConvTFMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -192,18 +185,16 @@ class SimpleConvTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -212,13 +203,10 @@ class SimpleConvTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

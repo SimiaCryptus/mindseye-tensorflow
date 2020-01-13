@@ -24,7 +24,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -34,8 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class BiasAddLayer extends TFLayerBase {
+public class BiasAddLayer extends TFLayerBase {
 
   public BiasAddLayer(int... intputDims) {
     super(defaultStates(intputDims));
@@ -82,16 +84,13 @@ class BiasAddLayer extends TFLayerBase {
     return new BiasAddLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasAddLayer[] addRefs(BiasAddLayer[] array) {
+  public static @SuppressWarnings("unused") BiasAddLayer[] addRefs(BiasAddLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRef)
-        .toArray((x) -> new BiasAddLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRef).toArray((x) -> new BiasAddLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasAddLayer[][] addRefs(BiasAddLayer[][] array) {
+  public static @SuppressWarnings("unused") BiasAddLayer[][] addRefs(BiasAddLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRefs)
@@ -109,13 +108,10 @@ class BiasAddLayer extends TFLayerBase {
     return map;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BiasAddLayer addRef() {
+  public @Override @SuppressWarnings("unused") BiasAddLayer addRef() {
     return (BiasAddLayer) super.addRef();
   }
 

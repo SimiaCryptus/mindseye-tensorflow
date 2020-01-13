@@ -22,7 +22,9 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.ref.lang.RefAware;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -32,8 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class SoftmaxLayer extends TFLayerBase {
+public class SoftmaxLayer extends TFLayerBase {
 
   public SoftmaxLayer() {
     super(new RefHashMap<>());
@@ -79,29 +80,23 @@ class SoftmaxLayer extends TFLayerBase {
     return new SoftmaxLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
+  public static @SuppressWarnings("unused") SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef)
-        .toArray((x) -> new SoftmaxLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef).toArray((x) -> new SoftmaxLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
+  public static @SuppressWarnings("unused") SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
         .toArray((x) -> new SoftmaxLayer[x][]);
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SoftmaxLayer addRef() {
+  public @Override @SuppressWarnings("unused") SoftmaxLayer addRef() {
     return (SoftmaxLayer) super.addRef();
   }
 

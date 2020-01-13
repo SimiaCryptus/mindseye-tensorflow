@@ -37,8 +37,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.stream.Stream;
 
-public @RefAware
-class TFIO {
+public class TFIO {
 
   public static TensorArray getTensorList(org.tensorflow.Tensor<?> tensor) {
     return getTensorList(tensor, true);
@@ -89,8 +88,8 @@ class TFIO {
     }
     if (null != invertDimensions)
       invertDimensions.freeRef();
-    org.tensorflow.Tensor<Float> temp_03_0007 = org.tensorflow.Tensor
-        .create(Util.toLong(data.getDimensions()), FloatBuffer.wrap(Util.getFloats(buffer)));
+    org.tensorflow.Tensor<Float> temp_03_0007 = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()),
+        FloatBuffer.wrap(Util.getFloats(buffer)));
     if (null != data)
       data.freeRef();
     return temp_03_0007;
@@ -139,8 +138,8 @@ class TFIO {
     }
     if (null != invertDimensions)
       invertDimensions.freeRef();
-    org.tensorflow.Tensor<Double> temp_03_0010 = org.tensorflow.Tensor
-        .create(Util.toLong(data.getDimensions()), DoubleBuffer.wrap(buffer));
+    org.tensorflow.Tensor<Double> temp_03_0010 = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()),
+        DoubleBuffer.wrap(buffer));
     if (null != data)
       data.freeRef();
     return temp_03_0010;
@@ -285,7 +284,7 @@ class TFIO {
   }
 
   private static TensorArray getTensorArray_Float(org.tensorflow.Tensor<Float> tensor, long[] shape,
-                                                  boolean invertRanks) {
+      boolean invertRanks) {
     float[] doubles = getFloats(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
@@ -338,21 +337,23 @@ class TFIO {
   }
 
   private static TensorArray getTensorArray_Double(org.tensorflow.Tensor<Double> tensor, long[] shape,
-                                                   boolean invertRanks) {
+      boolean invertRanks) {
     double[] doubles = getDoubles(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
     int batches = (int) shape[0];
     TensorArray resultData = new TensorArray(RefIntStream.range(0, batches).mapToObj(i -> {
       if (invertRanks) {
         Tensor returnValue = new Tensor(Tensor.reverse(dims));
-        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0,
+            returnValue.length());
         Tensor temp_03_0004 = returnValue.invertDimensions();
         if (null != returnValue)
           returnValue.freeRef();
         return temp_03_0004;
       } else {
         Tensor returnValue = new Tensor(dims);
-        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0, returnValue.length());
+        com.simiacryptus.ref.wrappers.RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0,
+            returnValue.length());
         return returnValue;
       }
     }).toArray(i -> new Tensor[i]));
@@ -388,7 +389,7 @@ class TFIO {
 
   private static float[] getFloats(org.tensorflow.Tensor<Float> result) {
     if (0 == result.numElements())
-      return new float[]{};
+      return new float[] {};
     Object deepArray = result.copyTo(createFloatArray(result.shape()));
     double[] doubles = flattenFloats(deepArray).mapToDouble(x -> x).toArray();
     free(deepArray);

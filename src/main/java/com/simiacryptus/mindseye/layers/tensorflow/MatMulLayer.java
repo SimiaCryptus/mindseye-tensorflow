@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-public @RefAware
-class MatMulLayer extends TFLayerBase {
+public class MatMulLayer extends TFLayerBase {
 
   private final int[] intputDims;
   private final int[] outputDims;
@@ -65,9 +64,9 @@ class MatMulLayer extends TFLayerBase {
           ops.transpose(
               ops.matMul(ops.withName("weights").placeholder(Double.class),
                   ops.reshape(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-                      ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
+                      ops.constant(new long[] { -1, Tensor.length(getIntputDims()) })),
                   MatMul.transposeB(true)),
-              ops.constant(new int[]{1, 0})),
+              ops.constant(new int[] { 1, 0 })),
           ops.constant(RefIntStream.concat(RefIntStream.of(-1), RefArrays.stream(getOutputDims())).toArray()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
@@ -108,20 +107,16 @@ class MatMulLayer extends TFLayerBase {
     return new MatMulLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  MatMulLayer[] addRefs(MatMulLayer[] array) {
+  public static @SuppressWarnings("unused") MatMulLayer[] addRefs(MatMulLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef)
-        .toArray((x) -> new MatMulLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef).toArray((x) -> new MatMulLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MatMulLayer[][] addRefs(MatMulLayer[][] array) {
+  public static @SuppressWarnings("unused") MatMulLayer[][] addRefs(MatMulLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs)
-        .toArray((x) -> new MatMulLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs).toArray((x) -> new MatMulLayer[x][]);
   }
 
   private static RefMap<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
@@ -159,13 +154,10 @@ class MatMulLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MatMulLayer addRef() {
+  public @Override @SuppressWarnings("unused") MatMulLayer addRef() {
     return (MatMulLayer) super.addRef();
   }
 

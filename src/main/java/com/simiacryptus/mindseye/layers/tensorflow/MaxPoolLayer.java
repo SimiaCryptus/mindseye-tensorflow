@@ -24,7 +24,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -34,8 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class MaxPoolLayer extends TFLayerBase {
+public class MaxPoolLayer extends TFLayerBase {
 
   private long strideX = 2L;
   private long strideY = 2L;
@@ -60,8 +62,9 @@ class MaxPoolLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).maxPool(ops.withName(getInputNodes().get(0)).placeholder(Double.class), Arrays.asList(1L, getWidth(), getHeight(), 1L),
-          Arrays.asList(1L, getStrideX(), getStrideY(), 1L), getPadding());
+      ops.withName(getOutputNode()).maxPool(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+          Arrays.asList(1L, getWidth(), getHeight(), 1L), Arrays.asList(1L, getStrideX(), getStrideY(), 1L),
+          getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -134,16 +137,13 @@ class MaxPoolLayer extends TFLayerBase {
     return new MaxPoolLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxPoolLayer[] addRefs(MaxPoolLayer[] array) {
+  public static @SuppressWarnings("unused") MaxPoolLayer[] addRefs(MaxPoolLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRef)
-        .toArray((x) -> new MaxPoolLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRef).toArray((x) -> new MaxPoolLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MaxPoolLayer[][] addRefs(MaxPoolLayer[][] array) {
+  public static @SuppressWarnings("unused") MaxPoolLayer[][] addRefs(MaxPoolLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRefs)
@@ -165,13 +165,10 @@ class MaxPoolLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MaxPoolLayer addRef() {
+  public @Override @SuppressWarnings("unused") MaxPoolLayer addRef() {
     return (MaxPoolLayer) super.addRef();
   }
 

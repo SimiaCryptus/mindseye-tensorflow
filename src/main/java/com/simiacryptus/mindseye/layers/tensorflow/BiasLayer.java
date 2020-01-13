@@ -24,7 +24,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -34,8 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class BiasLayer extends TFLayerBase {
+public class BiasLayer extends TFLayerBase {
 
   public BiasLayer(int... intputDims) {
     super(defaultStates(intputDims));
@@ -82,20 +84,16 @@ class BiasLayer extends TFLayerBase {
     return new BiasLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasLayer[] addRefs(BiasLayer[] array) {
+  public static @SuppressWarnings("unused") BiasLayer[] addRefs(BiasLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef)
-        .toArray((x) -> new BiasLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef).toArray((x) -> new BiasLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasLayer[][] addRefs(BiasLayer[][] array) {
+  public static @SuppressWarnings("unused") BiasLayer[][] addRefs(BiasLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs)
-        .toArray((x) -> new BiasLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs).toArray((x) -> new BiasLayer[x][]);
   }
 
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
@@ -109,13 +107,10 @@ class BiasLayer extends TFLayerBase {
     return map;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BiasLayer addRef() {
+  public @Override @SuppressWarnings("unused") BiasLayer addRef() {
     return (BiasLayer) super.addRef();
   }
 

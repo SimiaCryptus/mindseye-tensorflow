@@ -23,7 +23,9 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.ref.lang.RefAware;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefSet;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.DataType;
@@ -35,8 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class SummaryLayer extends TFLayerBase {
+public class SummaryLayer extends TFLayerBase {
 
   private String tag;
 
@@ -98,16 +99,13 @@ class SummaryLayer extends TFLayerBase {
     return new SummaryLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  SummaryLayer[] addRefs(SummaryLayer[] array) {
+  public static @SuppressWarnings("unused") SummaryLayer[] addRefs(SummaryLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRef)
-        .toArray((x) -> new SummaryLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRef).toArray((x) -> new SummaryLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SummaryLayer[][] addRefs(SummaryLayer[][] array) {
+  public static @SuppressWarnings("unused") SummaryLayer[][] addRefs(SummaryLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRefs)
@@ -121,13 +119,10 @@ class SummaryLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SummaryLayer addRef() {
+  public @Override @SuppressWarnings("unused") SummaryLayer addRef() {
     return (SummaryLayer) super.addRef();
   }
 

@@ -45,11 +45,9 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
-public @RefAware
-class ConvTFMnist {
+public class ConvTFMnist {
 
   public static final String input = "image";
   public static final String fc1 = "fc1";
@@ -88,9 +86,9 @@ class ConvTFMnist {
               ops.matMul(
                   ops.withName(ConvTFMnist.fc1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(1024, 7 * 7 * bands2))),
-                  ops.reshape(conv2, ops.constant(new long[]{-1, 7 * 7 * bands2})), MatMul.transposeB(true)),
-              ops.constant(new int[]{1, 0}))));
-      ops.withName(output).reshape(fc1, ops.constant(new long[]{-1, 1024}));
+                  ops.reshape(conv2, ops.constant(new long[] { -1, 7 * 7 * bands2 })), MatMul.transposeB(true)),
+              ops.constant(new int[] { 1, 0 }))));
+      ops.withName(output).reshape(fc1, ops.constant(new long[] { -1, 1024 }));
     });
   }
 
@@ -127,10 +125,9 @@ class ConvTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output,
-          input);
-      Layer temp_16_0004 = stochasticClassificationLayer(
-          temp_16_0005.setSummaryOut(statOutput), Math.pow(0.5, 1.0), 5, 0.001);
+      TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output, input);
+      Layer temp_16_0004 = stochasticClassificationLayer(temp_16_0005.setSummaryOut(statOutput), Math.pow(0.5, 1.0), 5,
+          0.001);
       if (null != temp_16_0005)
         temp_16_0005.freeRef();
       return temp_16_0004;
@@ -141,8 +138,7 @@ class ConvTFMnist {
   public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
     PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
     RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density)));
-    FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[]{1024},
-        new int[]{10});
+    FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[] { 1024 }, new int[] { 10 });
     RefUtil.freeRef(stochasticTerminal.add(temp_16_0006.randomize(initialWeight)));
     if (null != temp_16_0006)
       temp_16_0006.freeRef();
@@ -165,8 +161,8 @@ class ConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      RefList<String> temp_16_0013 = RefArrays.asList("MatMul", "BatchMatMul",
-          "Const", "Placeholder", "Softmax", "Add", "Conv2D");
+      RefList<String> temp_16_0013 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add",
+          "Conv2D");
       if (!temp_16_0013.contains(op))
         return null;
       if (null != temp_16_0013)
@@ -180,8 +176,7 @@ class ConvTFMnist {
     return newDef;
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return ConvTFMnist.getGraphDef();
@@ -197,8 +192,7 @@ class ConvTFMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -206,18 +200,16 @@ class ConvTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -226,13 +218,10 @@ class ConvTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

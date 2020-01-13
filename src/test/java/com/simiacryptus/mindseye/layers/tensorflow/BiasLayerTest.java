@@ -29,19 +29,16 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class BiasLayerTest extends RawTFLayerTestBase {
+public class BiasLayerTest extends RawTFLayerTestBase {
 
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[] addRefs(BiasLayerTest[] array) {
+  public static @SuppressWarnings("unused") BiasLayerTest[] addRefs(BiasLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
         .toArray((x) -> new BiasLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
+  public static @SuppressWarnings("unused") BiasLayerTest[][] addRefs(BiasLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRefs)
@@ -51,14 +48,13 @@ class BiasLayerTest extends RawTFLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{3, 3}};
+    return new int[][] { { 3, 3 } };
   }
 
   @NotNull
   public BiasLayer createTFLayer() {
     BiasLayer biasLayer = new BiasLayer(3, 3);
-    RefMap<String, Tensor> temp_28_0001 = biasLayer
-        .getWeights();
+    RefMap<String, Tensor> temp_28_0001 = biasLayer.getWeights();
     Tensor temp_28_0002 = temp_28_0001.get("bias");
     RefUtil.freeRef(temp_28_0002.setByCoord(c -> Math.random()));
     if (null != temp_28_0002)
@@ -68,13 +64,10 @@ class BiasLayerTest extends RawTFLayerTestBase {
     return biasLayer;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  BiasLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") BiasLayerTest addRef() {
     return (BiasLayerTest) super.addRef();
   }
 

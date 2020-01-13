@@ -23,7 +23,10 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -33,8 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class ReLuLayer extends TFLayerBase {
+public class ReLuLayer extends TFLayerBase {
 
   public ReLuLayer() {
     super(defaultStates());
@@ -80,33 +82,26 @@ class ReLuLayer extends TFLayerBase {
     return new ReLuLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  ReLuLayer[] addRefs(ReLuLayer[] array) {
+  public static @SuppressWarnings("unused") ReLuLayer[] addRefs(ReLuLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef)
-        .toArray((x) -> new ReLuLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef).toArray((x) -> new ReLuLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  ReLuLayer[][] addRefs(ReLuLayer[][] array) {
+  public static @SuppressWarnings("unused") ReLuLayer[][] addRefs(ReLuLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs)
-        .toArray((x) -> new ReLuLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs).toArray((x) -> new ReLuLayer[x][]);
   }
 
   private static RefMap<String, Tensor> defaultStates() {
     return new RefHashMap<>();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  ReLuLayer addRef() {
+  public @Override @SuppressWarnings("unused") ReLuLayer addRef() {
     return (ReLuLayer) super.addRef();
   }
 

@@ -29,8 +29,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class SummaryLayerTest extends LayerTestBase {
+public class SummaryLayerTest extends LayerTestBase {
 
   @Nullable
   @Override
@@ -38,16 +37,14 @@ class SummaryLayerTest extends LayerTestBase {
     return null;
   }
 
-  public static @SuppressWarnings("unused")
-  SummaryLayerTest[] addRefs(SummaryLayerTest[] array) {
+  public static @SuppressWarnings("unused") SummaryLayerTest[] addRefs(SummaryLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
         .toArray((x) -> new SummaryLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  SummaryLayerTest[][] addRefs(SummaryLayerTest[][] array) {
+  public static @SuppressWarnings("unused") SummaryLayerTest[][] addRefs(SummaryLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRefs)
@@ -57,7 +54,7 @@ class SummaryLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{5}};
+    return new int[][] { { 5 } };
   }
 
   @Nonnull
@@ -66,13 +63,10 @@ class SummaryLayerTest extends LayerTestBase {
     return createTFLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  SummaryLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") SummaryLayerTest addRef() {
     return (SummaryLayerTest) super.addRef();
   }
 

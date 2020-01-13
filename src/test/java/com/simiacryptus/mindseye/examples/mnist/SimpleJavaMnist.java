@@ -38,8 +38,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class SimpleJavaMnist {
+public class SimpleJavaMnist {
 
   private static final boolean tensorboard = false;
 
@@ -49,11 +48,11 @@ class SimpleJavaMnist {
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
         pipeline.add(new SummaryLayer("input"));
-      FullyConnectedLayer temp_20_0001 = new FullyConnectedLayer(
-          new int[]{28, 28, 1}, new int[]{10});
+      FullyConnectedLayer temp_20_0001 = new FullyConnectedLayer(new int[] { 28, 28, 1 }, new int[] { 10 });
       RefUtil.freeRef(pipeline.add(temp_20_0001.set(() -> 0.001 * (Math.random() - 0.45))));
       if (null != temp_20_0001)
         temp_20_0001.freeRef();
@@ -69,8 +68,7 @@ class SimpleJavaMnist {
     });
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -85,8 +83,7 @@ class SimpleJavaMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -94,18 +91,16 @@ class SimpleJavaMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -119,13 +114,10 @@ class SimpleJavaMnist {
       super.run(log);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
   }

@@ -53,8 +53,7 @@ import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
-public @RefAware
-class SimpleTFMnist {
+public class SimpleTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
@@ -75,14 +74,14 @@ class SimpleTFMnist {
                               ops.reshape(
                                   ops.withName(bias).placeholder(Double.class,
                                       Placeholder.shape(Shape.make(1, 28, 28))),
-                                  ops.constant(new long[]{1, 28, 28})),
+                                  ops.constant(new long[] { 1, 28, 28 })),
                               ops.reshape(
                                   ops.withName(input).placeholder(Double.class,
                                       Placeholder.shape(Shape.make(-1, 28, 28))),
-                                  ops.constant(new long[]{-1, 28, 28}))),
-                          ops.constant(new long[]{-1, 28 * 28})),
+                                  ops.constant(new long[] { -1, 28, 28 }))),
+                          ops.constant(new long[] { -1, 28 * 28 })),
                       MatMul.transposeB(true)),
-                  ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10})));
+                  ops.constant(new int[] { 1, 0 })), ops.constant(new long[] { -1, 10 })));
     });
   }
 
@@ -90,8 +89,7 @@ class SimpleTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_18_0001 = new Tensor(10, 28 * 28);
-    RefUtil
-        .freeRef(variables.put(weights, temp_18_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    RefUtil.freeRef(variables.put(weights, temp_18_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
     if (null != temp_18_0001)
       temp_18_0001.freeRef();
     Tensor temp_18_0002 = new Tensor(1, 28, 28);
@@ -113,8 +111,7 @@ class SimpleTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      TFLayer temp_18_0004 = new TFLayer(bytes, getVariables(), output,
-          input);
+      TFLayer temp_18_0004 = new TFLayer(bytes, getVariables(), output, input);
       TFLayer temp_18_0003 = temp_18_0004.setSummaryOut(statOutput);
       if (null != temp_18_0004)
         temp_18_0004.freeRef();
@@ -128,8 +125,8 @@ class SimpleTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      RefList<String> temp_18_0005 = RefArrays.asList("MatMul", "BatchMatMul",
-          "Const", "Placeholder", "Softmax", "Add");
+      RefList<String> temp_18_0005 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax",
+          "Add");
       if (!temp_18_0005.contains(op))
         return null;
       if (null != temp_18_0005)
@@ -165,8 +162,7 @@ class SimpleTFMnist {
         p -> p.waitFor());
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return SimpleTFMnist.getGraphDef();
@@ -181,8 +177,7 @@ class SimpleTFMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -190,18 +185,16 @@ class SimpleTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -210,13 +203,10 @@ class SimpleTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

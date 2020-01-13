@@ -40,8 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class SimpleCudnnMnist {
+public class SimpleCudnnMnist {
 
   private static final boolean tensorboard = false;
 
@@ -51,20 +50,18 @@ class SimpleCudnnMnist {
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
         pipeline.add(new SummaryLayer("input"));
 
       int bands1 = 5;
-      SimpleConvolutionLayer temp_09_0001 = new SimpleConvolutionLayer(5, 5,
-          1 * bands1);
+      SimpleConvolutionLayer temp_09_0001 = new SimpleConvolutionLayer(5, 5, 1 * bands1);
       RefUtil.freeRef(pipeline.add(temp_09_0001.set(() -> 0.001 * (Math.random() - 0.45))));
       if (null != temp_09_0001)
         temp_09_0001.freeRef();
-      FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(
-          new int[]{28, 28, bands1}, new int[]{10});
-      FullyConnectedLayer temp_09_0003 = temp_09_0002
-          .set(() -> 0.001 * (Math.random() - 0.45));
+      FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(new int[] { 28, 28, bands1 }, new int[] { 10 });
+      FullyConnectedLayer temp_09_0003 = temp_09_0002.set(() -> 0.001 * (Math.random() - 0.45));
       RefUtil.freeRef(pipeline.add(temp_09_0003.explode()));
       if (null != temp_09_0003)
         temp_09_0003.freeRef();
@@ -79,8 +76,7 @@ class SimpleCudnnMnist {
     });
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -96,8 +92,7 @@ class SimpleCudnnMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -105,18 +100,16 @@ class SimpleCudnnMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -130,13 +123,10 @@ class SimpleCudnnMnist {
       super.run(log);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

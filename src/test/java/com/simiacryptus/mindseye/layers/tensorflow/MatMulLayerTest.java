@@ -26,21 +26,18 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class MatMulLayerTest extends RawTFLayerTestBase {
+public class MatMulLayerTest extends RawTFLayerTestBase {
 
-  private final int[] inputDim = {2, 2};
+  private final int[] inputDim = { 2, 2 };
 
-  public static @SuppressWarnings("unused")
-  MatMulLayerTest[] addRefs(MatMulLayerTest[] array) {
+  public static @SuppressWarnings("unused") MatMulLayerTest[] addRefs(MatMulLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRef)
         .toArray((x) -> new MatMulLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  MatMulLayerTest[][] addRefs(MatMulLayerTest[][] array) {
+  public static @SuppressWarnings("unused") MatMulLayerTest[][] addRefs(MatMulLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRefs)
@@ -50,22 +47,19 @@ class MatMulLayerTest extends RawTFLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{inputDim};
+    return new int[][] { inputDim };
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  MatMulLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") MatMulLayerTest addRef() {
     return (MatMulLayerTest) super.addRef();
   }
 
   @NotNull
   protected MatMulLayer createTFLayer() {
-    return new MatMulLayer(inputDim, new int[]{2});
+    return new MatMulLayer(inputDim, new int[] { 2 });
   }
 
 }

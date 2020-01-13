@@ -35,8 +35,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class TFLayer extends TFLayerBase {
+public class TFLayer extends TFLayerBase {
 
   private final byte[] graphDef;
   private boolean isFloat = false;
@@ -46,8 +45,6 @@ class TFLayer extends TFLayerBase {
 
   public TFLayer(byte[] graphDef, RefMap<String, Tensor> states, String output, String... input) {
     super(states);
-    if (null != states)
-      states.freeRef();
     this.setOutputNode(output);
     setInputNodes(RefArrays.asList(input));
     this.graphDef = graphDef;
@@ -83,15 +80,12 @@ class TFLayer extends TFLayerBase {
   }
 
   public void setInputNodes(RefList<String> inputNodes) {
-    {
-      RefList<String> temp_02_0001 = inputNodes == null ? null
-          : inputNodes.addRef();
-      if (null != this.inputNodes)
-        this.inputNodes.freeRef();
-      this.inputNodes = temp_02_0001 == null ? null : temp_02_0001.addRef();
-      if (null != temp_02_0001)
-        temp_02_0001.freeRef();
-    }
+    RefList<String> temp_02_0001 = inputNodes == null ? null : inputNodes.addRef();
+    if (null != this.inputNodes)
+      this.inputNodes.freeRef();
+    this.inputNodes = temp_02_0001 == null ? null : temp_02_0001.addRef();
+    if (null != temp_02_0001)
+      temp_02_0001.freeRef();
     if (null != inputNodes)
       inputNodes.freeRef();
   }
@@ -128,19 +122,16 @@ class TFLayer extends TFLayerBase {
     return new TFLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  TFLayer[] addRefs(TFLayer[] array) {
+  public static @SuppressWarnings("unused") TFLayer[] addRefs(TFLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRef).toArray((x) -> new TFLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  TFLayer[][] addRefs(TFLayer[][] array) {
+  public static @SuppressWarnings("unused") TFLayer[][] addRefs(TFLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRefs)
-        .toArray((x) -> new TFLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRefs).toArray((x) -> new TFLayer[x][]);
   }
 
   @Override
@@ -165,16 +156,13 @@ class TFLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
     if (null != inputNodes)
       inputNodes.freeRef();
     inputNodes = null;
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  TFLayer addRef() {
+  public @Override @SuppressWarnings("unused") TFLayer addRef() {
     return (TFLayer) super.addRef();
   }
 

@@ -28,8 +28,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public abstract @RefAware
-class RawTFLayerTestBase extends TFLayerTestBase {
+public abstract class RawTFLayerTestBase extends TFLayerTestBase {
 
   @Nullable
   @Override
@@ -37,16 +36,14 @@ class RawTFLayerTestBase extends TFLayerTestBase {
     return new TFConverter().convert(getTfLayer());
   }
 
-  public static @SuppressWarnings("unused")
-  RawTFLayerTestBase[] addRefs(RawTFLayerTestBase[] array) {
+  public static @SuppressWarnings("unused") RawTFLayerTestBase[] addRefs(RawTFLayerTestBase[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
         .toArray((x) -> new RawTFLayerTestBase[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  RawTFLayerTestBase[][] addRefs(RawTFLayerTestBase[][] array) {
+  public static @SuppressWarnings("unused") RawTFLayerTestBase[][] addRefs(RawTFLayerTestBase[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRefs)
@@ -59,13 +56,10 @@ class RawTFLayerTestBase extends TFLayerTestBase {
     return getTfLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  RawTFLayerTestBase addRef() {
+  public @Override @SuppressWarnings("unused") RawTFLayerTestBase addRef() {
     return (RawTFLayerTestBase) super.addRef();
   }
 

@@ -35,8 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class NoiseJavaMnist {
+public class NoiseJavaMnist {
 
   private static final boolean tensorboard = false;
 
@@ -46,13 +45,13 @@ class NoiseJavaMnist {
 
   public static Layer network(NotebookOutput log) {
     return log.eval(() -> {
-      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
+      @Nonnull
+      final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
         pipeline.add(new SummaryLayer("input"));
 
       int size1 = 100;
-      FullyConnectedLayer temp_04_0002 = new FullyConnectedLayer(
-          new int[]{28, 28, 1}, new int[]{size1});
+      FullyConnectedLayer temp_04_0002 = new FullyConnectedLayer(new int[] { 28, 28, 1 }, new int[] { size1 });
       RefUtil.freeRef(pipeline.add(temp_04_0002.set(() -> 0.001 * (Math.random() - 0.45))));
       if (null != temp_04_0002)
         temp_04_0002.freeRef();
@@ -67,8 +66,7 @@ class NoiseJavaMnist {
         pipeline.add(new SummaryLayer("layerout1"));
 
       int size2 = 100;
-      FullyConnectedLayer temp_04_0003 = new FullyConnectedLayer(
-          new int[]{size1}, new int[]{size2});
+      FullyConnectedLayer temp_04_0003 = new FullyConnectedLayer(new int[] { size1 }, new int[] { size2 });
       RefUtil.freeRef(pipeline.add(temp_04_0003.set(() -> 0.001 * (Math.random() - 0.45))));
       if (null != temp_04_0003)
         temp_04_0003.freeRef();
@@ -82,8 +80,7 @@ class NoiseJavaMnist {
       if (tensorboard)
         pipeline.add(new SummaryLayer("layerout2"));
 
-      FullyConnectedLayer temp_04_0004 = new FullyConnectedLayer(
-          new int[]{size2}, new int[]{10});
+      FullyConnectedLayer temp_04_0004 = new FullyConnectedLayer(new int[] { size2 }, new int[] { 10 });
       RefUtil.freeRef(pipeline.add(temp_04_0004.set(() -> 0.001 * (Math.random() - 0.45))));
       if (null != temp_04_0004)
         temp_04_0004.freeRef();
@@ -96,14 +93,13 @@ class NoiseJavaMnist {
 
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax"));
-      StochasticSamplingSubnetLayer temp_04_0001 = new StochasticSamplingSubnetLayer(
-          pipeline == null ? null : pipeline, 5);
+      StochasticSamplingSubnetLayer temp_04_0001 = new StochasticSamplingSubnetLayer(pipeline == null ? null : pipeline,
+          5);
       return temp_04_0001;
     });
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return new Graph().toGraphDef();
@@ -119,8 +115,7 @@ class NoiseJavaMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -128,18 +123,16 @@ class NoiseJavaMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -153,13 +146,10 @@ class NoiseJavaMnist {
       super.run(log);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
   }

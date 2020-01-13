@@ -45,8 +45,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public @RefAware
-class TFConverter {
+public class TFConverter {
 
   public static RefList<TFLayer> getLayers(ImageNetworkPipeline pipeline) {
     return RefIntStream.range(0, pipeline.graphDefs.size()).mapToObj(i -> getLayer(pipeline, i))
@@ -58,8 +57,7 @@ class TFConverter {
     GraphDef graphDef = pipeline.graphDefs.get(i);
     String output = pipeline.nodeIds().get(i);
     String input = i == 0 ? "input" : pipeline.nodeIds().get(i - 1);
-    TFLayer temp_05_0004 = new TFLayer(graphDef.toByteArray(),
-        new RefHashMap<>(), output, input);
+    TFLayer temp_05_0004 = new TFLayer(graphDef.toByteArray(), new RefHashMap<>(), output, input);
     TFLayer temp_05_0003 = temp_05_0004.setFloat(true);
     if (null != temp_05_0004)
       temp_05_0004.freeRef();
@@ -68,8 +66,7 @@ class TFConverter {
 
   @NotNull
   public FullyConnectedLayer getFCLayer(MatMulLayer matMulLayer) {
-    RefMap<String, Tensor> temp_05_0010 = matMulLayer
-        .getWeights();
+    RefMap<String, Tensor> temp_05_0010 = matMulLayer.getWeights();
     Tensor weights = temp_05_0010.get("weights");
     if (null != temp_05_0010)
       temp_05_0010.freeRef();
@@ -107,9 +104,8 @@ class TFConverter {
   public PipelineNetwork convert(TFLayerBase tfLayer) {
     final PipelineNetwork converted = new PipelineNetwork(1);
     RefConcurrentHashMap<String, DAGNode> nodes = new RefConcurrentHashMap<>();
-    RefUtil
-        .freeRef(getNode(tfLayer.getOutputNode(), converted == null ? null : converted.addRef(),
-            new GraphModel(tfLayer.constGraph().toByteArray()), RefUtil.addRef(nodes)));
+    RefUtil.freeRef(getNode(tfLayer.getOutputNode(), converted == null ? null : converted.addRef(),
+        new GraphModel(tfLayer.constGraph().toByteArray()), RefUtil.addRef(nodes)));
     if (null != tfLayer)
       tfLayer.freeRef();
     if (null != nodes)
@@ -118,7 +114,7 @@ class TFConverter {
   }
 
   protected DAGNode getNode(String id, PipelineNetwork network, GraphModel tfModel,
-                            RefConcurrentHashMap<String, DAGNode> map) {
+      RefConcurrentHashMap<String, DAGNode> map) {
     try {
       if (!map.containsKey(id)) {
         DAGNode result;
@@ -142,11 +138,11 @@ class TFConverter {
         } else if (graphNode.getOp().equals("Concat")) {
           List<String> inputKeys = graphNode.getInputKeys();
           result = network.add(new ImgConcatLayer(),
-              inputKeys.stream().skip(1).map(RefUtil.wrapInterface(
-                  (Function<? super String, ? extends DAGNode>) inputKey -> getNode(
-                      inputKey, network == null ? null : network.addRef(), tfModel,
-                      RefUtil.addRef(map)),
-                  RefUtil.addRef(map), network == null ? null : network.addRef()))
+              inputKeys.stream().skip(1)
+                  .map(RefUtil.wrapInterface(
+                      (Function<? super String, ? extends DAGNode>) inputKey -> getNode(inputKey,
+                          network == null ? null : network.addRef(), tfModel, RefUtil.addRef(map)),
+                      RefUtil.addRef(map), network == null ? null : network.addRef()))
                   .toArray(i -> new DAGNode[i]));
         } else if (graphNode.getOp().equals("Placeholder")) {
           result = network.getInput(0);
@@ -199,8 +195,7 @@ class TFConverter {
     double[] data = dataNode.getData();
     Tensor tensor = new Tensor(data, data.length);
     ImgBandBiasLayer temp_05_0006 = new ImgBandBiasLayer(data.length);
-    ImgBandBiasLayer temp_05_0001 = temp_05_0006
-        .set(tensor == null ? null : tensor.addRef());
+    ImgBandBiasLayer temp_05_0001 = temp_05_0006.set(tensor == null ? null : tensor.addRef());
     if (null != temp_05_0006)
       temp_05_0006.freeRef();
     if (null != tensor)
@@ -214,9 +209,8 @@ class TFConverter {
     int[] kernelDims = RefArrays.stream(dataNode.getShape()).mapToInt(x -> (int) x).toArray();
     double[] data = dataNode.getData();
     if (kernelDims.length == 0)
-      kernelDims = new int[]{data.length};
-    Tensor temp_05_0007 = new Tensor(data, kernelDims[3], kernelDims[2], kernelDims[1],
-        kernelDims[0]);
+      kernelDims = new int[] { data.length };
+    Tensor temp_05_0007 = new Tensor(data, kernelDims[3], kernelDims[2], kernelDims[1], kernelDims[0]);
     Tensor sourceKernel = temp_05_0007.invertDimensions();
     if (null != temp_05_0007)
       temp_05_0007.freeRef();
@@ -226,12 +220,11 @@ class TFConverter {
         sourceKernelDimensions[1], sourceKernelDimensions[2] * sourceKernelDimensions[3]);
     Tensor targetKernel = new Tensor(sourceKernelDimensions[0], sourceKernelDimensions[1], sourceKernelDimensions[2],
         sourceKernelDimensions[3]);
-    sourceKernel.coordStream(false).forEach(RefUtil
-        .wrapInterface((Consumer<? super Coordinate>) c -> {
-          int[] coord = c.getCoords();
-          targetKernel.set((sourceKernelDimensions[0] - 1) - coord[0], (sourceKernelDimensions[1] - 1) - coord[1],
-              coord[2], coord[3], sourceKernel.get(c));
-        }, targetKernel == null ? null : targetKernel.addRef(), sourceKernel == null ? null : sourceKernel.addRef()));
+    sourceKernel.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
+      int[] coord = c.getCoords();
+      targetKernel.set((sourceKernelDimensions[0] - 1) - coord[0], (sourceKernelDimensions[1] - 1) - coord[1], coord[2],
+          coord[3], sourceKernel.get(c));
+    }, targetKernel == null ? null : targetKernel.addRef(), sourceKernel == null ? null : sourceKernel.addRef()));
     if (null != sourceKernel)
       sourceKernel.freeRef();
     Tensor temp_05_0013 = convolutionLayer.getKernel();

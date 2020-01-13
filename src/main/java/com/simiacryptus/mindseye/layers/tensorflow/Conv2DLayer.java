@@ -25,7 +25,10 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -35,8 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class Conv2DLayer extends TFLayerBase {
+public class Conv2DLayer extends TFLayerBase {
 
   private final Class<Double> dtype = Double.class;
   private String padding = "SAME";
@@ -59,8 +61,8 @@ class Conv2DLayer extends TFLayerBase {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).conv2D(ops.withName(getInputNodes().get(0)).placeholder(dtype),
-          ops.withName("kernel").placeholder(dtype), Arrays.asList(1L, (long) getStrideX(),
-              (long) getStrideY(), 1L), getPadding());
+          ops.withName("kernel").placeholder(dtype), Arrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
+          getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);
@@ -115,20 +117,16 @@ class Conv2DLayer extends TFLayerBase {
     return new Conv2DLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  Conv2DLayer[] addRefs(Conv2DLayer[] array) {
+  public static @SuppressWarnings("unused") Conv2DLayer[] addRefs(Conv2DLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef)
-        .toArray((x) -> new Conv2DLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef).toArray((x) -> new Conv2DLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  Conv2DLayer[][] addRefs(Conv2DLayer[][] array) {
+  public static @SuppressWarnings("unused") Conv2DLayer[][] addRefs(Conv2DLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs)
-        .toArray((x) -> new Conv2DLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs).toArray((x) -> new Conv2DLayer[x][]);
   }
 
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
@@ -151,13 +149,10 @@ class Conv2DLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  Conv2DLayer addRef() {
+  public @Override @SuppressWarnings("unused") Conv2DLayer addRef() {
     return (Conv2DLayer) super.addRef();
   }
 

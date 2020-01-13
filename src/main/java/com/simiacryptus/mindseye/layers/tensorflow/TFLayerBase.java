@@ -49,8 +49,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-public abstract @RefAware
-class TFLayerBase extends LayerBase {
+public abstract class TFLayerBase extends LayerBase {
   private static final Logger log = LoggerFactory.getLogger(TFLayer.class);
   public static TensorboardEventWriter eventWriter = null;
 
@@ -60,8 +59,7 @@ class TFLayerBase extends LayerBase {
     super(json);
     RefSet<String> dataKeys = getDataKeys(json);
     for (String key : dataKeys) {
-      RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0010 = this
-          .getWeights();
+      RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0010 = this.getWeights();
       RefUtil.freeRef(temp_00_0010.put(key, Tensor.fromJson(json.get(key), rs)));
       if (null != temp_00_0010)
         temp_00_0010.freeRef();
@@ -71,8 +69,7 @@ class TFLayerBase extends LayerBase {
   }
 
   public TFLayerBase(RefMap<String, Tensor> states) {
-    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0011 = this
-        .getWeights();
+    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0011 = this.getWeights();
     temp_00_0011.putAll(states == null ? null : states.addRef());
     if (null != temp_00_0011)
       temp_00_0011.freeRef();
@@ -92,26 +89,22 @@ class TFLayerBase extends LayerBase {
     return weights == null ? null : weights.addRef();
   }
 
-  public static @SuppressWarnings("unused")
-  TFLayerBase[] addRefs(TFLayerBase[] array) {
+  public static @SuppressWarnings("unused") TFLayerBase[] addRefs(TFLayerBase[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRef)
-        .toArray((x) -> new TFLayerBase[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRef).toArray((x) -> new TFLayerBase[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  TFLayerBase[][] addRefs(TFLayerBase[][] array) {
+  public static @SuppressWarnings("unused") TFLayerBase[][] addRefs(TFLayerBase[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRefs)
-        .toArray((x) -> new TFLayerBase[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRefs).toArray((x) -> new TFLayerBase[x][]);
   }
 
   @NotNull
   public TFLayer asConstLayer() {
-    return new TFLayer(constGraph().toByteArray(),
-        new RefHashMap<>(), getOutputNode(), getInputNodes().toArray(new String[]{}));
+    return new TFLayer(constGraph().toByteArray(), new RefHashMap<>(), getOutputNode(),
+        getInputNodes().toArray(new String[] {}));
   }
 
   public @NotNull GraphDef constGraph() {
@@ -152,8 +145,7 @@ class TFLayerBase extends LayerBase {
   @Override
   public Result eval(Result... inputs) {
     TFSession tfsession = new TFSession(TFLayerBase.this.addRef());
-    Result temp_00_0003 = eval(tfsession == null ? null : tfsession.addRef(),
-        Result.addRefs(inputs));
+    Result temp_00_0003 = eval(tfsession == null ? null : tfsession.addRef(), Result.addRefs(inputs));
     if (null != inputs)
       ReferenceCounting.freeRefs(inputs);
     if (null != tfsession)
@@ -179,9 +171,7 @@ class TFLayerBase extends LayerBase {
     super._free();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  TFLayerBase addRef() {
+  public @Override @SuppressWarnings("unused") TFLayerBase addRef() {
     return (TFLayerBase) super.addRef();
   }
 
@@ -197,9 +187,8 @@ class TFLayerBase extends LayerBase {
     Session.Runner runner = tfsession.session.runner();
     RefArrayList<org.tensorflow.Tensor<?>> tensors = new RefArrayList<>();
     RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0020 = getWeights();
-    temp_00_0020.forEach(RefUtil.wrapInterface(
-        (BiConsumer<? super String, ? super com.simiacryptus.mindseye.lang.Tensor>) (
-            nodeName, data) -> {
+    temp_00_0020.forEach(RefUtil
+        .wrapInterface((BiConsumer<? super String, ? super com.simiacryptus.mindseye.lang.Tensor>) (nodeName, data) -> {
           org.tensorflow.@NotNull Tensor<? extends Number> tensor;
           if (floatInputs(nodeName)) {
             tensor = TFIO.getFloatTensor(data == null ? null : data.addRef(), invertWeights());
@@ -304,8 +293,7 @@ class TFLayerBase extends LayerBase {
                   }
                   for (int i = 0; i < stateNames.size(); i++) {
                     String weightNodeName = stateNames.get(i);
-                    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0024 = TFLayerBase.this
-                        .getWeights();
+                    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0024 = TFLayerBase.this.getWeights();
                     Delta<UUID> uuidDelta = deltaBuffer.get(
                         UUID.nameUUIDFromBytes((TFLayerBase.this.getId() + "_" + weightNodeName).getBytes()),
                         temp_00_0024.get(weightNodeName));
@@ -332,8 +320,7 @@ class TFLayerBase extends LayerBase {
                     feedbacktensors.freeRef();
                 }
 
-                public @SuppressWarnings("unused")
-                void _free() {
+                public @SuppressWarnings("unused") void _free() {
                   if (null != inputs)
                     ReferenceCounting.freeRefs(inputs);
                   if (null != tfsession)
@@ -376,8 +363,7 @@ class TFLayerBase extends LayerBase {
     return false;
   }
 
-  static @RefAware
-  class TFSession extends ReferenceCountingBase {
+  static class TFSession extends ReferenceCountingBase {
     public final Graph graph;
     public final Singleton<Output<?>[]> outputSingleton = new Singleton<>();
     public final Session session;
@@ -385,12 +371,10 @@ class TFLayerBase extends LayerBase {
 
     public TFSession(TFLayerBase parent) {
       this.graph = new Graph();
-      {
-        TFLayerBase temp_00_0001 = parent == null ? null : parent.addRef();
-        this.parent = temp_00_0001 == null ? null : temp_00_0001.addRef();
-        if (null != temp_00_0001)
-          temp_00_0001.freeRef();
-      }
+      TFLayerBase temp_00_0001 = parent == null ? null : parent.addRef();
+      this.parent = temp_00_0001 == null ? null : temp_00_0001.addRef();
+      if (null != temp_00_0001)
+        temp_00_0001.freeRef();
       GraphDef graphDef = parent.getGraphDef();
       if (null != parent)
         parent.freeRef();
@@ -401,8 +385,7 @@ class TFLayerBase extends LayerBase {
 
     public Output<?>[] getGradients() {
       return outputSingleton.getOrInit(() -> {
-        RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0026 = parent
-            .getWeights();
+        RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0026 = parent.getWeights();
         RefSet<String> temp_00_0027 = temp_00_0026.keySet();
         RefList<String> stateNames = temp_00_0027.stream().collect(RefCollectors.toList());
         if (null != temp_00_0027)
@@ -414,22 +397,20 @@ class TFLayerBase extends LayerBase {
         Class<? extends Number> dtype = parent.floatInputs(deltaOpName) ? Float.class : Double.class;
         ops.withName(deltaOpName).placeholder(dtype, Placeholder.shape(Shape.unknown()));
         Output<?>[] temp_00_0007 = graph.addGradients("gradient",
-            new Output[]{TensorflowUtil.find(graph, parent.getOutputNode()).output(0)},
+            new Output[] { TensorflowUtil.find(graph, parent.getOutputNode()).output(0) },
             RefStream.concat(parent.getInputNodes().stream(), stateNames.stream())
                 .map(n -> TensorflowUtil.find(graph, n).output(0)).toArray(i -> new Output[i]),
-            new Output[]{TensorflowUtil.find(graph, deltaOpName).output(0)});
+            new Output[] { TensorflowUtil.find(graph, deltaOpName).output(0) });
         if (null != stateNames)
           stateNames.freeRef();
         return temp_00_0007;
       });
     }
 
-    public static @SuppressWarnings("unused")
-    TFSession[] addRefs(TFSession[] array) {
+    public static @SuppressWarnings("unused") TFSession[] addRefs(TFSession[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(TFSession::addRef)
-          .toArray((x) -> new TFSession[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(TFSession::addRef).toArray((x) -> new TFSession[x]);
     }
 
     public void _free() {
@@ -442,9 +423,7 @@ class TFLayerBase extends LayerBase {
       super._free();
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    TFSession addRef() {
+    public @Override @SuppressWarnings("unused") TFSession addRef() {
       return (TFSession) super.addRef();
     }
   }

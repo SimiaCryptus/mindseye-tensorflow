@@ -26,8 +26,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class LRNLayerTest extends RawTFLayerTestBase {
+public class LRNLayerTest extends RawTFLayerTestBase {
 
   private final TFLayerBase tfLayer = createTFLayer();
 
@@ -35,16 +34,13 @@ class LRNLayerTest extends RawTFLayerTestBase {
     validateDifferentials = false;
   }
 
-  public static @SuppressWarnings("unused")
-  LRNLayerTest[] addRefs(LRNLayerTest[] array) {
+  public static @SuppressWarnings("unused") LRNLayerTest[] addRefs(LRNLayerTest[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef)
-        .toArray((x) -> new LRNLayerTest[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef).toArray((x) -> new LRNLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LRNLayerTest[][] addRefs(LRNLayerTest[][] array) {
+  public static @SuppressWarnings("unused") LRNLayerTest[][] addRefs(LRNLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRefs)
@@ -54,18 +50,15 @@ class LRNLayerTest extends RawTFLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][]{{2, 3, 20}};
+    return new int[][] { { 2, 3, 20 } };
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
     if (null != tfLayer)
       tfLayer.freeRef();
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LRNLayerTest addRef() {
+  public @Override @SuppressWarnings("unused") LRNLayerTest addRef() {
     return (LRNLayerTest) super.addRef();
   }
 

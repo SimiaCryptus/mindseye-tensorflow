@@ -30,8 +30,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
-public @RefAware
-class TFIOTest {
+public class TFIOTest {
 
   private final double tol = 1e-4;
 

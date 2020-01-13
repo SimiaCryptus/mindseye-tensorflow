@@ -45,8 +45,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
-public @RefAware
-class FloatTFMnist {
+public class FloatTFMnist {
 
   public static final String input = "image";
   public static final String weights = "fc1";
@@ -61,21 +60,21 @@ class FloatTFMnist {
               ops.reshape(
                   ops.transpose(
                       ops.matMul(ops.withName(weights).placeholder(Float.class, Placeholder
-                              .shape(Shape.make(10, 28 * 28))), ops
+                          .shape(Shape.make(10, 28 * 28))), ops
                               .reshape(
                                   ops.add(
                                       ops.reshape(
                                           ops.withName(bias).placeholder(Float.class,
                                               Placeholder.shape(Shape.make(1, 28, 28))),
-                                          ops.constant(new long[]{1, 28, 28})),
+                                          ops.constant(new long[] { 1, 28, 28 })),
                                       ops.reshape(
                                           ops.withName(input).placeholder(Float.class,
                                               Placeholder.shape(Shape.make(-1, 28, 28))),
-                                          ops.constant(new long[]{-1, 28, 28}))),
-                                  ops.constant(new long[]{-1, 28 * 28})),
+                                          ops.constant(new long[] { -1, 28, 28 }))),
+                                  ops.constant(new long[] { -1, 28 * 28 })),
                           MatMul.transposeB(true)),
-                      ops.constant(new int[]{1, 0})),
-                  ops.constant(new long[]{-1, 10})));
+                      ops.constant(new int[] { 1, 0 })),
+                  ops.constant(new long[] { -1, 10 })));
     });
   }
 
@@ -83,8 +82,7 @@ class FloatTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_13_0001 = new Tensor(10, 28 * 28);
-    RefUtil
-        .freeRef(variables.put(weights, temp_13_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    RefUtil.freeRef(variables.put(weights, temp_13_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
     if (null != temp_13_0001)
       temp_13_0001.freeRef();
     Tensor temp_13_0002 = new Tensor(1, 28, 28);
@@ -106,8 +104,7 @@ class FloatTFMnist {
       } catch (InvalidProtocolBufferException e) {
         throw new RuntimeException(e);
       }
-      TFLayer temp_13_0004 = new TFLayer(bytes, getVariables(), output,
-          input);
+      TFLayer temp_13_0004 = new TFLayer(bytes, getVariables(), output, input);
       TFLayer temp_13_0005 = temp_13_0004.setFloat(true);
       TFLayer temp_13_0003 = temp_13_0005.setSummaryOut(statOutput);
       if (null != temp_13_0005)
@@ -124,8 +121,8 @@ class FloatTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      RefList<String> temp_13_0006 = RefArrays.asList("MatMul", "BatchMatMul",
-          "Const", "Placeholder", "Softmax", "Add");
+      RefList<String> temp_13_0006 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax",
+          "Add");
       if (!temp_13_0006.contains(op))
         return null;
       if (null != temp_13_0006)
@@ -141,8 +138,7 @@ class FloatTFMnist {
     return newDef;
   }
 
-  public static @RefAware
-  class MnistDemo extends MnistDemoBase {
+  public static class MnistDemo extends MnistDemoBase {
     @Override
     protected byte[] getGraphDef() {
       return FloatTFMnist.getGraphDef();
@@ -157,8 +153,7 @@ class FloatTFMnist {
 
   }
 
-  public static @RefAware
-  class LayerTest extends LayerTestBase {
+  public static class LayerTest extends LayerTestBase {
 
     @Nullable
     @Override
@@ -166,18 +161,16 @@ class FloatTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(LayerTest[] array) {
+    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
       if (array == null)
         return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef)
-          .toArray((x) -> new LayerTest[x]);
+      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
     }
 
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][]{{28, 28}};
+      return new int[][] { { 28, 28 } };
     }
 
     @Nonnull
@@ -186,13 +179,10 @@ class FloatTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() {
+    public @SuppressWarnings("unused") void _free() {
     }
 
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
+    public @Override @SuppressWarnings("unused") LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

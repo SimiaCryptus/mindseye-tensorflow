@@ -24,7 +24,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefHashSet;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -35,8 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public @RefAware
-class LRNLayer extends TFLayerBase {
+public class LRNLayer extends TFLayerBase {
 
   private long radius = 5L;
   private float beta = .5f;
@@ -50,8 +51,7 @@ class LRNLayer extends TFLayerBase {
   public LRNLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     RefUtil.freeRef(setRadius((json.get("width").getAsInt() - 1) / 2));
-    RefUtil
-        .freeRef(setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1)))));
+    RefUtil.freeRef(setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1)))));
     setBeta((float) json.get("beta").getAsDouble());
     RefUtil.freeRef(setBias((float) json.get("k").getAsDouble()));
   }
@@ -128,20 +128,16 @@ class LRNLayer extends TFLayerBase {
     return new LRNLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused")
-  LRNLayer[] addRefs(LRNLayer[] array) {
+  public static @SuppressWarnings("unused") LRNLayer[] addRefs(LRNLayer[] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef)
-        .toArray((x) -> new LRNLayer[x]);
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef).toArray((x) -> new LRNLayer[x]);
   }
 
-  public static @SuppressWarnings("unused")
-  LRNLayer[][] addRefs(LRNLayer[][] array) {
+  public static @SuppressWarnings("unused") LRNLayer[][] addRefs(LRNLayer[][] array) {
     if (array == null)
       return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs)
-        .toArray((x) -> new LRNLayer[x][]);
+    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs).toArray((x) -> new LRNLayer[x][]);
   }
 
   @Override
@@ -155,13 +151,10 @@ class LRNLayer extends TFLayerBase {
     return json;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
+  public @SuppressWarnings("unused") void _free() {
   }
 
-  public @Override
-  @SuppressWarnings("unused")
-  LRNLayer addRef() {
+  public @Override @SuppressWarnings("unused") LRNLayer addRef() {
     return (LRNLayer) super.addRef();
   }
 
