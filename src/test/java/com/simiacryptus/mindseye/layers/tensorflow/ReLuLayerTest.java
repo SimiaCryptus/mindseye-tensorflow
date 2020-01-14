@@ -19,23 +19,25 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.ref.lang.RefAware;
-import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public class ReLuLayerTest extends RawTFLayerTestBase {
 
-  public static @SuppressWarnings("unused") ReLuLayerTest[] addRefs(ReLuLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuLayerTest[] addRefs(@Nullable ReLuLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRef)
         .toArray((x) -> new ReLuLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") ReLuLayerTest[][] addRefs(ReLuLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuLayerTest[][] addRefs(@Nullable ReLuLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRefs)
@@ -45,17 +47,21 @@ public class ReLuLayerTest extends RawTFLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 3, 3, 1 } };
+    return new int[][]{{3, 3, 1}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ReLuLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ReLuLayerTest addRef() {
     return (ReLuLayerTest) super.addRef();
   }
 
-  @NotNull
+  @Nonnull
   protected ReLuLayer createTFLayer() {
     return new ReLuLayer();
   }

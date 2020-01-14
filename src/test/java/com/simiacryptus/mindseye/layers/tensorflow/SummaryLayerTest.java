@@ -21,8 +21,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.LayerTestBase;
-import com.simiacryptus.ref.lang.RefAware;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,14 +35,18 @@ public class SummaryLayerTest extends LayerTestBase {
     return null;
   }
 
-  public static @SuppressWarnings("unused") SummaryLayerTest[] addRefs(SummaryLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SummaryLayerTest[] addRefs(@Nullable SummaryLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
         .toArray((x) -> new SummaryLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") SummaryLayerTest[][] addRefs(SummaryLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SummaryLayerTest[][] addRefs(@Nullable SummaryLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRefs)
@@ -54,7 +56,7 @@ public class SummaryLayerTest extends LayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 5 } };
+    return new int[][]{{5}};
   }
 
   @Nonnull
@@ -63,14 +65,18 @@ public class SummaryLayerTest extends LayerTestBase {
     return createTFLayer();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SummaryLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SummaryLayerTest addRef() {
     return (SummaryLayerTest) super.addRef();
   }
 
-  @NotNull
+  @Nonnull
   protected SummaryLayer createTFLayer() {
     return new SummaryLayer("foo");
   }

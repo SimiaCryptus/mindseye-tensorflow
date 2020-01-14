@@ -25,10 +25,8 @@ import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
-import org.jetbrains.annotations.NotNull;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
@@ -38,7 +36,8 @@ import java.util.Random;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
-  private volatile @NotNull TFLayerBase tfLayer = null;
+  private volatile @Nonnull
+  TFLayerBase tfLayer = null;
 
   @Nullable
   @Override
@@ -46,30 +45,23 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return getTfLayer();
   }
 
+  @Nonnull
   public TFLayerBase getTfLayer() {
-    if (null == tfLayer) {
-      synchronized (this) {
-        if (null == tfLayer) {
-          TFLayerBase temp_01_0001 = createTFLayer();
-          if (null != tfLayer)
-            tfLayer.freeRef();
-          tfLayer = temp_01_0001 == null ? null : temp_01_0001.addRef();
-          if (null != temp_01_0001)
-            temp_01_0001.freeRef();
-        }
-      }
-    }
     return (TFLayerBase) tfLayer.copy();
   }
 
-  public static @SuppressWarnings("unused") TFLayerTestBase[] addRefs(TFLayerTestBase[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  TFLayerTestBase[] addRefs(@Nullable TFLayerTestBase[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRef)
         .toArray((x) -> new TFLayerTestBase[x]);
   }
 
-  public static @SuppressWarnings("unused") TFLayerTestBase[][] addRefs(TFLayerTestBase[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  TFLayerTestBase[][] addRefs(@Nullable TFLayerTestBase[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRefs)
@@ -77,12 +69,11 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   }
 
   @Override
-  public void run(@NotNull @Nonnull NotebookOutput log) {
+  public void run(@Nonnull NotebookOutput log) {
     log.eval(() -> {
       TFLayerBase tfLayer = getTfLayer();
       GraphDef graphDef = tfLayer.constGraph();
-      if (null != tfLayer)
-        tfLayer.freeRef();
+      tfLayer.freeRef();
       GraphModel graphModel = new GraphModel(graphDef.toByteArray());
       return JsonUtil.toJson(graphModel);
     });
@@ -93,24 +84,28 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
     TFLayerBase tfLayer = getTfLayer();
-    PipelineNetwork temp_01_0002 = new TFConverter().convert(tfLayer == null ? null : tfLayer.addRef());
-    if (null != tfLayer)
-      tfLayer.freeRef();
+    PipelineNetwork temp_01_0002 = new TFConverter().convert(tfLayer.addRef());
+    tfLayer.freeRef();
     return temp_01_0002;
   }
 
-  public @SuppressWarnings("unused") void _free() {
-    if (null != tfLayer)
-      tfLayer.freeRef();
+  public @SuppressWarnings("unused")
+  void _free() {
+    tfLayer.freeRef();
     tfLayer = null;
   }
 
-  public @Override @SuppressWarnings("unused") TFLayerTestBase addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  TFLayerTestBase addRef() {
     return (TFLayerTestBase) super.addRef();
   }
 
-  protected abstract @NotNull TFLayerBase createTFLayer();
+  protected abstract @Nonnull
+  TFLayerBase createTFLayer();
 
+  @Nonnull
   @Override
   protected Layer lossLayer() {
     return new MeanSqLossLayer();

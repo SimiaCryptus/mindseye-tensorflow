@@ -27,14 +27,12 @@ import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
-import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Operand;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.DataType;
@@ -86,30 +84,27 @@ public class ConvTFMnist {
               ops.matMul(
                   ops.withName(ConvTFMnist.fc1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(1024, 7 * 7 * bands2))),
-                  ops.reshape(conv2, ops.constant(new long[] { -1, 7 * 7 * bands2 })), MatMul.transposeB(true)),
-              ops.constant(new int[] { 1, 0 }))));
-      ops.withName(output).reshape(fc1, ops.constant(new long[] { -1, 1024 }));
+                  ops.reshape(conv2, ops.constant(new long[]{-1, 7 * 7 * bands2})), MatMul.transposeB(true)),
+              ops.constant(new int[]{1, 0}))));
+      ops.withName(output).reshape(fc1, ops.constant(new long[]{-1, 1024}));
     });
   }
 
-  @NotNull
+  @Nonnull
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_16_0001 = new Tensor(5, 5, 1, 32);
     RefUtil.freeRef(variables.put(conv1, temp_16_0001.randomize(.001)));
-    if (null != temp_16_0001)
-      temp_16_0001.freeRef();
+    temp_16_0001.freeRef();
     Tensor temp_16_0002 = new Tensor(5, 5, 32, 64);
     RefUtil.freeRef(variables.put(conv2, temp_16_0002.randomize(.001)));
-    if (null != temp_16_0002)
-      temp_16_0002.freeRef();
+    temp_16_0002.freeRef();
     RefUtil.freeRef(variables.put(bias1, new Tensor(1, 1, 1, 32)));
     RefUtil.freeRef(variables.put(bias2, new Tensor(1, 1, 1, 64)));
     RefUtil.freeRef(variables.put(bias3, new Tensor(1, 1024)));
     Tensor temp_16_0003 = new Tensor(1024, 7 * 7 * 64);
     RefUtil.freeRef(variables.put(fc1, temp_16_0003.randomize(.001)));
-    if (null != temp_16_0003)
-      temp_16_0003.freeRef();
+    temp_16_0003.freeRef();
     return variables;
   }
 
@@ -117,7 +112,7 @@ public class ConvTFMnist {
     return network(new NullNotebookOutput());
   }
 
-  public static Layer network(NotebookOutput log) {
+  public static Layer network(@Nonnull NotebookOutput log) {
     return log.eval(() -> {
       byte[] bytes;
       try {
@@ -128,20 +123,18 @@ public class ConvTFMnist {
       TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output, input);
       Layer temp_16_0004 = stochasticClassificationLayer(temp_16_0005.setSummaryOut(statOutput), Math.pow(0.5, 1.0), 5,
           0.001);
-      if (null != temp_16_0005)
-        temp_16_0005.freeRef();
+      temp_16_0005.freeRef();
       return temp_16_0004;
     });
   }
 
-  @NotNull
-  public static Layer stochasticClassificationLayer(Layer inner, double density, int samples, double initialWeight) {
+  @Nonnull
+  public static Layer stochasticClassificationLayer(@Nullable Layer inner, double density, int samples, double initialWeight) {
     PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
     RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density)));
-    FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[] { 1024 }, new int[] { 10 });
+    FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[]{1024}, new int[]{10});
     RefUtil.freeRef(stochasticTerminal.add(temp_16_0006.randomize(initialWeight)));
-    if (null != temp_16_0006)
-      temp_16_0006.freeRef();
+    temp_16_0006.freeRef();
     RefUtil.freeRef(stochasticTerminal.add(new BiasLayer(10)));
     RefUtil.freeRef(stochasticTerminal.add(new SoftmaxLayer()));
     PipelineNetwork pipeline = new PipelineNetwork(1);
@@ -149,15 +142,13 @@ public class ConvTFMnist {
     if (null != inner)
       inner.freeRef();
     RefUtil.freeRef(pipeline.add(
-        new StochasticSamplingSubnetLayer(stochasticTerminal == null ? null : stochasticTerminal.addRef(), samples)));
-    if (null != stochasticTerminal)
-      stochasticTerminal.freeRef();
+        new StochasticSamplingSubnetLayer(stochasticTerminal.addRef(), samples)));
+    stochasticTerminal.freeRef();
     return pipeline;
   }
 
-  private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput)
-      return graphDef;
+  @Nonnull
+  private static GraphDef instrument(@Nonnull GraphDef graphDef) {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
@@ -165,8 +156,7 @@ public class ConvTFMnist {
           "Conv2D");
       if (!temp_16_0013.contains(op))
         return null;
-      if (null != temp_16_0013)
-        temp_16_0013.freeRef();
+      temp_16_0013.freeRef();
       //      if (node.getName().equalsIgnoreCase(input)) {
       //        nodeInstrumentation.setImage(28, 28, 1);
       //      }
@@ -200,7 +190,9 @@ public class ConvTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(@Nullable LayerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
@@ -209,7 +201,7 @@ public class ConvTFMnist {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 28, 28 } };
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
@@ -218,10 +210,14 @@ public class ConvTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") LayerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

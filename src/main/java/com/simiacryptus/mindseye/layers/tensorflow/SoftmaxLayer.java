@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefSet;
@@ -30,6 +29,7 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class SoftmaxLayer extends TFLayerBase {
     super(new RefHashMap<>());
   }
 
-  public SoftmaxLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public SoftmaxLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -55,16 +55,19 @@ public class SoftmaxLayer extends TFLayerBase {
     }
   }
 
+  @Nonnull
   @Override
   public List<String> getInputNodes() {
     return Arrays.asList("input");
   }
 
+  @Nonnull
   @Override
   public String getOutputNode() {
     return "output";
   }
 
+  @Nullable
   @Override
   public String getSummaryOut() {
     return null;
@@ -80,26 +83,35 @@ public class SoftmaxLayer extends TFLayerBase {
     return new SoftmaxLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") SoftmaxLayer[] addRefs(SoftmaxLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[] addRefs(@Nullable SoftmaxLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef).toArray((x) -> new SoftmaxLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SoftmaxLayer[][] addRefs(SoftmaxLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SoftmaxLayer[][] addRefs(@Nullable SoftmaxLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
         .toArray((x) -> new SoftmaxLayer[x][]);
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SoftmaxLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayer addRef() {
     return (SoftmaxLayer) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected RefSet<String> getDataKeys(JsonObject json) {
     return new RefHashSet<>();

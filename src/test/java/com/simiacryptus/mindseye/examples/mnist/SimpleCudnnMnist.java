@@ -30,9 +30,7 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
@@ -48,30 +46,26 @@ public class SimpleCudnnMnist {
     return network(new NullNotebookOutput());
   }
 
-  public static Layer network(NotebookOutput log) {
+  public static Layer network(@Nonnull NotebookOutput log) {
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork pipeline = new PipelineNetwork();
+      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if (tensorboard)
-        pipeline.add(new SummaryLayer("input"));
+        pipeline.add(new SummaryLayer("input")).freeRef();
 
       int bands1 = 5;
       SimpleConvolutionLayer temp_09_0001 = new SimpleConvolutionLayer(5, 5, 1 * bands1);
       RefUtil.freeRef(pipeline.add(temp_09_0001.set(() -> 0.001 * (Math.random() - 0.45))));
-      if (null != temp_09_0001)
-        temp_09_0001.freeRef();
-      FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(new int[] { 28, 28, bands1 }, new int[] { 10 });
+      temp_09_0001.freeRef();
+      FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(new int[]{28, 28, bands1}, new int[]{10});
       FullyConnectedLayer temp_09_0003 = temp_09_0002.set(() -> 0.001 * (Math.random() - 0.45));
       RefUtil.freeRef(pipeline.add(temp_09_0003.explode()));
-      if (null != temp_09_0003)
-        temp_09_0003.freeRef();
-      if (null != temp_09_0002)
-        temp_09_0002.freeRef();
+      temp_09_0003.freeRef();
+      temp_09_0002.freeRef();
       RefUtil.freeRef(pipeline.add(new BiasLayer(10)));
       RefUtil.freeRef(pipeline.add(new SoftmaxLayer()));
 
       if (tensorboard)
-        pipeline.add(new SummaryLayer("softmax"));
+        pipeline.add(new SummaryLayer("softmax")).freeRef();
       return pipeline;
     });
   }
@@ -100,7 +94,9 @@ public class SimpleCudnnMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(@Nullable LayerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
@@ -109,7 +105,7 @@ public class SimpleCudnnMnist {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 28, 28 } };
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
@@ -119,17 +115,22 @@ public class SimpleCudnnMnist {
     }
 
     @Override
-    public void run(@NotNull @Nonnull NotebookOutput log) {
+    public void run(@Nonnull NotebookOutput log) {
       super.run(log);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") LayerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 
+    @Nonnull
     @Override
     protected Layer lossLayer() {
       return new EntropyLossLayer();

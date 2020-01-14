@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefSet;
@@ -33,6 +32,7 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +46,12 @@ public class SummaryLayer extends TFLayerBase {
     this.setTag(name);
   }
 
-  public SummaryLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public SummaryLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     tag = json.get("tag").getAsString();
   }
 
+  @Nonnull
   @Override
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
@@ -66,16 +67,19 @@ public class SummaryLayer extends TFLayerBase {
     }
   }
 
+  @Nonnull
   @Override
   public List<String> getInputNodes() {
     return Arrays.asList(tag);
   }
 
+  @Nonnull
   @Override
   public String getOutputNode() {
     return "output";
   }
 
+  @Nonnull
   @Override
   public String getSummaryOut() {
     return "summary";
@@ -99,13 +103,17 @@ public class SummaryLayer extends TFLayerBase {
     return new SummaryLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") SummaryLayer[] addRefs(SummaryLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SummaryLayer[] addRefs(@Nullable SummaryLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRef).toArray((x) -> new SummaryLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") SummaryLayer[][] addRefs(SummaryLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SummaryLayer[][] addRefs(@Nullable SummaryLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRefs)
@@ -113,19 +121,25 @@ public class SummaryLayer extends TFLayerBase {
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
+    assert json != null;
     json.addProperty("tag", tag);
     return json;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SummaryLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SummaryLayer addRef() {
     return (SummaryLayer) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected RefSet<String> getDataKeys(JsonObject json) {
     return new RefHashSet<>();

@@ -28,9 +28,7 @@ import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import org.jetbrains.annotations.NotNull;
 import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
@@ -46,24 +44,22 @@ public class AtomicTFMnist {
     return network(new NullNotebookOutput());
   }
 
-  public static Layer network(NotebookOutput log) {
+  public static Layer network(@Nonnull NotebookOutput log) {
     return log.eval(() -> {
-      @Nonnull
-      final PipelineNetwork pipeline = new PipelineNetwork();
+      @Nonnull final PipelineNetwork pipeline = new PipelineNetwork();
       if (summarize)
-        pipeline.add(new SummaryLayer("input"));
-      MatMulLayer temp_14_0001 = new MatMulLayer(new int[] { 28, 28, 1 }, new int[] { 10 });
+        pipeline.add(new SummaryLayer("input")).freeRef();
+      MatMulLayer temp_14_0001 = new MatMulLayer(new int[]{28, 28, 1}, new int[]{10});
       RefUtil.freeRef(pipeline.add(temp_14_0001.set(() -> 0.001 * (Math.random() - 0.45))));
-      if (null != temp_14_0001)
-        temp_14_0001.freeRef();
+      temp_14_0001.freeRef();
       if (summarize)
-        pipeline.add(new SummaryLayer("matmul"));
+        pipeline.add(new SummaryLayer("matmul")).freeRef();
       RefUtil.freeRef(pipeline.add(new BiasLayer(10)));
       if (summarize)
-        pipeline.add(new SummaryLayer("bias"));
+        pipeline.add(new SummaryLayer("bias")).freeRef();
       RefUtil.freeRef(pipeline.add(new SoftmaxLayer()));
       if (summarize)
-        pipeline.add(new SummaryLayer("softmax"));
+        pipeline.add(new SummaryLayer("softmax")).freeRef();
       return pipeline;
     });
   }
@@ -91,7 +87,9 @@ public class AtomicTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(@Nullable LayerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
@@ -100,7 +98,7 @@ public class AtomicTFMnist {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 28, 28 } };
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
@@ -110,14 +108,18 @@ public class AtomicTFMnist {
     }
 
     @Override
-    public void run(@NotNull @Nonnull NotebookOutput log) {
+    public void run(@Nonnull NotebookOutput log) {
       super.run(log);
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") LayerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
   }

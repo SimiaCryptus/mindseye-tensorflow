@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
@@ -34,6 +33,7 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class Conv2DLayer extends TFLayerBase {
     super(defaultStates(intputDims));
   }
 
-  public Conv2DLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public Conv2DLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     strideX = json.get("strideX").getAsInt();
     strideY = json.get("strideY").getAsInt();
@@ -69,11 +69,13 @@ public class Conv2DLayer extends TFLayerBase {
     }
   }
 
+  @Nonnull
   @Override
   public List<String> getInputNodes() {
     return Arrays.asList("input");
   }
 
+  @Nonnull
   @Override
   public String getOutputNode() {
     return "output";
@@ -83,6 +85,7 @@ public class Conv2DLayer extends TFLayerBase {
     return padding;
   }
 
+  @Nonnull
   public Conv2DLayer setPadding(String padding) {
     this.padding = padding;
     return this.addRef();
@@ -92,6 +95,7 @@ public class Conv2DLayer extends TFLayerBase {
     return strideX;
   }
 
+  @Nonnull
   public Conv2DLayer setStrideX(int strideX) {
     this.strideX = strideX;
     return this.addRef();
@@ -101,11 +105,13 @@ public class Conv2DLayer extends TFLayerBase {
     return strideY;
   }
 
+  @Nonnull
   public Conv2DLayer setStrideY(int strideY) {
     this.strideY = strideY;
     return this.addRef();
   }
 
+  @Nullable
   @Override
   public String getSummaryOut() {
     return null;
@@ -117,42 +123,51 @@ public class Conv2DLayer extends TFLayerBase {
     return new Conv2DLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") Conv2DLayer[] addRefs(Conv2DLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  Conv2DLayer[] addRefs(@Nullable Conv2DLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef).toArray((x) -> new Conv2DLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") Conv2DLayer[][] addRefs(Conv2DLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  Conv2DLayer[][] addRefs(@Nullable Conv2DLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs).toArray((x) -> new Conv2DLayer[x][]);
   }
 
+  @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     Tensor temp_11_0001 = new Tensor(intputDims);
     RefUtil.freeRef(map.put("kernel", temp_11_0001.setByCoord(c -> {
       return 0;
     })));
-    if (null != temp_11_0001)
-      temp_11_0001.freeRef();
+    temp_11_0001.freeRef();
     return map;
   }
 
   @Override
-  public JsonObject getJson(Map<CharSequence, byte[]> resources, DataSerializer dataSerializer) {
+  public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
+    assert json != null;
     json.addProperty("strideX", strideX);
     json.addProperty("strideY", strideY);
     json.addProperty("padding", padding);
     return json;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") Conv2DLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  Conv2DLayer addRef() {
     return (Conv2DLayer) super.addRef();
   }
 
@@ -161,6 +176,7 @@ public class Conv2DLayer extends TFLayerBase {
     return false;
   }
 
+  @Nonnull
   @Override
   protected RefSet<String> getDataKeys(JsonObject json) {
     RefHashSet<String> hashSet = new RefHashSet<>();

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
@@ -33,6 +32,7 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class BiasAddLayer extends TFLayerBase {
     super(defaultStates(intputDims));
   }
 
-  public BiasAddLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public BiasAddLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -59,16 +59,19 @@ public class BiasAddLayer extends TFLayerBase {
     }
   }
 
+  @Nonnull
   @Override
   public List<String> getInputNodes() {
     return Arrays.asList("input");
   }
 
+  @Nonnull
   @Override
   public String getOutputNode() {
     return "output";
   }
 
+  @Nullable
   @Override
   public String getSummaryOut() {
     return null;
@@ -84,37 +87,46 @@ public class BiasAddLayer extends TFLayerBase {
     return new BiasAddLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") BiasAddLayer[] addRefs(BiasAddLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasAddLayer[] addRefs(@Nullable BiasAddLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRef).toArray((x) -> new BiasAddLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") BiasAddLayer[][] addRefs(BiasAddLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  BiasAddLayer[][] addRefs(@Nullable BiasAddLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRefs)
         .toArray((x) -> new BiasAddLayer[x][]);
   }
 
+  @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     Tensor temp_10_0001 = new Tensor(intputDims);
     RefUtil.freeRef(map.put("bias", temp_10_0001.setByCoord(c -> {
       return 0;
     })));
-    if (null != temp_10_0001)
-      temp_10_0001.freeRef();
+    temp_10_0001.freeRef();
     return map;
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") BiasAddLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  BiasAddLayer addRef() {
     return (BiasAddLayer) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected RefSet<String> getDataKeys(JsonObject json) {
     RefHashSet<String> hashSet = new RefHashSet<>();

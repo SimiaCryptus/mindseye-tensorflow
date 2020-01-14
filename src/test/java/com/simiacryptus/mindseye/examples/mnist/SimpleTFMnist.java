@@ -27,19 +27,14 @@ import com.simiacryptus.mindseye.layers.java.LayerTestBase;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
-import com.simiacryptus.ref.wrappers.RefList;
+import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
-import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.tensorflow.Shape;
-import org.tensorflow.framework.DataType;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.core.MatMul;
 import org.tensorflow.op.core.Placeholder;
@@ -59,6 +54,7 @@ public class SimpleTFMnist {
   public static final String weights = "fc1";
   public static final String bias = "bias";
   public static final String output = "softmax";
+  @Nullable
   public static final String statOutput = null;
 
   private static byte[] getGraphDef() {
@@ -74,28 +70,26 @@ public class SimpleTFMnist {
                               ops.reshape(
                                   ops.withName(bias).placeholder(Double.class,
                                       Placeholder.shape(Shape.make(1, 28, 28))),
-                                  ops.constant(new long[] { 1, 28, 28 })),
+                                  ops.constant(new long[]{1, 28, 28})),
                               ops.reshape(
                                   ops.withName(input).placeholder(Double.class,
                                       Placeholder.shape(Shape.make(-1, 28, 28))),
-                                  ops.constant(new long[] { -1, 28, 28 }))),
-                          ops.constant(new long[] { -1, 28 * 28 })),
+                                  ops.constant(new long[]{-1, 28, 28}))),
+                          ops.constant(new long[]{-1, 28 * 28})),
                       MatMul.transposeB(true)),
-                  ops.constant(new int[] { 1, 0 })), ops.constant(new long[] { -1, 10 })));
+                  ops.constant(new int[]{1, 0})), ops.constant(new long[]{-1, 10})));
     });
   }
 
-  @NotNull
+  @Nonnull
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_18_0001 = new Tensor(10, 28 * 28);
     RefUtil.freeRef(variables.put(weights, temp_18_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
-    if (null != temp_18_0001)
-      temp_18_0001.freeRef();
+    temp_18_0001.freeRef();
     Tensor temp_18_0002 = new Tensor(1, 28, 28);
     RefUtil.freeRef(variables.put(bias, temp_18_0002.setByCoord(c -> 0)));
-    if (null != temp_18_0002)
-      temp_18_0002.freeRef();
+    temp_18_0002.freeRef();
     return variables;
   }
 
@@ -103,7 +97,7 @@ public class SimpleTFMnist {
     return network(new NullNotebookOutput());
   }
 
-  public static Layer network(NotebookOutput log) {
+  public static Layer network(@Nonnull NotebookOutput log) {
     return log.eval(() -> {
       byte[] bytes;
       try {
@@ -113,33 +107,14 @@ public class SimpleTFMnist {
       }
       TFLayer temp_18_0004 = new TFLayer(bytes, getVariables(), output, input);
       TFLayer temp_18_0003 = temp_18_0004.setSummaryOut(statOutput);
-      if (null != temp_18_0004)
-        temp_18_0004.freeRef();
+      temp_18_0004.freeRef();
       return temp_18_0003;
     });
   }
 
-  private static GraphDef instrument(GraphDef graphDef) {
-    if (null == statOutput)
-      return graphDef;
-    TensorflowUtil.validate(graphDef);
-    GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
-      String op = node.getOp();
-      RefList<String> temp_18_0005 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax",
-          "Add");
-      if (!temp_18_0005.contains(op))
-        return null;
-      if (null != temp_18_0005)
-        temp_18_0005.freeRef();
-      NodeInstrumentation nodeInstrumentation = new NodeInstrumentation(
-          NodeInstrumentation.getDataType(node, DataType.DT_DOUBLE));
-      if (node.getName().equalsIgnoreCase(input)) {
-        nodeInstrumentation.setImage(28, 28, 1);
-      }
-      return nodeInstrumentation;
-    });
-    TensorflowUtil.validate(graphDef);
-    return newDef;
+  @Nonnull
+  private static GraphDef instrument(@Nonnull GraphDef graphDef) {
+    return graphDef;
   }
 
   @Test
@@ -152,7 +127,7 @@ public class SimpleTFMnist {
     File file = new File("model.json");
     FileUtils.write(file, json, "UTF-8");
     Desktop.getDesktop().open(file);
-    com.simiacryptus.ref.wrappers.RefSystem.out.println("Model: " + json);
+    RefSystem.out.println("Model: " + json);
   }
 
   @Test
@@ -185,7 +160,9 @@ public class SimpleTFMnist {
       return null;
     }
 
-    public static @SuppressWarnings("unused") LayerTest[] addRefs(LayerTest[] array) {
+    @Nullable
+    public static @SuppressWarnings("unused")
+    LayerTest[] addRefs(@Nullable LayerTest[] array) {
       if (array == null)
         return null;
       return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
@@ -194,7 +171,7 @@ public class SimpleTFMnist {
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
-      return new int[][] { { 28, 28 } };
+      return new int[][]{{28, 28}};
     }
 
     @Nonnull
@@ -203,10 +180,14 @@ public class SimpleTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused") void _free() {
+    public @SuppressWarnings("unused")
+    void _free() {
     }
 
-    public @Override @SuppressWarnings("unused") LayerTest addRef() {
+    @Nonnull
+    public @Override
+    @SuppressWarnings("unused")
+    LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
 

@@ -22,7 +22,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.lang.RefAware;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefMap;
@@ -32,6 +31,7 @@ import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class ReLuLayer extends TFLayerBase {
     super(defaultStates());
   }
 
-  public ReLuLayer(JsonObject json, Map<CharSequence, byte[]> rs) {
+  public ReLuLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
   }
 
@@ -57,16 +57,19 @@ public class ReLuLayer extends TFLayerBase {
     }
   }
 
+  @Nonnull
   @Override
   public List<String> getInputNodes() {
     return Arrays.asList("input");
   }
 
+  @Nonnull
   @Override
   public String getOutputNode() {
     return "output";
   }
 
+  @Nullable
   @Override
   public String getSummaryOut() {
     return null;
@@ -82,29 +85,39 @@ public class ReLuLayer extends TFLayerBase {
     return new ReLuLayer(json, rs);
   }
 
-  public static @SuppressWarnings("unused") ReLuLayer[] addRefs(ReLuLayer[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuLayer[] addRefs(@Nullable ReLuLayer[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef).toArray((x) -> new ReLuLayer[x]);
   }
 
-  public static @SuppressWarnings("unused") ReLuLayer[][] addRefs(ReLuLayer[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  ReLuLayer[][] addRefs(@Nullable ReLuLayer[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs).toArray((x) -> new ReLuLayer[x][]);
   }
 
+  @Nonnull
   private static RefMap<String, Tensor> defaultStates() {
     return new RefHashMap<>();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") ReLuLayer addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  ReLuLayer addRef() {
     return (ReLuLayer) super.addRef();
   }
 
+  @Nonnull
   @Override
   protected RefSet<String> getDataKeys(JsonObject json) {
     return new RefHashSet<>();

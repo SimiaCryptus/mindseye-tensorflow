@@ -19,23 +19,25 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.ref.lang.RefAware;
-import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
 public class SoftmaxLayerTest extends RawTFLayerTestBase {
 
-  public static @SuppressWarnings("unused") SoftmaxLayerTest[] addRefs(SoftmaxLayerTest[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SoftmaxLayerTest[] addRefs(@Nullable SoftmaxLayerTest[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
         .toArray((x) -> new SoftmaxLayerTest[x]);
   }
 
-  public static @SuppressWarnings("unused") SoftmaxLayerTest[][] addRefs(SoftmaxLayerTest[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  SoftmaxLayerTest[][] addRefs(@Nullable SoftmaxLayerTest[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
@@ -45,17 +47,21 @@ public class SoftmaxLayerTest extends RawTFLayerTestBase {
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
-    return new int[][] { { 5 } };
+    return new int[][]{{5}};
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") SoftmaxLayerTest addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  SoftmaxLayerTest addRef() {
     return (SoftmaxLayerTest) super.addRef();
   }
 
-  @NotNull
+  @Nonnull
   protected SoftmaxLayer createTFLayer() {
     return new SoftmaxLayer();
   }

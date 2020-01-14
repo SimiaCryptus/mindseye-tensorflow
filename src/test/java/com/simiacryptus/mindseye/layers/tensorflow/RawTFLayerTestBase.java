@@ -21,7 +21,6 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.ref.lang.RefAware;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,14 +35,18 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
     return new TFConverter().convert(getTfLayer());
   }
 
-  public static @SuppressWarnings("unused") RawTFLayerTestBase[] addRefs(RawTFLayerTestBase[] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  RawTFLayerTestBase[] addRefs(@Nullable RawTFLayerTestBase[] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
         .toArray((x) -> new RawTFLayerTestBase[x]);
   }
 
-  public static @SuppressWarnings("unused") RawTFLayerTestBase[][] addRefs(RawTFLayerTestBase[][] array) {
+  @Nullable
+  public static @SuppressWarnings("unused")
+  RawTFLayerTestBase[][] addRefs(@Nullable RawTFLayerTestBase[][] array) {
     if (array == null)
       return null;
     return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRefs)
@@ -56,10 +59,14 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
     return getTfLayer();
   }
 
-  public @SuppressWarnings("unused") void _free() {
+  public @SuppressWarnings("unused")
+  void _free() {
   }
 
-  public @Override @SuppressWarnings("unused") RawTFLayerTestBase addRef() {
+  @Nonnull
+  public @Override
+  @SuppressWarnings("unused")
+  RawTFLayerTestBase addRef() {
     return (RawTFLayerTestBase) super.addRef();
   }
 
