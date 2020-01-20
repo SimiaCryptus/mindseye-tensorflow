@@ -94,16 +94,19 @@ public class ConvTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_16_0001 = new Tensor(5, 5, 1, 32);
-    RefUtil.freeRef(variables.put(conv1, temp_16_0001.randomize(.001)));
+    temp_16_0001.randomize(.001);
+    RefUtil.freeRef(variables.put(conv1, temp_16_0001.addRef()));
     temp_16_0001.freeRef();
     Tensor temp_16_0002 = new Tensor(5, 5, 32, 64);
-    RefUtil.freeRef(variables.put(conv2, temp_16_0002.randomize(.001)));
+    temp_16_0002.randomize(.001);
+    RefUtil.freeRef(variables.put(conv2, temp_16_0002.addRef()));
     temp_16_0002.freeRef();
     RefUtil.freeRef(variables.put(bias1, new Tensor(1, 1, 1, 32)));
     RefUtil.freeRef(variables.put(bias2, new Tensor(1, 1, 1, 64)));
     RefUtil.freeRef(variables.put(bias3, new Tensor(1, 1024)));
     Tensor temp_16_0003 = new Tensor(1024, 7 * 7 * 64);
-    RefUtil.freeRef(variables.put(fc1, temp_16_0003.randomize(.001)));
+    temp_16_0003.randomize(.001);
+    RefUtil.freeRef(variables.put(fc1, temp_16_0003.addRef()));
     temp_16_0003.freeRef();
     return variables;
   }
@@ -121,7 +124,8 @@ public class ConvTFMnist {
         throw new RuntimeException(e);
       }
       TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output, input);
-      Layer temp_16_0004 = stochasticClassificationLayer(temp_16_0005.setSummaryOut(statOutput), Math.pow(0.5, 1.0), 5,
+      temp_16_0005.setSummaryOut(statOutput);
+      Layer temp_16_0004 = stochasticClassificationLayer(temp_16_0005.addRef(), Math.pow(0.5, 1.0), 5,
           0.001);
       temp_16_0005.freeRef();
       return temp_16_0004;
@@ -133,7 +137,8 @@ public class ConvTFMnist {
     PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
     RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(density)));
     FullyConnectedLayer temp_16_0006 = new FullyConnectedLayer(new int[]{1024}, new int[]{10});
-    RefUtil.freeRef(stochasticTerminal.add(temp_16_0006.randomize(initialWeight)));
+    temp_16_0006.randomize(initialWeight);
+    RefUtil.freeRef(stochasticTerminal.add(temp_16_0006.addRef()));
     temp_16_0006.freeRef();
     RefUtil.freeRef(stochasticTerminal.add(new BiasLayer(10)));
     RefUtil.freeRef(stochasticTerminal.add(new SoftmaxLayer()));
@@ -179,7 +184,6 @@ public class ConvTFMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -193,9 +197,7 @@ public class ConvTFMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -220,7 +222,6 @@ public class ConvTFMnist {
     LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
-
   }
 
 }

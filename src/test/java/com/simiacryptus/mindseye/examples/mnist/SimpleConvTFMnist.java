@@ -81,13 +81,16 @@ public class SimpleConvTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_08_0001 = new Tensor(5, 5, 1, 5);
-    RefUtil.freeRef(variables.put(weights_conv1, temp_08_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    temp_08_0001.setByCoord(c2 -> .001 * (Math.random() - 0.5));
+    RefUtil.freeRef(variables.put(weights_conv1, temp_08_0001.addRef()));
     temp_08_0001.freeRef();
     Tensor temp_08_0002 = new Tensor(10, 28 * 28 * 5);
-    RefUtil.freeRef(variables.put(weights, temp_08_0002.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    temp_08_0002.setByCoord(c1 -> .001 * (Math.random() - 0.5));
+    RefUtil.freeRef(variables.put(weights, temp_08_0002.addRef()));
     temp_08_0002.freeRef();
     Tensor temp_08_0003 = new Tensor(10);
-    RefUtil.freeRef(variables.put(bias, temp_08_0003.setByCoord(c -> 0)));
+    temp_08_0003.setByCoord(c -> 0);
+    RefUtil.freeRef(variables.put(bias, temp_08_0003.addRef()));
     temp_08_0003.freeRef();
     return variables;
   }
@@ -105,7 +108,8 @@ public class SimpleConvTFMnist {
         throw new RuntimeException(e);
       }
       TFLayer temp_08_0005 = new TFLayer(bytes, getVariables(), output, input);
-      TFLayer temp_08_0004 = temp_08_0005.setSummaryOut(statOutput);
+      temp_08_0005.setSummaryOut(statOutput);
+      TFLayer temp_08_0004 = temp_08_0005.addRef();
       temp_08_0005.freeRef();
       return temp_08_0004;
     });
@@ -148,7 +152,6 @@ public class SimpleConvTFMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -162,9 +165,7 @@ public class SimpleConvTFMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -189,7 +190,6 @@ public class SimpleConvTFMnist {
     LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
-
   }
 
 }

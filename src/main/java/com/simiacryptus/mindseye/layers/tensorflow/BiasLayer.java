@@ -87,29 +87,15 @@ public class BiasLayer extends TFLayerBase {
     return new BiasLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayer[] addRefs(@Nullable BiasLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRef).toArray((x) -> new BiasLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayer[][] addRefs(@Nullable BiasLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayer::addRefs).toArray((x) -> new BiasLayer[x][]);
-  }
 
   @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     Tensor temp_15_0001 = new Tensor(intputDims);
-    RefUtil.freeRef(map.put("bias", temp_15_0001.setByCoord(c -> {
+    temp_15_0001.setByCoord(c -> {
       return 0;
-    })));
+    });
+    RefUtil.freeRef(map.put("bias", temp_15_0001.addRef()));
     temp_15_0001.freeRef();
     return map;
   }

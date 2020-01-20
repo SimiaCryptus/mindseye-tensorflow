@@ -42,10 +42,7 @@ public class BiasAddLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   BiasAddLayerTest[][] addRefs(@Nullable BiasAddLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayerTest::addRefs)
-        .toArray((x) -> new BiasAddLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull
@@ -61,7 +58,7 @@ public class BiasAddLayerTest extends RawTFLayerTestBase {
     assert temp_23_0001 != null;
     Tensor temp_23_0002 = temp_23_0001.get("bias");
     assert temp_23_0002 != null;
-    RefUtil.freeRef(temp_23_0002.setByCoord(c -> Math.random()));
+    temp_23_0002.setByCoord(c -> Math.random());
     temp_23_0002.freeRef();
     temp_23_0001.freeRef();
     return biasLayer;

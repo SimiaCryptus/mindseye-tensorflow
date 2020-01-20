@@ -43,7 +43,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class TFConverter {
 
@@ -58,7 +57,8 @@ public class TFConverter {
     String output = pipeline.nodeIds().get(i);
     String input = i == 0 ? "input" : pipeline.nodeIds().get(i - 1);
     TFLayer temp_05_0004 = new TFLayer(graphDef.toByteArray(), new RefHashMap<>(), output, input);
-    TFLayer temp_05_0003 = temp_05_0004.setFloat(true);
+    temp_05_0004.setFloat(true);
+    TFLayer temp_05_0003 = temp_05_0004.addRef();
     temp_05_0004.freeRef();
     return temp_05_0003;
   }
@@ -134,10 +134,8 @@ public class TFConverter {
           List<String> inputKeys = graphNode.getInputKeys();
           result = network.add(new ImgConcatLayer(),
               inputKeys.stream().skip(1)
-                  .map(RefUtil.wrapInterface(
-                      (Function<? super String, ? extends DAGNode>) inputKey -> getNode(inputKey,
-                          network.addRef(), tfModel, RefUtil.addRef(map)),
-                      RefUtil.addRef(map), network.addRef()))
+                  .map(inputKey -> getNode(inputKey,
+                      network.addRef(), tfModel, RefUtil.addRef(map)))
                   .toArray(i -> new DAGNode[i]));
         } else if (graphNode.getOp().equals("Placeholder")) {
           result = network.getInput(0);
@@ -161,21 +159,22 @@ public class TFConverter {
   @Nonnull
   protected PoolingLayer getPoolingLayer(@Nonnull GraphModel.GraphNode graphNode) {
     PoolingLayer temp_05_0005 = new PoolingLayer();
-    PoolingLayer poolingLayer = temp_05_0005.setMode(PoolingLayer.PoolingMode.Max);
+    temp_05_0005.setMode(PoolingLayer.PoolingMode.Max);
+    PoolingLayer poolingLayer = temp_05_0005.addRef();
     temp_05_0005.freeRef();
     Map<String, AttrValue> attrMap = graphNode.getNodeDef().getAttrMap();
     assert "SAME".equals(attrMap.get("padding").getS().toStringUtf8());
     AttrValue _ksize = attrMap.get("ksize");
     if (null != _ksize) {
       List<Long> ksize = _ksize.getList().getIList();
-      RefUtil.freeRef(poolingLayer.setWindowX(Math.toIntExact(ksize.get(1))));
-      RefUtil.freeRef(poolingLayer.setWindowY(Math.toIntExact(ksize.get(2))));
+      poolingLayer.setWindowX(Math.toIntExact(ksize.get(1)));
+      poolingLayer.setWindowY(Math.toIntExact(ksize.get(2)));
     }
     AttrValue _strides = attrMap.get("strides");
     if (null != _strides) {
       List<Long> strides = _strides.getList().getIList();
-      RefUtil.freeRef(poolingLayer.setStrideX(Math.toIntExact(strides.get(1))));
-      RefUtil.freeRef(poolingLayer.setStrideY(Math.toIntExact(strides.get(2))));
+      poolingLayer.setStrideX(Math.toIntExact(strides.get(1)));
+      poolingLayer.setStrideY(Math.toIntExact(strides.get(2)));
     }
     return poolingLayer;
   }
@@ -188,7 +187,8 @@ public class TFConverter {
     assert data != null;
     Tensor tensor = new Tensor(data, data.length);
     ImgBandBiasLayer temp_05_0006 = new ImgBandBiasLayer(data.length);
-    ImgBandBiasLayer temp_05_0001 = temp_05_0006.set(tensor.addRef());
+    temp_05_0006.set(tensor.addRef());
+    ImgBandBiasLayer temp_05_0001 = temp_05_0006.addRef();
     temp_05_0006.freeRef();
     tensor.freeRef();
     return temp_05_0001;
@@ -230,8 +230,8 @@ public class TFConverter {
       int strideX = strides[1];
       int strideY = strides[2];
       if (strideX > 1 || strideY > 1) {
-        RefUtil.freeRef(convolutionLayer.setStrideX(strideX));
-        RefUtil.freeRef(convolutionLayer.setStrideY(strideY));
+        convolutionLayer.setStrideX(strideX);
+        convolutionLayer.setStrideY(strideY);
         return convolutionLayer;
       } else {
         return convolutionLayer;
@@ -250,9 +250,12 @@ public class TFConverter {
     float beta = attrMap.get("beta").getF();
     long width = depth_radius * 2 + 1;
     LRNLayer temp_05_0009 = new LRNLayer((int) width);
-    LRNLayer temp_05_0014 = temp_05_0009.setAlpha(alpha * width);
-    LRNLayer temp_05_0015 = temp_05_0014.setBeta(beta);
-    LRNLayer temp_05_0008 = temp_05_0015.setK(bias);
+    temp_05_0009.setAlpha(alpha * width);
+    LRNLayer temp_05_0014 = temp_05_0009.addRef();
+    temp_05_0014.setBeta(beta);
+    LRNLayer temp_05_0015 = temp_05_0014.addRef();
+    temp_05_0015.setK(bias);
+    LRNLayer temp_05_0008 = temp_05_0015.addRef();
     temp_05_0015.freeRef();
     temp_05_0014.freeRef();
     temp_05_0009.freeRef();

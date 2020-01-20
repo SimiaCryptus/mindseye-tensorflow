@@ -19,6 +19,8 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -40,10 +42,7 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   MatMulLayerTest[][] addRefs(@Nullable MatMulLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRefs)
-        .toArray((x) -> new MatMulLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull

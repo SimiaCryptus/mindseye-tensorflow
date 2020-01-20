@@ -19,6 +19,8 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -38,10 +40,7 @@ public class SoftmaxLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   SoftmaxLayerTest[][] addRefs(@Nullable SoftmaxLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRefs)
-        .toArray((x) -> new SoftmaxLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull

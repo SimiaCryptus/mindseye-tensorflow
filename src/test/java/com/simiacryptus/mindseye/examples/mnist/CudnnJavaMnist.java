@@ -35,7 +35,6 @@ import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class CudnnJavaMnist {
@@ -54,11 +53,13 @@ public class CudnnJavaMnist {
 
       int bands1 = 64;
       SimpleConvolutionLayer temp_12_0001 = new SimpleConvolutionLayer(5, 5, 1 * bands1);
-      RefUtil.freeRef(pipeline.add(temp_12_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_12_0001.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_12_0001.addRef()));
       temp_12_0001.freeRef();
       RefUtil.freeRef(pipeline.add(new ImgBandBiasLayer(bands1)));
       PoolingLayer temp_12_0002 = new PoolingLayer();
-      RefUtil.freeRef(pipeline.add(temp_12_0002.setMode(PoolingLayer.PoolingMode.Max)));
+      temp_12_0002.setMode(PoolingLayer.PoolingMode.Max);
+      RefUtil.freeRef(pipeline.add(temp_12_0002.addRef()));
       temp_12_0002.freeRef();
       RefUtil.freeRef(pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU)));
       if (tensorboard)
@@ -66,11 +67,13 @@ public class CudnnJavaMnist {
 
       int bands2 = 32;
       SimpleConvolutionLayer temp_12_0003 = new SimpleConvolutionLayer(5, 5, bands1 * bands2);
-      RefUtil.freeRef(pipeline.add(temp_12_0003.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_12_0003.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_12_0003.addRef()));
       temp_12_0003.freeRef();
       RefUtil.freeRef(pipeline.add(new ImgBandBiasLayer(bands2)));
       PoolingLayer temp_12_0004 = new PoolingLayer();
-      RefUtil.freeRef(pipeline.add(temp_12_0004.setMode(PoolingLayer.PoolingMode.Max)));
+      temp_12_0004.setMode(PoolingLayer.PoolingMode.Max);
+      RefUtil.freeRef(pipeline.add(temp_12_0004.addRef()));
       temp_12_0004.freeRef();
       RefUtil.freeRef(pipeline.add(new ActivationLayer(ActivationLayer.Mode.RELU)));
       if (tensorboard)
@@ -79,8 +82,8 @@ public class CudnnJavaMnist {
       RefUtil.freeRef(pipeline.add(new AssertDimensionsLayer(7, 7, bands2)));
       com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer temp_12_0005 = new com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer(
           new int[]{7, 7, bands2}, new int[]{1024});
-      com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer temp_12_0007 = temp_12_0005
-          .set(() -> 0.001 * (Math.random() - 0.45));
+      temp_12_0005.set(() -> 0.001 * (Math.random() - 0.45));
+      com.simiacryptus.mindseye.layers.cudnn.conv.FullyConnectedLayer temp_12_0007 = temp_12_0005.addRef();
       RefUtil.freeRef(pipeline.add(temp_12_0007.explode()));
       temp_12_0007.freeRef();
       temp_12_0005.freeRef();
@@ -92,7 +95,8 @@ public class CudnnJavaMnist {
       PipelineNetwork stochasticTerminal = new PipelineNetwork(1);
       RefUtil.freeRef(stochasticTerminal.add(BinaryNoiseLayer.maskLayer(Math.pow(0.5, 1.5))));
       FullyConnectedLayer temp_12_0006 = new FullyConnectedLayer(new int[]{1024}, new int[]{10});
-      RefUtil.freeRef(stochasticTerminal.add(temp_12_0006.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_12_0006.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(stochasticTerminal.add(temp_12_0006.addRef()));
       temp_12_0006.freeRef();
       RefUtil.freeRef(stochasticTerminal.add(new BiasLayer(10)));
       RefUtil.freeRef(stochasticTerminal.add(new SoftmaxLayer()));
@@ -119,7 +123,6 @@ public class CudnnJavaMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -133,9 +136,7 @@ public class CudnnJavaMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull

@@ -22,6 +22,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefSet;
@@ -106,18 +107,13 @@ public class SummaryLayer extends TFLayerBase {
   @Nullable
   public static @SuppressWarnings("unused")
   SummaryLayer[] addRefs(@Nullable SummaryLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRef).toArray((x) -> new SummaryLayer[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
   SummaryLayer[][] addRefs(@Nullable SummaryLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayer::addRefs)
-        .toArray((x) -> new SummaryLayer[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override

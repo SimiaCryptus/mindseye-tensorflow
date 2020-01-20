@@ -30,7 +30,6 @@ import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class TFLayer extends TFLayerBase {
   public TFLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
     graphDef = Base64.getDecoder().decode(json.get("graphDef").getAsString());
-    RefUtil.freeRef(setFloat(json.get("isFloat").getAsBoolean()));
+    setFloat(json.get("isFloat").getAsBoolean());
     setOutputNode(json.get("output").getAsString());
     JsonArray jsonArray = json.get("input").getAsJsonArray();
     RefArrayList<String> inputNodes = new RefArrayList<>();
@@ -63,7 +62,7 @@ public class TFLayer extends TFLayerBase {
     }
     setInputNodes(inputNodes.addRef());
     inputNodes.freeRef();
-    RefUtil.freeRef(setSummaryOut(json.get("summaryOut").getAsString()));
+    setSummaryOut(json.get("summaryOut").getAsString());
   }
 
   @Override
@@ -103,20 +102,16 @@ public class TFLayer extends TFLayerBase {
     return summaryOut;
   }
 
-  @Nonnull
-  public TFLayer setSummaryOut(String summaryOut) {
+  public void setSummaryOut(String summaryOut) {
     this.summaryOut = summaryOut;
-    return this.addRef();
   }
 
   public boolean isFloat() {
     return isFloat;
   }
 
-  @Nonnull
-  public TFLayer setFloat(boolean aFloat) {
+  public void setFloat(boolean aFloat) {
     isFloat = aFloat;
-    return this.addRef();
   }
 
   @Nonnull
@@ -125,21 +120,6 @@ public class TFLayer extends TFLayerBase {
     return new TFLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayer[] addRefs(@Nullable TFLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRef).toArray((x) -> new TFLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayer[][] addRefs(@Nullable TFLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayer::addRefs).toArray((x) -> new TFLayer[x][]);
-  }
 
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {

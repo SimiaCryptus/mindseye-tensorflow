@@ -43,7 +43,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
@@ -85,10 +84,12 @@ public class SimpleTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_18_0001 = new Tensor(10, 28 * 28);
-    RefUtil.freeRef(variables.put(weights, temp_18_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    temp_18_0001.setByCoord(c1 -> .001 * (Math.random() - 0.5));
+    RefUtil.freeRef(variables.put(weights, temp_18_0001.addRef()));
     temp_18_0001.freeRef();
     Tensor temp_18_0002 = new Tensor(1, 28, 28);
-    RefUtil.freeRef(variables.put(bias, temp_18_0002.setByCoord(c -> 0)));
+    temp_18_0002.setByCoord(c -> 0);
+    RefUtil.freeRef(variables.put(bias, temp_18_0002.addRef()));
     temp_18_0002.freeRef();
     return variables;
   }
@@ -106,7 +107,8 @@ public class SimpleTFMnist {
         throw new RuntimeException(e);
       }
       TFLayer temp_18_0004 = new TFLayer(bytes, getVariables(), output, input);
-      TFLayer temp_18_0003 = temp_18_0004.setSummaryOut(statOutput);
+      temp_18_0004.setSummaryOut(statOutput);
+      TFLayer temp_18_0003 = temp_18_0004.addRef();
       temp_18_0004.freeRef();
       return temp_18_0003;
     });
@@ -149,7 +151,6 @@ public class SimpleTFMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -163,9 +164,7 @@ public class SimpleTFMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -190,7 +189,6 @@ public class SimpleTFMnist {
     LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
-
   }
 
 }

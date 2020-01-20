@@ -42,7 +42,6 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -91,21 +90,6 @@ public abstract class TFLayerBase extends LayerBase {
     return weights == null ? null : weights.addRef();
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayerBase[] addRefs(@Nullable TFLayerBase[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRef).toArray((x) -> new TFLayerBase[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayerBase[][] addRefs(@Nullable TFLayerBase[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerBase::addRefs).toArray((x) -> new TFLayerBase[x][]);
-  }
 
   @Nonnull
   public TFLayer asConstLayer() {
@@ -154,7 +138,7 @@ public abstract class TFLayerBase extends LayerBase {
   @Override
   public Result eval(@Nullable Result... inputs) {
     TFSession tfsession = new TFSession(TFLayerBase.this.addRef());
-    Result temp_00_0003 = eval(tfsession.addRef(), Result.addRefs(inputs));
+    Result temp_00_0003 = eval(tfsession.addRef(), RefUtil.addRefs(inputs));
     if (null != inputs)
       ReferenceCounting.freeRefs(inputs);
     tfsession.freeRef();
@@ -266,7 +250,7 @@ public abstract class TFLayerBase extends LayerBase {
       return new Result(resultData, (new Result.Accumulator() {
         {
           tfsession.addRef();
-          Result.addRefs(inputs);
+          RefUtil.addRefs(inputs);
         }
 
         @Override
@@ -314,7 +298,7 @@ public abstract class TFLayerBase extends LayerBase {
               t = TFIO.getTensor(numberTensor.expect(Double.class), TFLayerBase.this.invertWeights());
             }
             assert uuidDelta != null;
-            RefUtil.freeRef(uuidDelta.addInPlace(t.getData()));
+            uuidDelta.addInPlace(t.getData());
             t.freeRef();
             uuidDelta.freeRef();
           }
@@ -398,9 +382,7 @@ public abstract class TFLayerBase extends LayerBase {
     @Nullable
     public static @SuppressWarnings("unused")
     TFSession[] addRefs(@Nullable TFSession[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(TFSession::addRef).toArray((x) -> new TFSession[x]);
+      return RefUtil.addRefs(array);
     }
 
     public void _free() {
@@ -410,6 +392,7 @@ public abstract class TFLayerBase extends LayerBase {
         session.close();
         graph.close();
       }).start();
+      outputSingleton.freeRef();
       super._free();
     }
 

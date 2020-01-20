@@ -30,7 +30,6 @@ import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class NoiseJavaMnist {
@@ -49,7 +48,8 @@ public class NoiseJavaMnist {
 
       int size1 = 100;
       FullyConnectedLayer temp_04_0002 = new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{size1});
-      RefUtil.freeRef(pipeline.add(temp_04_0002.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_04_0002.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_04_0002.addRef()));
       temp_04_0002.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply1")).freeRef();
@@ -63,7 +63,8 @@ public class NoiseJavaMnist {
 
       int size2 = 100;
       FullyConnectedLayer temp_04_0003 = new FullyConnectedLayer(new int[]{size1}, new int[]{size2});
-      RefUtil.freeRef(pipeline.add(temp_04_0003.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_04_0003.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_04_0003.addRef()));
       temp_04_0003.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply2")).freeRef();
@@ -76,7 +77,8 @@ public class NoiseJavaMnist {
         pipeline.add(new SummaryLayer("layerout2")).freeRef();
 
       FullyConnectedLayer temp_04_0004 = new FullyConnectedLayer(new int[]{size2}, new int[]{10});
-      RefUtil.freeRef(pipeline.add(temp_04_0004.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_04_0004.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_04_0004.addRef()));
       temp_04_0004.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply3")).freeRef();
@@ -106,7 +108,6 @@ public class NoiseJavaMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -120,9 +121,7 @@ public class NoiseJavaMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull

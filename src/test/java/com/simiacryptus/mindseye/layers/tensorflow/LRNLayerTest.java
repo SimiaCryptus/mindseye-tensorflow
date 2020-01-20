@@ -19,9 +19,10 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class LRNLayerTest extends RawTFLayerTestBase {
@@ -35,18 +36,13 @@ public class LRNLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   LRNLayerTest[] addRefs(@Nullable LRNLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRef).toArray((x) -> new LRNLayerTest[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
   LRNLayerTest[][] addRefs(@Nullable LRNLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayerTest::addRefs)
-        .toArray((x) -> new LRNLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull
@@ -71,9 +67,12 @@ public class LRNLayerTest extends RawTFLayerTestBase {
   @Nonnull
   protected TFLayerBase createTFLayer() {
     LRNLayer temp_21_0002 = new LRNLayer();
-    LRNLayer temp_21_0003 = temp_21_0002.setRadius(5);
-    LRNLayer temp_21_0004 = temp_21_0003.setAlpha(1e-4f);
-    LRNLayer temp_21_0001 = temp_21_0004.setBias(2);
+    temp_21_0002.setRadius(5);
+    LRNLayer temp_21_0003 = temp_21_0002.addRef();
+    temp_21_0003.setAlpha(1e-4f);
+    LRNLayer temp_21_0004 = temp_21_0003.addRef();
+    temp_21_0004.setBias((float) 2);
+    LRNLayer temp_21_0001 = temp_21_0004.addRef();
     temp_21_0004.freeRef();
     temp_21_0003.freeRef();
     temp_21_0002.freeRef();

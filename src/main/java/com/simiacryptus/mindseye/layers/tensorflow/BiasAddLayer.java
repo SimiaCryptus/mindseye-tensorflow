@@ -90,27 +90,23 @@ public class BiasAddLayer extends TFLayerBase {
   @Nullable
   public static @SuppressWarnings("unused")
   BiasAddLayer[] addRefs(@Nullable BiasAddLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRef).toArray((x) -> new BiasAddLayer[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
   BiasAddLayer[][] addRefs(@Nullable BiasAddLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasAddLayer::addRefs)
-        .toArray((x) -> new BiasAddLayer[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     Tensor temp_10_0001 = new Tensor(intputDims);
-    RefUtil.freeRef(map.put("bias", temp_10_0001.setByCoord(c -> {
+    temp_10_0001.setByCoord(c -> {
       return 0;
-    })));
+    });
+    RefUtil.freeRef(map.put("bias", temp_10_0001.addRef()));
     temp_10_0001.freeRef();
     return map;
   }

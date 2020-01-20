@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefMap;
@@ -95,10 +96,8 @@ public class MaxPoolLayer extends TFLayerBase {
     return padding;
   }
 
-  @Nonnull
-  public MaxPoolLayer setPadding(String padding) {
+  public void setPadding(String padding) {
     this.padding = padding;
-    return this.addRef();
   }
 
   public long getStrideX() {
@@ -144,18 +143,13 @@ public class MaxPoolLayer extends TFLayerBase {
   @Nullable
   public static @SuppressWarnings("unused")
   MaxPoolLayer[] addRefs(@Nullable MaxPoolLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRef).toArray((x) -> new MaxPoolLayer[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
   MaxPoolLayer[][] addRefs(@Nullable MaxPoolLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayer::addRefs)
-        .toArray((x) -> new MaxPoolLayer[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull

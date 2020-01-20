@@ -33,7 +33,6 @@ import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class SimpleJavaMnist {
@@ -50,7 +49,8 @@ public class SimpleJavaMnist {
       if (tensorboard)
         pipeline.add(new SummaryLayer("input")).freeRef();
       FullyConnectedLayer temp_20_0001 = new FullyConnectedLayer(new int[]{28, 28, 1}, new int[]{10});
-      RefUtil.freeRef(pipeline.add(temp_20_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_20_0001.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_20_0001.addRef()));
       temp_20_0001.freeRef();
       if (tensorboard)
         pipeline.add(new SummaryLayer("multiply")).freeRef();
@@ -76,7 +76,6 @@ public class SimpleJavaMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -90,9 +89,7 @@ public class SimpleJavaMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull

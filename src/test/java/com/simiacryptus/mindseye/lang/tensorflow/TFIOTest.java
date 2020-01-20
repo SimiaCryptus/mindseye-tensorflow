@@ -55,16 +55,20 @@ public class TFIOTest {
   @Test
   public void testTensor() {
     Tensor temp_19_0001 = new Tensor(7);
-    test(temp_19_0001.randomize(1.0));
+    temp_19_0001.randomize(1.0);
+    test(temp_19_0001.addRef());
     temp_19_0001.freeRef();
     Tensor temp_19_0002 = new Tensor(3, 2);
-    test(temp_19_0002.randomize(1.0));
+    temp_19_0002.randomize(1.0);
+    test(temp_19_0002.addRef());
     temp_19_0002.freeRef();
     Tensor temp_19_0003 = new Tensor(3, 5, 2);
-    test(temp_19_0003.randomize(1.0));
+    temp_19_0003.randomize(1.0);
+    test(temp_19_0003.addRef());
     temp_19_0003.freeRef();
     Tensor temp_19_0004 = new Tensor(5, 3, 2, 1);
-    test(temp_19_0004.randomize(1.0));
+    temp_19_0004.randomize(1.0);
+    test(temp_19_0004.addRef());
     temp_19_0004.freeRef();
   }
 
@@ -89,7 +93,9 @@ public class TFIOTest {
   @Nonnull
   public TensorArray newTensorList(int length, int... ints) {
     return new TensorArray(RefIntStream.range(0, length).mapToObj(i -> {
-      return new Tensor(ints).randomize(1.0);
+      Tensor tensor = new Tensor(ints);
+      tensor.randomize(1.0);
+      return tensor.addRef();
     }).toArray(i -> new Tensor[i]));
   }
 

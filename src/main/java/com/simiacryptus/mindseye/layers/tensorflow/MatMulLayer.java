@@ -110,21 +110,6 @@ public class MatMulLayer extends TFLayerBase {
     return new MatMulLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MatMulLayer[] addRefs(@Nullable MatMulLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRef).toArray((x) -> new MatMulLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MatMulLayer[][] addRefs(@Nullable MatMulLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayer::addRefs).toArray((x) -> new MatMulLayer[x][]);
-  }
 
   @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims, int[] outputDims) {
@@ -132,17 +117,17 @@ public class MatMulLayer extends TFLayerBase {
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
     Tensor temp_17_0001 = new Tensor(outs, inputs);
-    RefUtil.freeRef(map.put("weights", temp_17_0001.setByCoord(c -> {
+    temp_17_0001.setByCoord(c -> {
       final double ratio = Math.sqrt(6. / (inputs + outs + 1));
       final double fate = Util.R.get().nextDouble();
       return (1 - 2 * fate) * ratio;
-    })));
+    });
+    RefUtil.freeRef(map.put("weights", temp_17_0001.addRef()));
     temp_17_0001.freeRef();
     return map;
   }
 
-  @Nonnull
-  public MatMulLayer set(@Nonnull final DoubleSupplier f) {
+  public void set(@Nonnull DoubleSupplier f) {
     RefMap<String, Tensor> temp_17_0003 = getWeights();
     assert temp_17_0003 != null;
     Tensor temp_17_0004 = temp_17_0003.get("weights");
@@ -150,7 +135,6 @@ public class MatMulLayer extends TFLayerBase {
     RefArrays.parallelSetAll(temp_17_0004.getData(), i -> f.getAsDouble());
     temp_17_0004.freeRef();
     temp_17_0003.freeRef();
-    return this.addRef();
   }
 
   @Override

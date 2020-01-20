@@ -25,6 +25,7 @@ import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
 import org.tensorflow.framework.GraphDef;
@@ -62,10 +63,7 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   TFLayerTestBase[][] addRefs(@Nullable TFLayerTestBase[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRefs)
-        .toArray((x) -> new TFLayerTestBase[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Override

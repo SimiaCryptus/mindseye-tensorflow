@@ -35,7 +35,6 @@ import org.tensorflow.Graph;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class SimpleCudnnMnist {
@@ -54,10 +53,12 @@ public class SimpleCudnnMnist {
 
       int bands1 = 5;
       SimpleConvolutionLayer temp_09_0001 = new SimpleConvolutionLayer(5, 5, 1 * bands1);
-      RefUtil.freeRef(pipeline.add(temp_09_0001.set(() -> 0.001 * (Math.random() - 0.45))));
+      temp_09_0001.set(() -> 0.001 * (Math.random() - 0.45));
+      RefUtil.freeRef(pipeline.add(temp_09_0001.addRef()));
       temp_09_0001.freeRef();
       FullyConnectedLayer temp_09_0002 = new FullyConnectedLayer(new int[]{28, 28, bands1}, new int[]{10});
-      FullyConnectedLayer temp_09_0003 = temp_09_0002.set(() -> 0.001 * (Math.random() - 0.45));
+      temp_09_0002.set(() -> 0.001 * (Math.random() - 0.45));
+      FullyConnectedLayer temp_09_0003 = temp_09_0002.addRef();
       RefUtil.freeRef(pipeline.add(temp_09_0003.explode()));
       temp_09_0003.freeRef();
       temp_09_0002.freeRef();
@@ -83,7 +84,6 @@ public class SimpleCudnnMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -97,9 +97,7 @@ public class SimpleCudnnMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull

@@ -19,6 +19,8 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.ref.lang.RefUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -38,10 +40,7 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   MaxPoolLayerTest[][] addRefs(@Nullable MaxPoolLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRefs)
-        .toArray((x) -> new MaxPoolLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull
@@ -65,9 +64,7 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Test0[] addRefs(@Nullable Test0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Test0::addRef).toArray((x) -> new Test0[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -90,16 +87,13 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
       maxPoolLayer.setStrideY(1);
       return maxPoolLayer;
     }
-
   }
 
   public static class Test1 extends MaxPoolLayerTest {
     @Nullable
     public static @SuppressWarnings("unused")
     Test1[] addRefs(@Nullable Test1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Test1::addRef).toArray((x) -> new Test1[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -122,16 +116,13 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
       maxPoolLayer.setStrideY(2);
       return maxPoolLayer;
     }
-
   }
 
   public static class Test2 extends MaxPoolLayerTest {
     @Nullable
     public static @SuppressWarnings("unused")
     Test2[] addRefs(@Nullable Test2[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Test2::addRef).toArray((x) -> new Test2[x]);
+      return RefUtil.addRefs(array);
     }
 
     public @SuppressWarnings("unused")
@@ -154,7 +145,6 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
       maxPoolLayer.setStrideY(2);
       return maxPoolLayer;
     }
-
   }
 
 }

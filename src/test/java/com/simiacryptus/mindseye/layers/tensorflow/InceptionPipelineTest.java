@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.util.TFConverter;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
 
@@ -49,10 +50,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   InceptionPipelineTest[][] addRefs(@Nullable InceptionPipelineTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(InceptionPipelineTest::addRefs)
-        .toArray((x) -> new InceptionPipelineTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   public @SuppressWarnings("unused")
@@ -71,9 +69,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer0[] addRefs(@Nullable Layer0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer0::addRef).toArray((x) -> new Layer0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -97,7 +93,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer0 addRef() {
       return (Layer0) super.addRef();
     }
-
   }
 
   public static class Layer1 extends InceptionPipelineTest {
@@ -105,9 +100,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer1[] addRefs(@Nullable Layer1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer1::addRef).toArray((x) -> new Layer1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -131,7 +124,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer1 addRef() {
       return (Layer1) super.addRef();
     }
-
   }
 
   public static class Layer2 extends InceptionPipelineTest {
@@ -139,9 +131,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer2[] addRefs(@Nullable Layer2[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer2::addRef).toArray((x) -> new Layer2[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -165,7 +155,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer2 addRef() {
       return (Layer2) super.addRef();
     }
-
   }
 
   public static class Layer3 extends InceptionPipelineTest {
@@ -173,9 +162,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer3[] addRefs(@Nullable Layer3[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer3::addRef).toArray((x) -> new Layer3[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -199,7 +186,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer3 addRef() {
       return (Layer3) super.addRef();
     }
-
   }
 
   public static class Layer4 extends InceptionPipelineTest {
@@ -207,9 +193,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer4[] addRefs(@Nullable Layer4[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer4::addRef).toArray((x) -> new Layer4[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -233,7 +217,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer4 addRef() {
       return (Layer4) super.addRef();
     }
-
   }
 
   public static class Layer5 extends InceptionPipelineTest {
@@ -241,9 +224,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer5[] addRefs(@Nullable Layer5[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer5::addRef).toArray((x) -> new Layer5[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -267,7 +248,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer5 addRef() {
       return (Layer5) super.addRef();
     }
-
   }
 
   public static class Layer6 extends InceptionPipelineTest {
@@ -275,9 +255,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer6[] addRefs(@Nullable Layer6[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer6::addRef).toArray((x) -> new Layer6[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -301,7 +279,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer6 addRef() {
       return (Layer6) super.addRef();
     }
-
   }
 
   public static class Layer7 extends InceptionPipelineTest {
@@ -309,9 +286,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer7[] addRefs(@Nullable Layer7[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer7::addRef).toArray((x) -> new Layer7[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -335,7 +310,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer7 addRef() {
       return (Layer7) super.addRef();
     }
-
   }
 
   public static class Layer8 extends InceptionPipelineTest {
@@ -343,9 +317,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer8[] addRefs(@Nullable Layer8[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer8::addRef).toArray((x) -> new Layer8[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -369,7 +341,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer8 addRef() {
       return (Layer8) super.addRef();
     }
-
   }
 
   public static class Layer9 extends InceptionPipelineTest {
@@ -377,9 +348,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer9[] addRefs(@Nullable Layer9[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer9::addRef).toArray((x) -> new Layer9[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -403,7 +372,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer9 addRef() {
       return (Layer9) super.addRef();
     }
-
   }
 
   public static class Layer10 extends InceptionPipelineTest {
@@ -411,9 +379,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Layer10[] addRefs(@Nullable Layer10[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Layer10::addRef).toArray((x) -> new Layer10[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -437,7 +403,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     Layer10 addRef() {
       return (Layer10) super.addRef();
     }
-
   }
 
 }

@@ -36,7 +36,6 @@ import org.tensorflow.op.core.Placeholder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class FloatTFMnist {
@@ -77,10 +76,12 @@ public class FloatTFMnist {
   private static RefHashMap<String, Tensor> getVariables() {
     RefHashMap<String, Tensor> variables = new RefHashMap<>();
     Tensor temp_13_0001 = new Tensor(10, 28 * 28);
-    RefUtil.freeRef(variables.put(weights, temp_13_0001.setByCoord(c -> .001 * (Math.random() - 0.5))));
+    temp_13_0001.setByCoord(c1 -> .001 * (Math.random() - 0.5));
+    RefUtil.freeRef(variables.put(weights, temp_13_0001.addRef()));
     temp_13_0001.freeRef();
     Tensor temp_13_0002 = new Tensor(1, 28, 28);
-    RefUtil.freeRef(variables.put(bias, temp_13_0002.setByCoord(c -> 0)));
+    temp_13_0002.setByCoord(c -> 0);
+    RefUtil.freeRef(variables.put(bias, temp_13_0002.addRef()));
     temp_13_0002.freeRef();
     return variables;
   }
@@ -98,8 +99,10 @@ public class FloatTFMnist {
         throw new RuntimeException(e);
       }
       TFLayer temp_13_0004 = new TFLayer(bytes, getVariables(), output, input);
-      TFLayer temp_13_0005 = temp_13_0004.setFloat(true);
-      TFLayer temp_13_0003 = temp_13_0005.setSummaryOut(statOutput);
+      temp_13_0004.setFloat(true);
+      TFLayer temp_13_0005 = temp_13_0004.addRef();
+      temp_13_0005.setSummaryOut(statOutput);
+      TFLayer temp_13_0003 = temp_13_0005.addRef();
       temp_13_0005.freeRef();
       temp_13_0004.freeRef();
       return temp_13_0003;
@@ -123,7 +126,6 @@ public class FloatTFMnist {
           + "It is expected to be trainable to about 91% accuracy on MNIST.");
       return network(log);
     }
-
   }
 
   public static class LayerTest extends LayerTestBase {
@@ -137,9 +139,7 @@ public class FloatTFMnist {
     @Nullable
     public static @SuppressWarnings("unused")
     LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(LayerTest::addRef).toArray((x) -> new LayerTest[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -164,7 +164,6 @@ public class FloatTFMnist {
     LayerTest addRef() {
       return (LayerTest) super.addRef();
     }
-
   }
 
 }

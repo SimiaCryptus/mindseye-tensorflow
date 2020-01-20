@@ -85,30 +85,24 @@ public class Conv2DLayer extends TFLayerBase {
     return padding;
   }
 
-  @Nonnull
-  public Conv2DLayer setPadding(String padding) {
+  public void setPadding(String padding) {
     this.padding = padding;
-    return this.addRef();
   }
 
   public int getStrideX() {
     return strideX;
   }
 
-  @Nonnull
-  public Conv2DLayer setStrideX(int strideX) {
+  public void setStrideX(int strideX) {
     this.strideX = strideX;
-    return this.addRef();
   }
 
   public int getStrideY() {
     return strideY;
   }
 
-  @Nonnull
-  public Conv2DLayer setStrideY(int strideY) {
+  public void setStrideY(int strideY) {
     this.strideY = strideY;
-    return this.addRef();
   }
 
   @Nullable
@@ -123,29 +117,15 @@ public class Conv2DLayer extends TFLayerBase {
     return new Conv2DLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  Conv2DLayer[] addRefs(@Nullable Conv2DLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRef).toArray((x) -> new Conv2DLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  Conv2DLayer[][] addRefs(@Nullable Conv2DLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayer::addRefs).toArray((x) -> new Conv2DLayer[x][]);
-  }
 
   @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     Tensor temp_11_0001 = new Tensor(intputDims);
-    RefUtil.freeRef(map.put("kernel", temp_11_0001.setByCoord(c -> {
+    temp_11_0001.setByCoord(c -> {
       return 0;
-    })));
+    });
+    RefUtil.freeRef(map.put("kernel", temp_11_0001.addRef()));
     temp_11_0001.freeRef();
     return map;
   }

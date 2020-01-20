@@ -109,7 +109,8 @@ public abstract class MnistDemoBase {
     final Tensor[][] trainingData = MNIST.trainingDataStream().map(labeledObject1 -> {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
       final int category = parse(labeledObject1.label);
-      RefUtil.freeRef(categoryTensor.set(category, 1));
+      categoryTensor.set(category, 1);
+
       Tensor[] temp_06_0001 = new Tensor[]{labeledObject1.data, categoryTensor};
       return temp_06_0001;
     }).toArray(i1 -> new Tensor[i1][]);
@@ -152,17 +153,22 @@ public abstract class MnistDemoBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(
           recognitionNetwork == null ? null : recognitionNetwork.addRef(), loss.addRef());
       loss.freeRef();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(Tensor.addRefs(trainingData),
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(RefUtil.addRefs(trainingData),
           supervisedNetwork, 1000, 1000);
       IterativeTrainer temp_06_0008 = new IterativeTrainer(trainable);
-      IterativeTrainer temp_06_0009 = temp_06_0008.setMonitor(monitor);
-      IterativeTrainer temp_06_0010 = temp_06_0009.setOrientation(new LBFGS());
-      IterativeTrainer temp_06_0011 = temp_06_0010
-          //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
-          .setLineSearchFactory(n -> new QuadraticSearch());
-      IterativeTrainer temp_06_0012 = temp_06_0011.setTimeout(timeout, TimeUnit.SECONDS);
-      IterativeTrainer temp_06_0013 = temp_06_0012.setMaxIterations(200);
-      IterativeTrainer temp_06_0014 = temp_06_0013.setIterationsPerSample(20);
+      temp_06_0008.setMonitor(monitor);
+      IterativeTrainer temp_06_0009 = temp_06_0008.addRef();
+      temp_06_0009.setOrientation(new LBFGS());
+      IterativeTrainer temp_06_0010 = temp_06_0009.addRef();
+      temp_06_0010.setLineSearchFactory(n -> new QuadraticSearch());
+      //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
+      IterativeTrainer temp_06_0011 = temp_06_0010.addRef();
+      temp_06_0011.setTimeout(timeout, TimeUnit.SECONDS);
+      IterativeTrainer temp_06_0012 = temp_06_0011.addRef();
+      temp_06_0012.setMaxIterations(200);
+      IterativeTrainer temp_06_0013 = temp_06_0012.addRef();
+      temp_06_0013.setIterationsPerSample(20);
+      IterativeTrainer temp_06_0014 = temp_06_0013.addRef();
       double temp_06_0002 = temp_06_0014.run();
       temp_06_0014.freeRef();
       temp_06_0013.freeRef();
@@ -173,7 +179,7 @@ public abstract class MnistDemoBase {
       temp_06_0008.freeRef();
       //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
       return temp_06_0002;
-    }, Tensor.addRefs(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
+    }, RefUtil.addRefs(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
     ReferenceCounting.freeRefs(trainingData);
     if (!history.isEmpty()) {
       log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
@@ -218,7 +224,7 @@ public abstract class MnistDemoBase {
     log.eval(RefUtil.wrapInterface((UncheckedSupplier<Double>) () -> {
       RefList<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(RefCollectors.toList());
       Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
-      Result temp_06_0015 = recognitionNetwork.eval(Tensor.addRefs(tensors));
+      Result temp_06_0015 = recognitionNetwork.eval(RefUtil.addRefs(tensors));
       assert temp_06_0015 != null;
       TensorList predictionData = temp_06_0015.getData();
       temp_06_0015.freeRef();
@@ -279,7 +285,6 @@ public abstract class MnistDemoBase {
       return table;
     }, recognitionNetwork.addRef()));
     recognitionNetwork.freeRef();
-
   }
 
   public int parse(@Nonnull final String label) {

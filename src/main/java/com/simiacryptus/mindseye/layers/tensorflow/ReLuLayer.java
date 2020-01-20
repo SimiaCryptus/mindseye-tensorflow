@@ -85,21 +85,6 @@ public class ReLuLayer extends TFLayerBase {
     return new ReLuLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReLuLayer[] addRefs(@Nullable ReLuLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRef).toArray((x) -> new ReLuLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReLuLayer[][] addRefs(@Nullable ReLuLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayer::addRefs).toArray((x) -> new ReLuLayer[x][]);
-  }
 
   @Nonnull
   private static RefMap<String, Tensor> defaultStates() {

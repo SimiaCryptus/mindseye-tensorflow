@@ -21,6 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefSet;
@@ -86,18 +87,13 @@ public class SoftmaxLayer extends TFLayerBase {
   @Nullable
   public static @SuppressWarnings("unused")
   SoftmaxLayer[] addRefs(@Nullable SoftmaxLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRef).toArray((x) -> new SoftmaxLayer[x]);
+    return RefUtil.addRefs(array);
   }
 
   @Nullable
   public static @SuppressWarnings("unused")
   SoftmaxLayer[][] addRefs(@Nullable SoftmaxLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayer::addRefs)
-        .toArray((x) -> new SoftmaxLayer[x][]);
+    return RefUtil.addRefs(array);
   }
 
   public @SuppressWarnings("unused")

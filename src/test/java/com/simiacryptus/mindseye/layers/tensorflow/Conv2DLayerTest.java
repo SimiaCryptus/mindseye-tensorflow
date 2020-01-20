@@ -51,17 +51,16 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   @Nullable
   public static @SuppressWarnings("unused")
   Conv2DLayerTest[][] addRefs(@Nullable Conv2DLayerTest[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRefs)
-        .toArray((x) -> new Conv2DLayerTest[x][]);
+    return RefUtil.addRefs(array);
   }
 
   @Nonnull
   public TFLayerBase createTFLayer() {
     Conv2DLayer temp_07_0007 = new Conv2DLayer(3, 3, 1, 1);
-    Conv2DLayer temp_07_0014 = temp_07_0007.setStrideX(2);
-    Conv2DLayer layer = temp_07_0014.setStrideY(2);
+    temp_07_0007.setStrideX(2);
+    Conv2DLayer temp_07_0014 = temp_07_0007.addRef();
+    temp_07_0014.setStrideY(2);
+    Conv2DLayer layer = temp_07_0014.addRef();
     temp_07_0014.freeRef();
     temp_07_0007.freeRef();
     RefMap<String, Tensor> temp_07_0015 = layer.getWeights();
@@ -69,7 +68,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Tensor kernel = temp_07_0015.get("kernel");
     temp_07_0015.freeRef();
     assert kernel != null;
-    RefUtil.freeRef(kernel.randomize(1.0));
+    kernel.randomize(1.0);
     kernel.freeRef();
     TFLayer temp_07_0001 = layer.asConstLayer();
     layer.freeRef();
@@ -97,9 +96,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Small_0[] addRefs(@Nullable Small_0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Small_0::addRef).toArray((x) -> new Small_0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -124,9 +121,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Small_1[] addRefs(@Nullable Small_1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Small_1::addRef).toArray((x) -> new Small_1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -151,9 +146,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Direct_1[] addRefs(@Nullable Direct_1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Direct_1::addRef).toArray((x) -> new Direct_1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -166,8 +159,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Override
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0008 = new Conv2DLayer(3, 3, 1, 1);
-      Conv2DLayer temp_07_0016 = temp_07_0008.setStrideX(2);
-      Conv2DLayer layer = temp_07_0016.setStrideY(2);
+      temp_07_0008.setStrideX(2);
+      Conv2DLayer temp_07_0016 = temp_07_0008.addRef();
+      temp_07_0016.setStrideY(2);
+      Conv2DLayer layer = temp_07_0016.addRef();
       temp_07_0016.freeRef();
       temp_07_0008.freeRef();
       RefMap<String, Tensor> temp_07_0017 = layer.getWeights();
@@ -175,7 +170,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0017.get("kernel");
       temp_07_0017.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       //    kernel.set(new int[]{0,0,0}, 1.0);
       return layer;
@@ -198,9 +193,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Multiband_0[] addRefs(@Nullable Multiband_0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Multiband_0::addRef).toArray((x) -> new Multiband_0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -212,8 +205,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nonnull
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0009 = new Conv2DLayer(3, 3, 1, 2);
-      Conv2DLayer temp_07_0018 = temp_07_0009.setStrideX(1);
-      Conv2DLayer layer = temp_07_0018.setStrideY(1);
+      temp_07_0009.setStrideX(1);
+      Conv2DLayer temp_07_0018 = temp_07_0009.addRef();
+      temp_07_0018.setStrideY(1);
+      Conv2DLayer layer = temp_07_0018.addRef();
       temp_07_0018.freeRef();
       temp_07_0009.freeRef();
       RefMap<String, Tensor> temp_07_0019 = layer.getWeights();
@@ -221,7 +216,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0019.get("kernel");
       temp_07_0019.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       TFLayer temp_07_0002 = layer.asConstLayer();
       layer.freeRef();
@@ -238,7 +233,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Multiband_0 addRef() {
       return (Multiband_0) super.addRef();
     }
-
   }
 
   public static class Multiband_1 extends Conv2DLayerTest {
@@ -246,9 +240,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Multiband_1[] addRefs(@Nullable Multiband_1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Multiband_1::addRef).toArray((x) -> new Multiband_1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -260,8 +252,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nonnull
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0010 = new Conv2DLayer(3, 3, 2, 2);
-      Conv2DLayer temp_07_0020 = temp_07_0010.setStrideX(1);
-      Conv2DLayer layer = temp_07_0020.setStrideY(1);
+      temp_07_0010.setStrideX(1);
+      Conv2DLayer temp_07_0020 = temp_07_0010.addRef();
+      temp_07_0020.setStrideY(1);
+      Conv2DLayer layer = temp_07_0020.addRef();
       temp_07_0020.freeRef();
       temp_07_0010.freeRef();
       RefMap<String, Tensor> temp_07_0021 = layer.getWeights();
@@ -269,7 +263,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0021.get("kernel");
       temp_07_0021.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       TFLayer temp_07_0003 = layer.asConstLayer();
       layer.freeRef();
@@ -286,7 +280,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Multiband_1 addRef() {
       return (Multiband_1) super.addRef();
     }
-
   }
 
   public static class Img_0 extends Conv2DLayerTest {
@@ -299,8 +292,8 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(@Nonnull GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
-          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
+          convolutionLayer.setPaddingX(padding);
+          convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -309,9 +302,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Img_0[] addRefs(@Nullable Img_0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Img_0::addRef).toArray((x) -> new Img_0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -323,8 +314,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nonnull
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0011 = new Conv2DLayer(7, 7, 3, 64);
-      Conv2DLayer temp_07_0022 = temp_07_0011.setStrideX(2);
-      Conv2DLayer layer = temp_07_0022.setStrideY(2);
+      temp_07_0011.setStrideX(2);
+      Conv2DLayer temp_07_0022 = temp_07_0011.addRef();
+      temp_07_0022.setStrideY(2);
+      Conv2DLayer layer = temp_07_0022.addRef();
       temp_07_0022.freeRef();
       temp_07_0011.freeRef();
       RefMap<String, Tensor> temp_07_0023 = layer.getWeights();
@@ -332,7 +325,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0023.get("kernel");
       temp_07_0023.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       TFLayer temp_07_0004 = layer.asConstLayer();
       layer.freeRef();
@@ -371,8 +364,8 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(@Nonnull GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
-          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
+          convolutionLayer.setPaddingX(padding);
+          convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -381,9 +374,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride3_0[] addRefs(@Nullable Stride3_0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride3_0::addRef).toArray((x) -> new Stride3_0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -395,8 +386,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nonnull
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0012 = new Conv2DLayer(3, 3, 1, 1);
-      Conv2DLayer temp_07_0024 = temp_07_0012.setStrideX(3);
-      Conv2DLayer layer = temp_07_0024.setStrideY(3);
+      temp_07_0012.setStrideX(3);
+      Conv2DLayer temp_07_0024 = temp_07_0012.addRef();
+      temp_07_0024.setStrideY(3);
+      Conv2DLayer layer = temp_07_0024.addRef();
       temp_07_0024.freeRef();
       temp_07_0012.freeRef();
       RefMap<String, Tensor> temp_07_0025 = layer.getWeights();
@@ -404,7 +397,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0025.get("kernel");
       temp_07_0025.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       TFLayer temp_07_0005 = layer.asConstLayer();
       layer.freeRef();
@@ -434,9 +427,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride3_1[] addRefs(@Nullable Stride3_1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride3_1::addRef).toArray((x) -> new Stride3_1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -455,7 +446,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride3_1 addRef() {
       return (Stride3_1) super.addRef();
     }
-
   }
 
   public static class Stride4_0 extends Conv2DLayerTest {
@@ -477,8 +467,8 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
         @Override
         protected Layer getConv2D(@Nonnull GraphModel.GraphNode graphNode) {
           SimpleConvolutionLayer convolutionLayer = (SimpleConvolutionLayer) super.getConv2D(graphNode);
-          RefUtil.freeRef(convolutionLayer.setPaddingX(padding));
-          RefUtil.freeRef(convolutionLayer.setPaddingY(padding));
+          convolutionLayer.setPaddingX(padding);
+          convolutionLayer.setPaddingY(padding);
           return convolutionLayer;
         }
       }.convert(getTfLayer());
@@ -487,9 +477,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride4_0[] addRefs(@Nullable Stride4_0[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_0::addRef).toArray((x) -> new Stride4_0[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -501,8 +489,10 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nonnull
     public TFLayerBase createTFLayer() {
       Conv2DLayer temp_07_0013 = new Conv2DLayer(3, 3, 1, 1);
-      Conv2DLayer temp_07_0026 = temp_07_0013.setStrideX(4);
-      Conv2DLayer layer = temp_07_0026.setStrideY(4);
+      temp_07_0013.setStrideX(4);
+      Conv2DLayer temp_07_0026 = temp_07_0013.addRef();
+      temp_07_0026.setStrideY(4);
+      Conv2DLayer layer = temp_07_0026.addRef();
       temp_07_0026.freeRef();
       temp_07_0013.freeRef();
       RefMap<String, Tensor> temp_07_0027 = layer.getWeights();
@@ -510,7 +500,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       Tensor kernel = temp_07_0027.get("kernel");
       temp_07_0027.freeRef();
       assert kernel != null;
-      RefUtil.freeRef(kernel.randomize(1.0));
+      kernel.randomize(1.0);
       kernel.freeRef();
       TFLayer temp_07_0006 = layer.asConstLayer();
       layer.freeRef();
@@ -540,9 +530,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride4_1[] addRefs(@Nullable Stride4_1[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_1::addRef).toArray((x) -> new Stride4_1[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -561,7 +549,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_1 addRef() {
       return (Stride4_1) super.addRef();
     }
-
   }
 
   public static class Stride4_2 extends Stride4_0 {
@@ -573,9 +560,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride4_2[] addRefs(@Nullable Stride4_2[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_2::addRef).toArray((x) -> new Stride4_2[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -594,7 +579,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_2 addRef() {
       return (Stride4_2) super.addRef();
     }
-
   }
 
   public static class Stride4_3 extends Stride4_0 {
@@ -606,9 +590,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     @Nullable
     public static @SuppressWarnings("unused")
     Stride4_3[] addRefs(@Nullable Stride4_3[] array) {
-      if (array == null)
-        return null;
-      return Arrays.stream(array).filter((x) -> x != null).map(Stride4_3::addRef).toArray((x) -> new Stride4_3[x]);
+      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -627,7 +609,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     Stride4_3 addRef() {
       return (Stride4_3) super.addRef();
     }
-
   }
 
 }

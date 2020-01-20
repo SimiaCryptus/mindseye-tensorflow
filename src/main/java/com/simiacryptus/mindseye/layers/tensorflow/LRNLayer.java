@@ -50,20 +50,18 @@ public class LRNLayer extends TFLayerBase {
 
   public LRNLayer(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json, rs);
-    RefUtil.freeRef(setRadius((json.get("width").getAsInt() - 1) / 2));
-    RefUtil.freeRef(setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1)))));
+    setRadius((json.get("width").getAsInt() - 1) / 2);
+    setAlpha((float) (json.get("alpha").getAsDouble() / ((double) (getRadius() * 2 + 1))));
     setBeta((float) json.get("beta").getAsDouble());
-    RefUtil.freeRef(setBias((float) json.get("k").getAsDouble()));
+    setBias((float) json.get("k").getAsDouble());
   }
 
   public float getAlpha() {
     return alpha;
   }
 
-  @Nonnull
-  public LRNLayer setAlpha(float alpha) {
+  public void setAlpha(float alpha) {
     this.alpha = alpha;
-    return this.addRef();
   }
 
   public float getBeta() {
@@ -78,10 +76,8 @@ public class LRNLayer extends TFLayerBase {
     return bias;
   }
 
-  @Nonnull
-  public LRNLayer setBias(float bias) {
+  public void setBias(float bias) {
     this.bias = bias;
-    return this.addRef();
   }
 
   @Override
@@ -112,10 +108,8 @@ public class LRNLayer extends TFLayerBase {
     return radius;
   }
 
-  @Nonnull
-  public LRNLayer setRadius(long radius) {
+  public void setRadius(long radius) {
     this.radius = radius;
-    return this.addRef();
   }
 
   @Nullable
@@ -134,21 +128,6 @@ public class LRNLayer extends TFLayerBase {
     return new LRNLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LRNLayer[] addRefs(@Nullable LRNLayer[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRef).toArray((x) -> new LRNLayer[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LRNLayer[][] addRefs(@Nullable LRNLayer[][] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(LRNLayer::addRefs).toArray((x) -> new LRNLayer[x][]);
-  }
 
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
