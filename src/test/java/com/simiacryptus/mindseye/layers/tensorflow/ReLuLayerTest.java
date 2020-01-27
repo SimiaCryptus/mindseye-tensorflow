@@ -28,21 +28,6 @@ import java.util.Random;
 
 public class ReLuLayerTest extends RawTFLayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReLuLayerTest[] addRefs(@Nullable ReLuLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(ReLuLayerTest::addRef)
-        .toArray((x) -> new ReLuLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  ReLuLayerTest[][] addRefs(@Nullable ReLuLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -50,8 +35,7 @@ public class ReLuLayerTest extends RawTFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

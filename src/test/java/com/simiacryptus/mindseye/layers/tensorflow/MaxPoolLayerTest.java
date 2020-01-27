@@ -28,21 +28,6 @@ import java.util.Random;
 
 public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolLayerTest[] addRefs(@Nullable MaxPoolLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MaxPoolLayerTest::addRef)
-        .toArray((x) -> new MaxPoolLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolLayerTest[][] addRefs(@Nullable MaxPoolLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -50,8 +35,7 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -61,15 +45,9 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Test0 extends MaxPoolLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Test0[] addRefs(@Nullable Test0[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -90,15 +68,9 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Test1 extends MaxPoolLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Test1[] addRefs(@Nullable Test1[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -119,15 +91,9 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Test2 extends MaxPoolLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Test2[] addRefs(@Nullable Test2[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

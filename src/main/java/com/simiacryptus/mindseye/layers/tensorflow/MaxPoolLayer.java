@@ -34,9 +34,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MaxPoolLayer extends TFLayerBase {
 
@@ -140,18 +138,6 @@ public class MaxPoolLayer extends TFLayerBase {
     return new MaxPoolLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolLayer[] addRefs(@Nullable MaxPoolLayer[] array) {
-    return RefUtil.addRefs(array);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MaxPoolLayer[][] addRefs(@Nullable MaxPoolLayer[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   private static RefMap<String, Tensor> defaultStates() {
     return new RefHashMap<>();
@@ -170,8 +156,7 @@ public class MaxPoolLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -182,7 +167,7 @@ public class MaxPoolLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    return new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 }

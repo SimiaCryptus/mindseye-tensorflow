@@ -36,21 +36,6 @@ public class SummaryLayerTest extends LayerTestBase {
     return null;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SummaryLayerTest[] addRefs(@Nullable SummaryLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SummaryLayerTest::addRef)
-        .toArray((x) -> new SummaryLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SummaryLayerTest[][] addRefs(@Nullable SummaryLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -64,8 +49,7 @@ public class SummaryLayerTest extends LayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

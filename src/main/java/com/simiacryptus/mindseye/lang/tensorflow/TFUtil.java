@@ -97,6 +97,7 @@ public class TFUtil {
             tensor.setTensorContent(byteString);
             //                tensor.addAllFloatVal(Arrays.stream(data).mapToObj(x -> (float) x).collect(Collectors.toList()));
           } else {
+            inverted.freeRef();
             throw new UnsupportedOperationException(type.toString());
           }
           inverted.freeRef();

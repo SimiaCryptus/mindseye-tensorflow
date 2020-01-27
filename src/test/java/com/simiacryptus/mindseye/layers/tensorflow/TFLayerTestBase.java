@@ -51,21 +51,6 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return (TFLayerBase) tfLayer.copy();
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayerTestBase[] addRefs(@Nullable TFLayerTestBase[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(TFLayerTestBase::addRef)
-        .toArray((x) -> new TFLayerTestBase[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  TFLayerTestBase[][] addRefs(@Nullable TFLayerTestBase[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public void run(@Nonnull NotebookOutput log) {
     log.eval(() -> {
@@ -89,6 +74,7 @@ public abstract class TFLayerTestBase extends LayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
     tfLayer.freeRef();
     tfLayer = null;
   }

@@ -95,7 +95,7 @@ public class TFIOTest {
     return new TensorArray(RefIntStream.range(0, length).mapToObj(i -> {
       Tensor tensor = new Tensor(ints);
       tensor.randomize(1.0);
-      return tensor.addRef();
+      return tensor;
     }).toArray(i -> new Tensor[i]));
   }
 

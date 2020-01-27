@@ -39,21 +39,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     testTraining = false;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  Conv2DLayerTest[] addRefs(@Nullable Conv2DLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(Conv2DLayerTest::addRef)
-        .toArray((x) -> new Conv2DLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  Conv2DLayerTest[][] addRefs(@Nullable Conv2DLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   public TFLayerBase createTFLayer() {
     Conv2DLayer temp_07_0007 = new Conv2DLayer(3, 3, 1, 1);
@@ -82,8 +67,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   public abstract int[][] getSmallDims(Random random);
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -93,11 +77,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Small_0 extends Conv2DLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Small_0[] addRefs(@Nullable Small_0[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     @Nonnull
     @Override
@@ -106,8 +85,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -118,11 +96,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Small_1 extends Conv2DLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Small_1[] addRefs(@Nullable Small_1[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     @Nonnull
     @Override
@@ -131,8 +104,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -143,11 +115,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Direct_1 extends Conv2DLayerTest {
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Direct_1[] addRefs(@Nullable Direct_1[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     @Nonnull
     @Override
@@ -177,8 +144,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -189,12 +155,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Multiband_0 extends Conv2DLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Multiband_0[] addRefs(@Nullable Multiband_0[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     @Nonnull
     @Override
@@ -224,8 +184,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -236,12 +195,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Multiband_1 extends Conv2DLayerTest {
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Multiband_1[] addRefs(@Nullable Multiband_1[] array) {
-      return RefUtil.addRefs(array);
-    }
 
     @Nonnull
     @Override
@@ -271,8 +224,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -297,12 +249,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
           return convolutionLayer;
         }
       }.convert(getTfLayer());
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Img_0[] addRefs(@Nullable Img_0[] array) {
-      return RefUtil.addRefs(array);
     }
 
     @Nonnull
@@ -334,8 +280,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -371,12 +316,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       }.convert(getTfLayer());
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride3_0[] addRefs(@Nullable Stride3_0[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -407,8 +346,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -424,12 +362,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       super(0);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride3_1[] addRefs(@Nullable Stride3_1[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -437,8 +369,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -474,12 +405,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       }.convert(getTfLayer());
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride4_0[] addRefs(@Nullable Stride4_0[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -510,8 +435,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -527,12 +451,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       super(1);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride4_1[] addRefs(@Nullable Stride4_1[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -540,8 +458,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -557,12 +474,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       super(0);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride4_2[] addRefs(@Nullable Stride4_2[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -570,8 +481,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override
@@ -587,12 +497,6 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
       super(1);
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    Stride4_3[] addRefs(@Nullable Stride4_3[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -600,8 +504,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

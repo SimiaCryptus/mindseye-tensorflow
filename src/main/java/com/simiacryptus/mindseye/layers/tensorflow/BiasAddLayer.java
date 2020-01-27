@@ -33,9 +33,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BiasAddLayer extends TFLayerBase {
 
@@ -87,18 +85,6 @@ public class BiasAddLayer extends TFLayerBase {
     return new BiasAddLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasAddLayer[] addRefs(@Nullable BiasAddLayer[] array) {
-    return RefUtil.addRefs(array);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasAddLayer[][] addRefs(@Nullable BiasAddLayer[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   private static RefMap<String, Tensor> defaultStates(int[] intputDims) {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
@@ -112,8 +98,7 @@ public class BiasAddLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -124,8 +109,8 @@ public class BiasAddLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    RefHashSet<String> hashSet = new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    HashSet<String> hashSet = new HashSet<>();
     hashSet.add("bias");
     return hashSet;
   }

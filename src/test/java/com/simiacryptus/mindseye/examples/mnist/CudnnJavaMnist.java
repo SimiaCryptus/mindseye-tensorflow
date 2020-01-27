@@ -133,12 +133,6 @@ public class CudnnJavaMnist {
       return null;
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -157,8 +151,7 @@ public class CudnnJavaMnist {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

@@ -33,18 +33,6 @@ public class LRNLayerTest extends RawTFLayerTestBase {
     validateDifferentials = false;
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LRNLayerTest[] addRefs(@Nullable LRNLayerTest[] array) {
-    return RefUtil.addRefs(array);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  LRNLayerTest[][] addRefs(@Nullable LRNLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -53,6 +41,7 @@ public class LRNLayerTest extends RawTFLayerTestBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
     if (null != tfLayer)
       tfLayer.freeRef();
   }

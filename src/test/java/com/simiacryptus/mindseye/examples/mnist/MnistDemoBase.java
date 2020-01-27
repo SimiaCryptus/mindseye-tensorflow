@@ -42,7 +42,6 @@ import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.TableOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
@@ -180,7 +179,7 @@ public abstract class MnistDemoBase {
       //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
       return temp_06_0002;
     }, RefUtil.addRefs(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
-    ReferenceCounting.freeRefs(trainingData);
+    RefUtil.freeRefs(trainingData);
     if (!history.isEmpty()) {
       log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
         @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> {
@@ -228,7 +227,7 @@ public abstract class MnistDemoBase {
       assert temp_06_0015 != null;
       TensorList predictionData = temp_06_0015.getData();
       temp_06_0015.freeRef();
-      ReferenceCounting.freeRefs(tensors);
+      RefUtil.freeRefs(tensors);
       RefList<int[]> predicitonList = RefIntStream.range(0, predictionData.length())
           .mapToObj(RefUtil.wrapInterface((IntFunction<? extends int[]>) rowIndex -> {
             Tensor predictionTensor = predictionData.get(rowIndex);

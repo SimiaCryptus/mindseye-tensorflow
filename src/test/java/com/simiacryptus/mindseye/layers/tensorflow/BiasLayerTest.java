@@ -30,21 +30,6 @@ import java.util.Random;
 
 public class BiasLayerTest extends RawTFLayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[] addRefs(@Nullable BiasLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(BiasLayerTest::addRef)
-        .toArray((x) -> new BiasLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  BiasLayerTest[][] addRefs(@Nullable BiasLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -65,8 +50,7 @@ public class BiasLayerTest extends RawTFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

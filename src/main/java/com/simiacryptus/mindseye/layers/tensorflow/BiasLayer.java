@@ -33,9 +33,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BiasLayer extends TFLayerBase {
 
@@ -101,8 +99,7 @@ public class BiasLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -113,8 +110,8 @@ public class BiasLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    RefHashSet<String> hashSet = new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    Set<String> hashSet = new HashSet<>();
     hashSet.add("bias");
     return hashSet;
   }

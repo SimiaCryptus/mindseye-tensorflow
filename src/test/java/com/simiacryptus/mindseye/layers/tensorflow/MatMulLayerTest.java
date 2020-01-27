@@ -30,21 +30,6 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
 
   private final int[] inputDim = {2, 2};
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MatMulLayerTest[] addRefs(@Nullable MatMulLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(MatMulLayerTest::addRef)
-        .toArray((x) -> new MatMulLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  MatMulLayerTest[][] addRefs(@Nullable MatMulLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -52,8 +37,7 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

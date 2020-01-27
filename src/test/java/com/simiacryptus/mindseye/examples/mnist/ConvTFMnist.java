@@ -43,6 +43,7 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ConvTFMnist {
@@ -157,11 +158,15 @@ public class ConvTFMnist {
     TensorflowUtil.validate(graphDef);
     GraphDef newDef = NodeInstrumentation.instrument(graphDef, statOutput, node -> {
       String op = node.getOp();
-      RefList<String> temp_16_0013 = RefArrays.asList("MatMul", "BatchMatMul", "Const", "Placeholder", "Softmax", "Add",
-          "Conv2D");
-      if (!temp_16_0013.contains(op))
-        return null;
-      temp_16_0013.freeRef();
+      if (!Arrays.asList(
+          "MatMul",
+          "BatchMatMul",
+          "Const",
+          "Placeholder",
+          "Softmax",
+          "Add",
+          "Conv2D"
+      ).contains(op)) return null;
       //      if (node.getName().equalsIgnoreCase(input)) {
       //        nodeInstrumentation.setImage(28, 28, 1);
       //      }
@@ -194,12 +199,6 @@ public class ConvTFMnist {
       return null;
     }
 
-    @Nullable
-    public static @SuppressWarnings("unused")
-    LayerTest[] addRefs(@Nullable LayerTest[] array) {
-      return RefUtil.addRefs(array);
-    }
-
     @Nonnull
     @Override
     public int[][] getSmallDims(Random random) {
@@ -213,8 +212,7 @@ public class ConvTFMnist {
     }
 
     public @SuppressWarnings("unused")
-    void _free() {
-    }
+    void _free() { super._free(); }
 
     @Nonnull
     public @Override

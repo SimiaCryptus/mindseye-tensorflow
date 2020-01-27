@@ -26,7 +26,6 @@ import com.simiacryptus.mindseye.lang.*;
 import com.simiacryptus.mindseye.lang.tensorflow.TFIO;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.lang.ReferenceCounting;
 import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
@@ -44,6 +43,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -56,14 +56,13 @@ public abstract class TFLayerBase extends LayerBase {
 
   public TFLayerBase(@Nonnull JsonObject json, Map<CharSequence, byte[]> rs) {
     super(json);
-    RefSet<String> dataKeys = getDataKeys(json);
+    Set<String> dataKeys = getDataKeys(json);
     for (String key : dataKeys) {
       RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0010 = this.getWeights();
       assert temp_00_0010 != null;
       RefUtil.freeRef(temp_00_0010.put(key, Tensor.fromJson(json.get(key), rs)));
       temp_00_0010.freeRef();
     }
-    dataKeys.freeRef();
   }
 
   public TFLayerBase(@Nullable RefMap<String, Tensor> states) {
@@ -140,7 +139,7 @@ public abstract class TFLayerBase extends LayerBase {
     TFSession tfsession = new TFSession(TFLayerBase.this.addRef());
     Result temp_00_0003 = eval(tfsession.addRef(), RefUtil.addRefs(inputs));
     if (null != inputs)
-      ReferenceCounting.freeRefs(inputs);
+      RefUtil.freeRefs(inputs);
     tfsession.freeRef();
     return temp_00_0003;
   }
@@ -310,15 +309,15 @@ public abstract class TFLayerBase extends LayerBase {
 
         public @SuppressWarnings("unused")
         void _free() {
-          ReferenceCounting.freeRefs(inputs);
+          super._free();
+          RefUtil.freeRefs(inputs);
           tfsession.freeRef();
           stateNames.freeRef();
         }
       }));
     } finally {
-      ReferenceCounting.freeRefs(inputs);
+      RefUtil.freeRefs(inputs);
       tfsession.freeRef();
-      resultData.freeRef();
       tensors.freeRef();
       if (null != stateNames)
         stateNames.freeRef();
@@ -326,7 +325,7 @@ public abstract class TFLayerBase extends LayerBase {
   }
 
   @Nonnull
-  protected abstract RefSet<String> getDataKeys(JsonObject json);
+  protected abstract Set<String> getDataKeys(JsonObject json);
 
   protected boolean floatInputs(String key) {
     return false;
@@ -377,12 +376,6 @@ public abstract class TFLayerBase extends LayerBase {
         stateNames.freeRef();
         return temp_00_0007;
       });
-    }
-
-    @Nullable
-    public static @SuppressWarnings("unused")
-    TFSession[] addRefs(@Nullable TFSession[] array) {
-      return RefUtil.addRefs(array);
     }
 
     public void _free() {

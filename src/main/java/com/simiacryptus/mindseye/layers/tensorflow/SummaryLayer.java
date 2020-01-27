@@ -34,9 +34,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SummaryLayer extends TFLayerBase {
 
@@ -104,18 +102,6 @@ public class SummaryLayer extends TFLayerBase {
     return new SummaryLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SummaryLayer[] addRefs(@Nullable SummaryLayer[] array) {
-    return RefUtil.addRefs(array);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SummaryLayer[][] addRefs(@Nullable SummaryLayer[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     JsonObject json = super.getJson(resources, dataSerializer);
@@ -125,8 +111,7 @@ public class SummaryLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -137,7 +122,7 @@ public class SummaryLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    return new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 }

@@ -33,9 +33,7 @@ import org.tensorflow.op.core.LRN;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LRNLayer extends TFLayerBase {
 
@@ -142,8 +140,7 @@ public class LRNLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -159,7 +156,7 @@ public class LRNLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    return new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 }

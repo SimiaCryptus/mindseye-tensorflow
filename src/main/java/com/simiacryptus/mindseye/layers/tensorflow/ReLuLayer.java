@@ -32,9 +32,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ReLuLayer extends TFLayerBase {
 
@@ -92,8 +90,7 @@ public class ReLuLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -104,8 +101,8 @@ public class ReLuLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    return new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 
 }

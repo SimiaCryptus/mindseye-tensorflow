@@ -30,9 +30,7 @@ import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TFLayer extends TFLayerBase {
 
@@ -145,6 +143,7 @@ public class TFLayer extends TFLayerBase {
 
   public @SuppressWarnings("unused")
   void _free() {
+    super._free();
     if (null != inputNodes)
       inputNodes.freeRef();
     inputNodes = null;
@@ -164,9 +163,9 @@ public class TFLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(@Nonnull JsonObject json) {
+  protected Set<String> getDataKeys(@Nonnull JsonObject json) {
     JsonArray dataKeys = json.get("dataKeys").getAsJsonArray();
-    RefHashSet<String> hashSet = new RefHashSet<>();
+    Set<String> hashSet = new HashSet<>();
     for (int i = 0; i < dataKeys.size(); i++) {
       hashSet.add(dataKeys.get(i).getAsString());
     }

@@ -36,21 +36,6 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
     return new TFConverter().convert(getTfLayer());
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  RawTFLayerTestBase[] addRefs(@Nullable RawTFLayerTestBase[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(RawTFLayerTestBase::addRef)
-        .toArray((x) -> new RawTFLayerTestBase[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  RawTFLayerTestBase[][] addRefs(@Nullable RawTFLayerTestBase[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
@@ -58,8 +43,7 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

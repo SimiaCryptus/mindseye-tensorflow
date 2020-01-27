@@ -28,21 +28,6 @@ import java.util.Random;
 
 public class SoftmaxLayerTest extends RawTFLayerTestBase {
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SoftmaxLayerTest[] addRefs(@Nullable SoftmaxLayerTest[] array) {
-    if (array == null)
-      return null;
-    return Arrays.stream(array).filter((x) -> x != null).map(SoftmaxLayerTest::addRef)
-        .toArray((x) -> new SoftmaxLayerTest[x]);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SoftmaxLayerTest[][] addRefs(@Nullable SoftmaxLayerTest[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   @Nonnull
   @Override
   public int[][] getSmallDims(Random random) {
@@ -50,8 +35,7 @@ public class SoftmaxLayerTest extends RawTFLayerTestBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override

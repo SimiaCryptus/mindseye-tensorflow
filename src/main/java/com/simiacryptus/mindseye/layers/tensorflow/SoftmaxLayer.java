@@ -31,9 +31,7 @@ import org.tensorflow.op.Ops;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SoftmaxLayer extends TFLayerBase {
 
@@ -84,21 +82,8 @@ public class SoftmaxLayer extends TFLayerBase {
     return new SoftmaxLayer(json, rs);
   }
 
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SoftmaxLayer[] addRefs(@Nullable SoftmaxLayer[] array) {
-    return RefUtil.addRefs(array);
-  }
-
-  @Nullable
-  public static @SuppressWarnings("unused")
-  SoftmaxLayer[][] addRefs(@Nullable SoftmaxLayer[][] array) {
-    return RefUtil.addRefs(array);
-  }
-
   public @SuppressWarnings("unused")
-  void _free() {
-  }
+  void _free() { super._free(); }
 
   @Nonnull
   public @Override
@@ -109,8 +94,8 @@ public class SoftmaxLayer extends TFLayerBase {
 
   @Nonnull
   @Override
-  protected RefSet<String> getDataKeys(JsonObject json) {
-    return new RefHashSet<>();
+  protected Set<String> getDataKeys(JsonObject json) {
+    return new HashSet<>();
   }
 
 }
