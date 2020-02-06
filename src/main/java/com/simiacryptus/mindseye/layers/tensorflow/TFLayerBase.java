@@ -139,7 +139,7 @@ public abstract class TFLayerBase extends LayerBase {
     TFSession tfsession = new TFSession(TFLayerBase.this.addRef());
     Result temp_00_0003 = eval(tfsession.addRef(), RefUtil.addRefs(inputs));
     if (null != inputs)
-      RefUtil.freeRefs(inputs);
+      RefUtil.freeRef(inputs);
     tfsession.freeRef();
     return temp_00_0003;
   }
@@ -246,7 +246,7 @@ public abstract class TFLayerBase extends LayerBase {
       }
     }
     try {
-      return new Result(resultData, (new Result.Accumulator() {
+      return new Result(resultData, new Result.Accumulator() {
         {
           tfsession.addRef();
           RefUtil.addRefs(inputs);
@@ -270,7 +270,7 @@ public abstract class TFLayerBase extends LayerBase {
           }
           if (null != deltaSignal)
             deltaSignal.freeRef();
-          RefArrays.stream(gradients).forEach(runner::fetch);
+          RefArrays.stream(gradients).forEach(output -> runner.fetch(output));
           Session.Run back = runner.runAndFetchMetadata();
           for (int i = 0; i < inputs.length; i++) {
             org.tensorflow.Tensor<?> tensor = back.outputs.get(fwdFetches + i);
@@ -282,7 +282,7 @@ public abstract class TFLayerBase extends LayerBase {
           }
           for (int i = 0; i < stateNames.size(); i++) {
             String weightNodeName = stateNames.get(i);
-            RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0024 = TFLayerBase.this.getWeights();
+            RefMap<String, Tensor> temp_00_0024 = TFLayerBase.this.getWeights();
             assert deltaBuffer != null;
             Delta<UUID> uuidDelta = deltaBuffer.get(
                 UUID.nameUUIDFromBytes((TFLayerBase.this.getId() + "_" + weightNodeName).getBytes()),
@@ -303,20 +303,20 @@ public abstract class TFLayerBase extends LayerBase {
           }
           if (null != deltaBuffer)
             deltaBuffer.freeRef();
-          feedbacktensors.stream().forEach(org.tensorflow.Tensor::close);
+          feedbacktensors.stream().forEach(tensor -> tensor.close());
           feedbacktensors.freeRef();
         }
 
         public @SuppressWarnings("unused")
         void _free() {
           super._free();
-          RefUtil.freeRefs(inputs);
+          RefUtil.freeRef(inputs);
           tfsession.freeRef();
           stateNames.freeRef();
         }
-      }));
+      });
     } finally {
-      RefUtil.freeRefs(inputs);
+      RefUtil.freeRef(inputs);
       tfsession.freeRef();
       tensors.freeRef();
       if (null != stateNames)

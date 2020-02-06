@@ -128,13 +128,13 @@ public class TFLayer extends TFLayerBase {
     RefMap<String, Tensor> temp_02_0002 = getWeights();
     assert temp_02_0002 != null;
     RefSet<String> temp_02_0003 = temp_02_0002.keySet();
-    temp_02_0003.forEach(array::add);
+    temp_02_0003.forEach(string1 -> array.add(string1));
     temp_02_0003.freeRef();
     temp_02_0002.freeRef();
     json.add("dataKeys", array);
     json.addProperty("output", getOutputNode());
     JsonArray jsonArray = new JsonArray();
-    getInputNodes().forEach(jsonArray::add);
+    getInputNodes().forEach(string -> jsonArray.add(string));
     json.add("input", jsonArray);
     json.addProperty("isFloat", isFloat());
     json.addProperty("summaryOut", getSummaryOut());

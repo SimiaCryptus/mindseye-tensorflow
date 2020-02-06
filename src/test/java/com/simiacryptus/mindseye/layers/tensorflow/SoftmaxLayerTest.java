@@ -34,16 +34,6 @@ public class SoftmaxLayerTest extends RawTFLayerTestBase {
     return new int[][]{{5}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SoftmaxLayerTest addRef() {
-    return (SoftmaxLayerTest) super.addRef();
-  }
-
   @Nonnull
   protected SoftmaxLayer createTFLayer() {
     return new SoftmaxLayer();

@@ -49,14 +49,4 @@ public class BiasLayerTest extends RawTFLayerTestBase {
     return biasLayer;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  BiasLayerTest addRef() {
-    return (BiasLayerTest) super.addRef();
-  }
-
 }

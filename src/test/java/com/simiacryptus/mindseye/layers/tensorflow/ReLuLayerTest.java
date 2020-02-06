@@ -34,16 +34,6 @@ public class ReLuLayerTest extends RawTFLayerTestBase {
     return new int[][]{{3, 3, 1}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  ReLuLayerTest addRef() {
-    return (ReLuLayerTest) super.addRef();
-  }
-
   @Nonnull
   protected ReLuLayer createTFLayer() {
     return new ReLuLayer();

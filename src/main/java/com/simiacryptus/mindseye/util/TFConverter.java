@@ -77,10 +77,10 @@ public class TFConverter {
     matMulLayer.freeRef();
     int[] tfView = Streams
         .concat(RefArrays.stream(outputDims),
-            RefIntStream.range(0, intputDims.length).map(i -> (intputDims.length - 1) - i).map(i -> intputDims[i]))
+            RefIntStream.range(0, intputDims.length).map(i -> intputDims.length - 1 - i).map(i -> intputDims[i]))
         .toArray();
     int[] tfPermute = Streams
-        .concat(RefIntStream.range(0, intputDims.length).map(i -> outputDims.length + ((intputDims.length - 1) - i)),
+        .concat(RefIntStream.range(0, intputDims.length).map(i -> outputDims.length + intputDims.length - 1 - i),
             RefIntStream.range(0, outputDims.length))
         .toArray();
     assert weights != null;
@@ -231,7 +231,7 @@ public class TFConverter {
         sourceKernelDimensions[3]);
     sourceKernel.coordStream(false).forEach(RefUtil.wrapInterface((Consumer<? super Coordinate>) c -> {
       int[] coord = c.getCoords();
-      targetKernel.set((sourceKernelDimensions[0] - 1) - coord[0], (sourceKernelDimensions[1] - 1) - coord[1], coord[2],
+      targetKernel.set(sourceKernelDimensions[0] - 1 - coord[0], sourceKernelDimensions[1] - 1 - coord[1], coord[2],
           coord[3], sourceKernel.get(c));
     }, targetKernel.addRef(), sourceKernel.addRef()));
     sourceKernel.freeRef();

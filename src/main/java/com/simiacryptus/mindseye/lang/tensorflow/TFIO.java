@@ -243,7 +243,7 @@ public class TFIO {
     } else if (obj instanceof Double) {
       return RefDoubleStream.of((double) obj);
     } else {
-      return RefArrays.stream((Object[]) obj).flatMapToDouble(TFIO::flattenDoubles);
+      return RefArrays.stream((Object[]) obj).flatMapToDouble(obj1 -> flattenDoubles(obj1));
     }
   }
 

@@ -36,16 +36,6 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
     return new int[][]{inputDim};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MatMulLayerTest addRef() {
-    return (MatMulLayerTest) super.addRef();
-  }
-
   @Nonnull
   protected MatMulLayer createTFLayer() {
     return new MatMulLayer(inputDim, new int[]{2});

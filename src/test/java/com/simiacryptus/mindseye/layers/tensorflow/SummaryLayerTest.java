@@ -48,16 +48,6 @@ public class SummaryLayerTest extends LayerTestBase {
     return createTFLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  SummaryLayerTest addRef() {
-    return (SummaryLayerTest) super.addRef();
-  }
-
   @Nonnull
   protected SummaryLayer createTFLayer() {
     return new SummaryLayer("foo");

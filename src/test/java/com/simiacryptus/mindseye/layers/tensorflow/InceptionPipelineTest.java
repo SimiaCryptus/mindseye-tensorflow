@@ -38,16 +38,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     this.testingBatchSize = 5;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  InceptionPipelineTest addRef() {
-    return (InceptionPipelineTest) super.addRef();
-  }
-
   public static class Layer0 extends InceptionPipelineTest {
 
     @Nonnull
@@ -61,15 +51,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(0);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer0 addRef() {
-      return (Layer0) super.addRef();
-    }
   }
 
   public static class Layer1 extends InceptionPipelineTest {
@@ -83,16 +64,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     public @Nonnull
     TFLayerBase createTFLayer() {
       return layers.get(1);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer1 addRef() {
-      return (Layer1) super.addRef();
     }
   }
 
@@ -109,15 +80,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(2);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer2 addRef() {
-      return (Layer2) super.addRef();
-    }
   }
 
   public static class Layer3 extends InceptionPipelineTest {
@@ -132,16 +94,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     TFLayerBase createTFLayer() {
       return layers.get(3);
     }
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer3 addRef() {
-      return (Layer3) super.addRef();
-    }
   }
 
   public static class Layer4 extends InceptionPipelineTest {
@@ -155,16 +107,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     public @Nonnull
     TFLayerBase createTFLayer() {
       return layers.get(4);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer4 addRef() {
-      return (Layer4) super.addRef();
     }
   }
 
@@ -181,15 +123,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(5);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer5 addRef() {
-      return (Layer5) super.addRef();
-    }
   }
 
   public static class Layer6 extends InceptionPipelineTest {
@@ -205,15 +138,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(6);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer6 addRef() {
-      return (Layer6) super.addRef();
-    }
   }
 
   public static class Layer7 extends InceptionPipelineTest {
@@ -229,15 +153,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(7);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer7 addRef() {
-      return (Layer7) super.addRef();
-    }
   }
 
   public static class Layer8 extends InceptionPipelineTest {
@@ -251,16 +166,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
     public @Nonnull
     TFLayerBase createTFLayer() {
       return layers.get(8);
-    }
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer8 addRef() {
-      return (Layer8) super.addRef();
     }
   }
 
@@ -277,15 +182,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(9);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer9 addRef() {
-      return (Layer9) super.addRef();
-    }
   }
 
   public static class Layer10 extends InceptionPipelineTest {
@@ -301,15 +197,6 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
       return layers.get(10);
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Layer10 addRef() {
-      return (Layer10) super.addRef();
-    }
   }
 
 }

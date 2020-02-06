@@ -179,7 +179,7 @@ public abstract class MnistDemoBase {
       //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
       return temp_06_0002;
     }, RefUtil.addRefs(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
-    RefUtil.freeRefs(trainingData);
+    RefUtil.freeRef(trainingData);
     if (!history.isEmpty()) {
       log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
         @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> {
@@ -227,12 +227,12 @@ public abstract class MnistDemoBase {
       assert temp_06_0015 != null;
       TensorList predictionData = temp_06_0015.getData();
       temp_06_0015.freeRef();
-      RefUtil.freeRefs(tensors);
+      RefUtil.freeRef(tensors);
       RefList<int[]> predicitonList = RefIntStream.range(0, predictionData.length())
           .mapToObj(RefUtil.wrapInterface((IntFunction<? extends int[]>) rowIndex -> {
             Tensor predictionTensor = predictionData.get(rowIndex);
             int[] temp_06_0005 = RefIntStream.range(0, 10).mapToObj(x -> x).sorted(
-                RefComparator.comparing(RefUtil.wrapInterface((Function<? super Integer, ? extends Double>) ii -> {
+                RefComparator.comparingDouble(RefUtil.wrapInterface(ii -> {
                   return -predictionTensor.getData()[ii];
                 }, predictionTensor.addRef()))).mapToInt(x -> x).toArray();
             predictionTensor.freeRef();
@@ -280,7 +280,7 @@ public abstract class MnistDemoBase {
         if (null != x)
           x.freeRef();
         return temp_06_0006;
-      }).limit(10).forEach(table::putRow);
+      }).limit(10).forEach(properties -> table.putRow(properties));
       return table;
     }, recognitionNetwork.addRef()));
     recognitionNetwork.freeRef();
@@ -300,7 +300,7 @@ public abstract class MnistDemoBase {
     network.freeRef();
     int[] temp_06_0007 = RefIntStream.range(0, 10).mapToObj(x -> x)
         .sorted(RefComparator
-            .comparing(RefUtil.wrapInterface((Function<? super Integer, ? extends Double>) i -> -tensor.getData()[i],
+            .comparingDouble(RefUtil.wrapInterface(i -> -tensor.getData()[i],
                 tensor.addRef())))
         .mapToInt(x -> x).toArray();
     tensor.freeRef();

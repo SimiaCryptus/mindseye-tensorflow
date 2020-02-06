@@ -34,27 +34,7 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
     return new int[][]{{5, 5, 1}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  MaxPoolLayerTest addRef() {
-    return (MaxPoolLayerTest) super.addRef();
-  }
-
   public static class Test0 extends MaxPoolLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Test0 addRef() {
-      return (Test0) super.addRef();
-    }
 
     @Nonnull
     protected TFLayerBase createTFLayer() {
@@ -69,16 +49,6 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
 
   public static class Test1 extends MaxPoolLayerTest {
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Test1 addRef() {
-      return (Test1) super.addRef();
-    }
-
     @Nonnull
     protected TFLayerBase createTFLayer() {
       MaxPoolLayer maxPoolLayer = new MaxPoolLayer();
@@ -91,16 +61,6 @@ public abstract class MaxPoolLayerTest extends RawTFLayerTestBase {
   }
 
   public static class Test2 extends MaxPoolLayerTest {
-
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    Test2 addRef() {
-      return (Test2) super.addRef();
-    }
 
     @Nonnull
     protected TFLayerBase createTFLayer() {

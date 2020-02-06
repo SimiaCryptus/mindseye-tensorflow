@@ -173,15 +173,6 @@ public class SimpleTFMnist {
       return network();
     }
 
-    public @SuppressWarnings("unused")
-    void _free() { super._free(); }
-
-    @Nonnull
-    public @Override
-    @SuppressWarnings("unused")
-    LayerTest addRef() {
-      return (LayerTest) super.addRef();
-    }
   }
 
 }

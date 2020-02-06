@@ -42,14 +42,4 @@ public abstract class RawTFLayerTestBase extends TFLayerTestBase {
     return getTfLayer();
   }
 
-  public @SuppressWarnings("unused")
-  void _free() { super._free(); }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  RawTFLayerTestBase addRef() {
-    return (RawTFLayerTestBase) super.addRef();
-  }
-
 }

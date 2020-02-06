@@ -20,6 +20,7 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.ref.lang.RefUtil;
+import org.junit.After;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,18 +40,11 @@ public class LRNLayerTest extends RawTFLayerTestBase {
     return new int[][]{{2, 3, 20}};
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
+  @After
+  public void cleanup() {
+    super.cleanup();
     if (null != tfLayer)
       tfLayer.freeRef();
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  LRNLayerTest addRef() {
-    return (LRNLayerTest) super.addRef();
   }
 
   @Nonnull

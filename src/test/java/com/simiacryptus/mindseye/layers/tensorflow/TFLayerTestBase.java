@@ -28,6 +28,7 @@ import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
+import org.junit.After;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
@@ -72,18 +73,11 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return temp_01_0002;
   }
 
-  public @SuppressWarnings("unused")
-  void _free() {
-    super._free();
+  @After
+  public void cleanup() {
+    super.cleanup();
     tfLayer.freeRef();
     tfLayer = null;
-  }
-
-  @Nonnull
-  public @Override
-  @SuppressWarnings("unused")
-  TFLayerTestBase addRef() {
-    return (TFLayerTestBase) super.addRef();
   }
 
   protected abstract @Nonnull
