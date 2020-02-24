@@ -21,11 +21,9 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.ref.lang.RefUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class RawTFLayerTestBase extends TFLayerTestBase {

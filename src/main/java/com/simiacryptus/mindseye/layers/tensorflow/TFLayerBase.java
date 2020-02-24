@@ -19,6 +19,7 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
@@ -104,16 +105,14 @@ public abstract class TFLayerBase extends LayerBase {
   @Override
   public JsonObject getJson(Map<CharSequence, byte[]> resources, @Nonnull DataSerializer dataSerializer) {
     JsonObject json = getJsonStub();
-    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> temp_00_0014 = getWeights();
-    assert temp_00_0014 != null;
-    RefSet<Map.Entry<String, Tensor>> entries = temp_00_0014.entrySet();
-    entries.forEach(entry -> {
-      Tensor temp_00_0015 = entry.getValue();
-      json.add(entry.getKey(), temp_00_0015.getJson(resources, dataSerializer));
-      temp_00_0015.freeRef();
+    RefMap<String, com.simiacryptus.mindseye.lang.Tensor> weights = getWeights();
+    assert weights != null;
+    weights.forEach((key, tensor) -> {
+      JsonElement tensorJson = tensor.getJson(resources, dataSerializer);
+      tensor.freeRef();
+      json.add(key, tensorJson);
     });
-    entries.freeRef();
-    temp_00_0014.freeRef();
+    weights.freeRef();
     return json;
   }
 

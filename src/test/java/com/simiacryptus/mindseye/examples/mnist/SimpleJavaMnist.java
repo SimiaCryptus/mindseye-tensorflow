@@ -22,7 +22,7 @@ package com.simiacryptus.mindseye.examples.mnist;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.BiasLayer;
 import com.simiacryptus.mindseye.layers.java.FullyConnectedLayer;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.SoftmaxLayer;
 import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;

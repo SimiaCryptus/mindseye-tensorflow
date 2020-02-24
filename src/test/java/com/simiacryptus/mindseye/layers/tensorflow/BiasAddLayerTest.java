@@ -20,12 +20,9 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefMap;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public class BiasAddLayerTest extends RawTFLayerTestBase {

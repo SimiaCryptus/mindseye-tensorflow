@@ -19,15 +19,15 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
-import com.simiacryptus.ref.lang.RefUtil;
+import com.simiacryptus.ref.lang.RefIgnore;
 import org.junit.After;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Random;
 
 public class LRNLayerTest extends RawTFLayerTestBase {
 
+  @RefIgnore
   private final TFLayerBase tfLayer = createTFLayer();
 
   public LRNLayerTest() {

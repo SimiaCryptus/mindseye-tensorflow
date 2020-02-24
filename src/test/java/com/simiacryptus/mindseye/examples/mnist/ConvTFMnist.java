@@ -25,12 +25,11 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.RefArrays;
 import com.simiacryptus.ref.wrappers.RefHashMap;
-import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.tensorflow.Operand;
@@ -43,7 +42,6 @@ import org.tensorflow.op.core.Placeholder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class ConvTFMnist {

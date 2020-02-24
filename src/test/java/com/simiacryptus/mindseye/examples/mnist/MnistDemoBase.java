@@ -60,10 +60,15 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.IntFunction;
+import java.util.function.IntToDoubleFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class MnistDemoBase {
   private static final Logger log = LoggerFactory.getLogger(MnistDemoBase.class);
@@ -109,9 +114,9 @@ public abstract class MnistDemoBase {
       @Nonnull final Tensor categoryTensor = new Tensor(10);
       final int category = parse(labeledObject1.label);
       categoryTensor.set(category, 1);
-
-      Tensor[] temp_06_0001 = new Tensor[]{labeledObject1.data, categoryTensor};
-      return temp_06_0001;
+      Tensor data = labeledObject1.data.addRef();
+      labeledObject1.freeRef();
+      return new Tensor[]{data, categoryTensor};
     }).toArray(i1 -> new Tensor[i1][]);
 
     log.h1("Model");
@@ -222,39 +227,41 @@ public abstract class MnistDemoBase {
     log.p("If we apply our model against the entire validation dataset, we get this accuracy:");
     log.eval(RefUtil.wrapInterface((UncheckedSupplier<Double>) () -> {
       RefList<LabeledObject<Tensor>> validation = MNIST.validationDataStream().collect(RefCollectors.toList());
-      Tensor[][] tensors = new Tensor[][]{validation.stream().map(x -> x.data).toArray(i -> new Tensor[i])};
+      Tensor[][] tensors = new Tensor[][]{validation.stream().map(labeledObject -> {
+        Tensor data = labeledObject.data.addRef();
+        labeledObject.freeRef();
+        return data;
+      }).toArray(i -> new Tensor[i])};
       Result temp_06_0015 = recognitionNetwork.eval(RefUtil.addRefs(tensors));
       assert temp_06_0015 != null;
-      TensorList predictionData = temp_06_0015.getData();
-      temp_06_0015.freeRef();
+      TensorList predictionData = Result.getData(temp_06_0015);
       RefUtil.freeRef(tensors);
-      RefList<int[]> predicitonList = RefIntStream.range(0, predictionData.length())
-          .mapToObj(RefUtil.wrapInterface((IntFunction<? extends int[]>) rowIndex -> {
+      int length = predictionData.length();
+      List<int[]> predicitonList = IntStream.range(0, length)
+          .mapToObj(rowIndex -> {
             Tensor predictionTensor = predictionData.get(rowIndex);
-            int[] temp_06_0005 = RefIntStream.range(0, 10).mapToObj(x -> x).sorted(
-                RefComparator.comparingDouble(RefUtil.wrapInterface(ii -> {
-                  return -predictionTensor.getData()[ii];
-                }, predictionTensor.addRef()))).mapToInt(x -> x).toArray();
+            int[] ints = RefIntStream.range(0, 10).mapToObj(x -> x).sorted(
+                Comparator.comparingDouble(ii -> -predictionTensor.getData()[ii])
+            ).mapToInt(x -> x).toArray();
             predictionTensor.freeRef();
-            return temp_06_0005;
-          }, predictionData.addRef())).collect(RefCollectors.toList());
-      double temp_06_0004 = RefIntStream.range(0, predictionData.length())
-          .mapToDouble(RefUtil.wrapInterface(rowIndex -> {
-            return predicitonList.get(rowIndex)[0] == parse(validation.get(rowIndex).label) ? 1 : 0;
-          }, validation.addRef(), predicitonList == null ? null : predicitonList.addRef()))
-          .average().getAsDouble() * 100;
-      if (null != predicitonList)
-        predicitonList.freeRef();
+            return ints;
+          }).collect(Collectors.toList());
       predictionData.freeRef();
-      validation.freeRef();
-      return temp_06_0004;
+      return RefIntStream.range(0, length)
+          .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) rowIndex -> {
+            LabeledObject<Tensor> labeledObject = validation.get(rowIndex);
+            int i = predicitonList.get(rowIndex)[0] == parse(labeledObject.label) ? 1 : 0;
+            labeledObject.freeRef();
+            return i;
+          }, validation))
+          .average().getAsDouble() * 100;
     }, recognitionNetwork.addRef()));
 
     log.p("Let's examine some incorrectly predicted results in more detail:");
     log.eval(RefUtil.wrapInterface((UncheckedSupplier<TableOutput>) () -> {
       @Nonnull final TableOutput table = new TableOutput();
       MNIST.validationDataStream().map(RefUtil.wrapInterface(
-          (Function<? super LabeledObject<Tensor>, ? extends RefLinkedHashMap<CharSequence, Object>>) labeledObject -> {
+          (Function<? super LabeledObject<Tensor>, LinkedHashMap<CharSequence, Object>>) labeledObject -> {
             final int actualCategory = parse(labeledObject.label);
             Result temp_06_0016 = recognitionNetwork.eval(labeledObject.data.addRef());
             assert temp_06_0016 != null;
@@ -265,22 +272,23 @@ public abstract class MnistDemoBase {
             temp_06_0017.freeRef();
             temp_06_0016.freeRef();
             final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
-                .sorted(RefComparator.comparing(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
-            if (predictionList[0] == actualCategory)
+                .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+            if (predictionList[0] == actualCategory) {
+              labeledObject.freeRef();
               return null; // We will only examine mispredicted rows
-            @Nonnull final RefLinkedHashMap<CharSequence, Object> row = new RefLinkedHashMap<>();
+            }
+            @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
             row.put("Image", log.png(labeledObject.data.toGrayImage(), labeledObject.label));
+            labeledObject.freeRef();
             row.put("Prediction",
                 RefUtil.get(RefArrays.stream(predictionList).limit(3)
                     .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
                     .reduce((a, b) -> a + ", " + b)));
             return row;
-          }, recognitionNetwork.addRef())).filter(x -> {
-        boolean temp_06_0006 = null != x;
-        if (null != x)
-          x.freeRef();
-        return temp_06_0006;
-      }).limit(10).forEach(properties -> table.putRow(properties));
+          }, recognitionNetwork.addRef()))
+          .filter(x -> null != x)
+          .limit(10)
+          .forEach(properties -> table.putRow(properties));
       return table;
     }, recognitionNetwork.addRef()));
     recognitionNetwork.freeRef();
@@ -298,6 +306,7 @@ public abstract class MnistDemoBase {
     temp_06_0020.freeRef();
     temp_06_0019.freeRef();
     network.freeRef();
+    labeledObject.freeRef();
     int[] temp_06_0007 = RefIntStream.range(0, 10).mapToObj(x -> x)
         .sorted(RefComparator
             .comparingDouble(RefUtil.wrapInterface(i -> -tensor.getData()[i],

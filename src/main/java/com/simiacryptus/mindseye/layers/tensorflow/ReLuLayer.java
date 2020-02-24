@@ -23,9 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.wrappers.RefHashMap;
-import com.simiacryptus.ref.wrappers.RefHashSet;
 import com.simiacryptus.ref.wrappers.RefMap;
-import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -90,7 +88,9 @@ public class ReLuLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

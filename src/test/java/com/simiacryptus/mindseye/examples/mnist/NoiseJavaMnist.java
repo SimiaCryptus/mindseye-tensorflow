@@ -23,6 +23,7 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.*;
 import com.simiacryptus.mindseye.layers.tensorflow.SummaryLayer;
 import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
@@ -89,9 +90,8 @@ public class NoiseJavaMnist {
 
       if (tensorboard)
         pipeline.add(new SummaryLayer("softmax")).freeRef();
-      StochasticSamplingSubnetLayer temp_04_0001 = new StochasticSamplingSubnetLayer(pipeline,
+      return new StochasticSamplingSubnetLayer(pipeline,
           5);
-      return temp_04_0001;
     });
   }
 

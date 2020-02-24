@@ -20,13 +20,10 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class InceptionPipelineTest extends TFLayerTestBase {

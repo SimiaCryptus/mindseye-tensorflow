@@ -21,10 +21,7 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
-import com.simiacryptus.ref.wrappers.RefHashSet;
-import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -83,7 +80,9 @@ public class SoftmaxLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

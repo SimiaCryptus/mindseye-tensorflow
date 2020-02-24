@@ -24,7 +24,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefUtil;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefArrays;
+import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.ref.wrappers.RefIntStream;
+import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.util.JsonUtil;
 import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
@@ -145,7 +148,9 @@ public class MatMulLayer extends TFLayerBase {
   }
 
   public @SuppressWarnings("unused")
-  void _free() { super._free(); }
+  void _free() {
+    super._free();
+  }
 
   @Nonnull
   public @Override

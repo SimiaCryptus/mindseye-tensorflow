@@ -131,47 +131,6 @@ public class TFConverter {
     }
   }
 
-  @NotNull
-  private DAGNode getDagNode(@Nonnull String id, @Nonnull PipelineNetwork network, @Nonnull GraphModel tfModel, @Nonnull RefMap<String, DAGNode> map) {
-    GraphModel.GraphNode graphNode = tfModel.getChild(id);
-    assert null != graphNode;
-    try {
-      if (graphNode.getOp().equals("Conv2D")) {
-        return network.add(getConv2D(graphNode), getNode(graphNode.getInputKeys().get(0),
-              network.addRef(), tfModel, map));
-      } else if (graphNode.getOp().equals("BiasAdd")) {
-        return network.add(getBiasAdd(graphNode), getNode(graphNode.getInputKeys().get(0),
-              network.addRef(), tfModel, map));
-      } else if (graphNode.getOp().equals("Relu")) {
-        return network.add(new ActivationLayer(ActivationLayer.Mode.RELU), getNode(graphNode.getInputKeys().get(0),
-              network.addRef(), tfModel, map));
-      } else if (graphNode.getOp().equals("LRN")) {
-        return network.add(getLRNLayer(graphNode), getNode(graphNode.getInputKeys().get(0),
-              network.addRef(), tfModel, map));
-      } else if (graphNode.getOp().equals("MaxPool")) {
-        return network.add(getPoolingLayer(graphNode), getNode(graphNode.getInputKeys().get(0),
-              network.addRef(), tfModel, map));
-      } else if (graphNode.getOp().equals("Concat")) {
-        List<String> inputKeys = graphNode.getInputKeys();
-        InnerNode innerNode = network.add(new ImgConcatLayer(),
-            inputKeys.stream().skip(1)
-                .map(inputKey -> getNode(inputKey,
-                    network.addRef(), tfModel, RefUtil.addRef(map)))
-                .toArray(i -> new DAGNode[i]));
-        map.freeRef();
-        return innerNode;
-      } else if (graphNode.getOp().equals("Placeholder")) {
-        map.freeRef();
-        return network.getInput(0);
-      } else {
-        map.freeRef();
-        throw new IllegalArgumentException(graphNode.getOp());
-      }
-    } finally {
-      network.freeRef();
-    }
-  }
-
   @Nonnull
   protected PoolingLayer getPoolingLayer(@Nonnull GraphModel.GraphNode graphNode) {
     PoolingLayer temp_05_0005 = new PoolingLayer();
@@ -254,6 +213,47 @@ public class TFConverter {
       }
     } else {
       return convolutionLayer;
+    }
+  }
+
+  @NotNull
+  private DAGNode getDagNode(@Nonnull String id, @Nonnull PipelineNetwork network, @Nonnull GraphModel tfModel, @Nonnull RefMap<String, DAGNode> map) {
+    GraphModel.GraphNode graphNode = tfModel.getChild(id);
+    assert null != graphNode;
+    try {
+      if (graphNode.getOp().equals("Conv2D")) {
+        return network.add(getConv2D(graphNode), getNode(graphNode.getInputKeys().get(0),
+            network.addRef(), tfModel, map));
+      } else if (graphNode.getOp().equals("BiasAdd")) {
+        return network.add(getBiasAdd(graphNode), getNode(graphNode.getInputKeys().get(0),
+            network.addRef(), tfModel, map));
+      } else if (graphNode.getOp().equals("Relu")) {
+        return network.add(new ActivationLayer(ActivationLayer.Mode.RELU), getNode(graphNode.getInputKeys().get(0),
+            network.addRef(), tfModel, map));
+      } else if (graphNode.getOp().equals("LRN")) {
+        return network.add(getLRNLayer(graphNode), getNode(graphNode.getInputKeys().get(0),
+            network.addRef(), tfModel, map));
+      } else if (graphNode.getOp().equals("MaxPool")) {
+        return network.add(getPoolingLayer(graphNode), getNode(graphNode.getInputKeys().get(0),
+            network.addRef(), tfModel, map));
+      } else if (graphNode.getOp().equals("Concat")) {
+        List<String> inputKeys = graphNode.getInputKeys();
+        InnerNode innerNode = network.add(new ImgConcatLayer(),
+            inputKeys.stream().skip(1)
+                .map(inputKey -> getNode(inputKey,
+                    network.addRef(), tfModel, RefUtil.addRef(map)))
+                .toArray(i -> new DAGNode[i]));
+        map.freeRef();
+        return innerNode;
+      } else if (graphNode.getOp().equals("Placeholder")) {
+        map.freeRef();
+        return network.getInput(0);
+      } else {
+        map.freeRef();
+        throw new IllegalArgumentException(graphNode.getOp());
+      }
+    } finally {
+      network.freeRef();
     }
   }
 

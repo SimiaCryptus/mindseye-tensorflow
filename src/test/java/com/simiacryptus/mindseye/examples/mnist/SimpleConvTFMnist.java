@@ -23,7 +23,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.mindseye.lang.tensorflow.TFUtil;
-import com.simiacryptus.mindseye.layers.java.LayerTestBase;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.layers.tensorflow.TFLayer;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
