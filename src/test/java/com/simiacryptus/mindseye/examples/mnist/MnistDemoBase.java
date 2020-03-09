@@ -37,6 +37,7 @@ import com.simiacryptus.mindseye.opt.Step;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
+import com.simiacryptus.mindseye.test.TestSettings;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
@@ -55,7 +56,6 @@ import smile.plot.PlotCanvas;
 import smile.plot.ScatterPlot;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -101,7 +101,7 @@ public abstract class MnistDemoBase {
       TFLayerBase.eventWriter.close();
       TFLayerBase.eventWriter = null;
     }
-    if (null != graphDef) {
+    if (null != graphDef && TestSettings.INSTANCE.isInteractive) {
       TFUtil.launchTensorboard(tensorboardLocation.getParentFile(), x -> {
         JOptionPane.showConfirmDialog(null, "Press OK to exit");
       });
@@ -157,7 +157,7 @@ public abstract class MnistDemoBase {
       @Nonnull final SimpleLossNetwork supervisedNetwork = new SimpleLossNetwork(
           recognitionNetwork == null ? null : recognitionNetwork.addRef(), loss.addRef());
       loss.freeRef();
-      @Nonnull final Trainable trainable = new SampledArrayTrainable(RefUtil.addRefs(trainingData),
+      @Nonnull final Trainable trainable = new SampledArrayTrainable(RefUtil.addRef(trainingData),
           supervisedNetwork, 1000, 1000);
       IterativeTrainer temp_06_0008 = new IterativeTrainer(trainable);
       temp_06_0008.setMonitor(monitor);
@@ -183,7 +183,7 @@ public abstract class MnistDemoBase {
       temp_06_0008.freeRef();
       //          .setLineSearchFactory(n -> new ArmijoWolfeSearch().setAlpha(1e0))
       return temp_06_0002;
-    }, RefUtil.addRefs(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
+    }, RefUtil.addRef(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
     RefUtil.freeRef(trainingData);
     if (!history.isEmpty()) {
       log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
@@ -232,7 +232,7 @@ public abstract class MnistDemoBase {
         labeledObject.freeRef();
         return data;
       }).toArray(i -> new Tensor[i])};
-      Result temp_06_0015 = recognitionNetwork.eval(RefUtil.addRefs(tensors));
+      Result temp_06_0015 = recognitionNetwork.eval(RefUtil.addRef(tensors));
       assert temp_06_0015 != null;
       TensorList predictionData = Result.getData(temp_06_0015);
       RefUtil.freeRef(tensors);
@@ -241,7 +241,7 @@ public abstract class MnistDemoBase {
           .mapToObj(rowIndex -> {
             Tensor predictionTensor = predictionData.get(rowIndex);
             int[] ints = RefIntStream.range(0, 10).mapToObj(x -> x).sorted(
-                Comparator.comparingDouble(ii -> -predictionTensor.getData()[ii])
+                Comparator.comparingDouble(ii -> -predictionTensor.get(ii))
             ).mapToInt(x -> x).toArray();
             predictionTensor.freeRef();
             return ints;
@@ -263,18 +263,17 @@ public abstract class MnistDemoBase {
       MNIST.validationDataStream().map(RefUtil.wrapInterface(
           (Function<? super LabeledObject<Tensor>, LinkedHashMap<CharSequence, Object>>) labeledObject -> {
             final int actualCategory = parse(labeledObject.label);
-            Result temp_06_0016 = recognitionNetwork.eval(labeledObject.data.addRef());
-            assert temp_06_0016 != null;
-            TensorList temp_06_0017 = temp_06_0016.getData();
-            Tensor temp_06_0018 = temp_06_0017.get(0);
-            @Nullable final double[] predictionSignal = temp_06_0018.getData();
-            temp_06_0018.freeRef();
-            temp_06_0017.freeRef();
-            temp_06_0016.freeRef();
+            Result result = recognitionNetwork.eval(labeledObject.data.addRef());
+            assert result != null;
+            TensorList tensorList = result.getData();
+            Tensor tensor = tensorList.get(0);
+            tensorList.freeRef();
+            result.freeRef();
             final int[] predictionList = RefIntStream.range(0, 10).mapToObj(x -> x)
-                .sorted(RefComparator.comparingDouble(i -> -predictionSignal[i])).mapToInt(x -> x).toArray();
+                .sorted(RefComparator.comparingDouble(i -> -tensor.get(i))).mapToInt(x -> x).toArray();
             if (predictionList[0] == actualCategory) {
               labeledObject.freeRef();
+              tensor.freeRef();
               return null; // We will only examine mispredicted rows
             }
             @Nonnull final LinkedHashMap<CharSequence, Object> row = new LinkedHashMap<>();
@@ -282,8 +281,9 @@ public abstract class MnistDemoBase {
             labeledObject.freeRef();
             row.put("Prediction",
                 RefUtil.get(RefArrays.stream(predictionList).limit(3)
-                    .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * predictionSignal[i]))
+                    .mapToObj(i -> RefString.format("%d (%.1f%%)", i, 100.0 * tensor.get(i)))
                     .reduce((a, b) -> a + ", " + b)));
+            tensor.freeRef();
             return row;
           }, recognitionNetwork.addRef()))
           .filter(x -> null != x)
@@ -309,7 +309,7 @@ public abstract class MnistDemoBase {
     labeledObject.freeRef();
     int[] temp_06_0007 = RefIntStream.range(0, 10).mapToObj(x -> x)
         .sorted(RefComparator
-            .comparingDouble(RefUtil.wrapInterface(i -> -tensor.getData()[i],
+            .comparingDouble(RefUtil.wrapInterface(i -> -tensor.get(i),
                 tensor.addRef())))
         .mapToInt(x -> x).toArray();
     tensor.freeRef();

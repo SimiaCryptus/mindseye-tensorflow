@@ -23,7 +23,6 @@ import com.google.common.primitives.Floats;
 import com.google.protobuf.ByteString;
 import com.simiacryptus.lang.UncheckedConsumer;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
@@ -66,9 +65,9 @@ public class TFUtil {
 
   @Nonnull
   public static GraphDef implantConstants(GraphDef graphDef, @Nonnull RefMap<String, Tensor> weights) {
-    graphDef = TensorflowUtil.editGraph(graphDef, RefUtil.wrapInterface(graphBuilder -> {
+    graphDef = TensorflowUtil.editGraph(graphDef, graphBuilder -> {
       weights.forEach((key, value) -> {
-        TensorflowUtil.editNode(graphBuilder, key, RefUtil.wrapInterface((NodeDef.Builder node) -> {
+        TensorflowUtil.editNode(graphBuilder, key, (NodeDef.Builder node) -> {
           DataType type = node.getAttrMap().get("dtype").getType();
           TensorProto.Builder tensor = TensorProto.newBuilder();
           Tensor inverted = value.invertDimensions();
@@ -103,12 +102,11 @@ public class TFUtil {
           inverted.freeRef();
           return node.removeAttr("shape").putAttr("value", AttrValue.newBuilder().setTensor(tensor.build()).build())
               .setOp("Const");
-        }, value == null ? null : value.addRef()));
-        if (null != value)
-          value.freeRef();
+        });
+        value.freeRef();
       });
       return graphBuilder;
-    }, weights.addRef()));
+    });
     weights.freeRef();
     return graphDef;
   }

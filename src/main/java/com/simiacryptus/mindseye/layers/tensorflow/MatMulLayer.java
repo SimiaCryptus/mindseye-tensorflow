@@ -117,25 +117,24 @@ public class MatMulLayer extends TFLayerBase {
     RefHashMap<String, Tensor> map = new RefHashMap<>();
     int outs = Tensor.length(outputDims);
     int inputs = Tensor.length(intputDims);
-    Tensor temp_17_0001 = new Tensor(outs, inputs);
-    temp_17_0001.setByCoord(c -> {
+    Tensor weights = new Tensor(outs, inputs);
+    weights.setByCoord(c -> {
       final double ratio = Math.sqrt(6. / (inputs + outs + 1));
       final double fate = Util.R.get().nextDouble();
       return (1 - 2 * fate) * ratio;
     });
-    RefUtil.freeRef(map.put("weights", temp_17_0001.addRef()));
-    temp_17_0001.freeRef();
+    RefUtil.freeRef(map.put("weights", weights));
     return map;
   }
 
   public void set(@Nonnull DoubleSupplier f) {
-    RefMap<String, Tensor> temp_17_0003 = getWeights();
-    assert temp_17_0003 != null;
-    Tensor temp_17_0004 = temp_17_0003.get("weights");
-    assert temp_17_0004 != null;
-    RefArrays.parallelSetAll(temp_17_0004.getData(), i -> f.getAsDouble());
-    temp_17_0004.freeRef();
-    temp_17_0003.freeRef();
+    RefMap<String, Tensor> map = getWeights();
+    assert map != null;
+    Tensor weights = map.get("weights");
+    assert weights != null;
+    weights.set(i -> f.getAsDouble());
+    weights.freeRef();
+    map.freeRef();
   }
 
   @Override

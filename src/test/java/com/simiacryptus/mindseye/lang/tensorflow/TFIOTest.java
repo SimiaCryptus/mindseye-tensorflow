@@ -103,11 +103,11 @@ public class TFIOTest {
     org.tensorflow.Tensor<Double> doubleTensor = TFIO.getDoubleTensor(tensor == null ? null : tensor.addRef());
     org.tensorflow.Tensor<Float> floatTensor = TFIO.getFloatTensor(tensor == null ? null : tensor.addRef());
     assert tensor != null;
-    RefAssert.assertEquals(tensor.length(), doubleTensor.shape()[0]);
+    RefAssert.assertEquals(tensor.length(), (int) doubleTensor.shape()[0]);
     assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
         RefArrays.stream(doubleTensor.shape()).skip(1).toArray());
     assertEquals(tensor.addRef(), TFIO.getTensorList(doubleTensor), tol);
-    RefAssert.assertEquals(tensor.length(), floatTensor.shape()[0]);
+    RefAssert.assertEquals(tensor.length(), (int) floatTensor.shape()[0]);
     assertArrayEquals(RefArrays.stream(tensor.getDimensions()).mapToLong(x -> x).toArray(),
         RefArrays.stream(floatTensor.shape()).skip(1).toArray());
     assertEquals(tensor.addRef(), TFIO.getTensorList(floatTensor), tol);

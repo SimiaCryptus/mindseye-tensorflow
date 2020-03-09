@@ -20,9 +20,8 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.lang.Layer;
-import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
-import com.simiacryptus.mindseye.network.PipelineNetwork;
+import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefIgnore;
@@ -37,9 +36,9 @@ import java.util.Random;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
-  private volatile @Nonnull
+  private final @Nonnull
   @RefIgnore
-  TFLayerBase tfLayer = null;
+  TFLayerBase tfLayer = createTFLayer();
 
   @Nullable
   @Override
@@ -49,6 +48,7 @@ public abstract class TFLayerTestBase extends LayerTestBase {
 
   @Nonnull
   public TFLayerBase getTfLayer() {
+    if (tfLayer == null) return null;
     return (TFLayerBase) tfLayer.copy();
   }
 
@@ -67,17 +67,15 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   @Nonnull
   @Override
   public Layer getLayer(final int[][] inputSize, Random random) {
-    TFLayerBase tfLayer = getTfLayer();
-    PipelineNetwork temp_01_0002 = new TFConverter().convert(tfLayer.addRef());
-    tfLayer.freeRef();
-    return temp_01_0002;
+    return new TFConverter().convert(getTfLayer());
   }
 
   @After
   public void cleanup() {
     super.cleanup();
-    tfLayer.freeRef();
-    tfLayer = null;
+    if (null != tfLayer) {
+      tfLayer.freeRef();
+    }
   }
 
   protected abstract @Nonnull

@@ -24,7 +24,8 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
-import com.simiacryptus.ref.wrappers.*;
+import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.ref.wrappers.RefSet;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
@@ -37,13 +38,13 @@ public class TFLayer extends TFLayerBase {
   private boolean isFloat = false;
   private String outputNode;
   @Nullable
-  private RefList<String> inputNodes;
+  private List<String> inputNodes;
   private String summaryOut = "";
 
   public TFLayer(byte[] graphDef, RefMap<String, Tensor> states, String output, String... input) {
     super(states);
     this.setOutputNode(output);
-    setInputNodes(RefArrays.asList(input));
+    setInputNodes(Arrays.asList(input));
     this.graphDef = graphDef;
   }
 
@@ -53,12 +54,11 @@ public class TFLayer extends TFLayerBase {
     setFloat(json.get("isFloat").getAsBoolean());
     setOutputNode(json.get("output").getAsString());
     JsonArray jsonArray = json.get("input").getAsJsonArray();
-    RefArrayList<String> inputNodes = new RefArrayList<>();
+    ArrayList<String> inputNodes = new ArrayList<>();
     for (int i = 0; i < jsonArray.size(); i++) {
       inputNodes.add(jsonArray.get(i).getAsString());
     }
-    setInputNodes(inputNodes.addRef());
-    inputNodes.freeRef();
+    setInputNodes(inputNodes);
     setSummaryOut(json.get("summaryOut").getAsString());
   }
 
@@ -73,18 +73,11 @@ public class TFLayer extends TFLayerBase {
 
   @Nullable
   public List<String> getInputNodes() {
-    return inputNodes == null ? null : inputNodes.addRef();
+    return inputNodes;
   }
 
-  public void setInputNodes(@Nullable RefList<String> inputNodes) {
-    RefList<String> temp_02_0001 = inputNodes == null ? null : inputNodes.addRef();
-    if (null != this.inputNodes)
-      this.inputNodes.freeRef();
-    this.inputNodes = temp_02_0001 == null ? null : temp_02_0001.addRef();
-    if (null != temp_02_0001)
-      temp_02_0001.freeRef();
-    if (null != inputNodes)
-      inputNodes.freeRef();
+  public void setInputNodes(@Nullable List<String> inputNodes) {
+    this.inputNodes = inputNodes;
   }
 
   public String getOutputNode() {
@@ -143,9 +136,6 @@ public class TFLayer extends TFLayerBase {
   public @SuppressWarnings("unused")
   void _free() {
     super._free();
-    if (null != inputNodes)
-      inputNodes.freeRef();
-    inputNodes = null;
   }
 
   @Nonnull

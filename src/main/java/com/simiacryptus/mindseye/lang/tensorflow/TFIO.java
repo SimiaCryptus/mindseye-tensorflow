@@ -87,29 +87,28 @@ public class TFIO {
       invertDimensions = null;
       buffer = data.getData();
     }
+    org.tensorflow.Tensor<Float> tfTensor = org.tensorflow.Tensor.create(
+        Util.toLong(data.getDimensions()),
+        FloatBuffer.wrap(Util.getFloats(buffer))
+    );
     if (null != invertDimensions)
       invertDimensions.freeRef();
-    org.tensorflow.Tensor<Float> temp_03_0007 = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()),
-        FloatBuffer.wrap(Util.getFloats(buffer)));
     data.freeRef();
-    return temp_03_0007;
+    return tfTensor;
   }
 
   @Nonnull
   public static org.tensorflow.Tensor<Float> getFloatTensor(@Nullable TensorList data) {
-    org.tensorflow.Tensor<Float> temp_03_0008 = getFloatTensor(data == null ? null : data.addRef(), true);
-    if (null != data)
-      data.freeRef();
-    return temp_03_0008;
+    return getFloatTensor(data, true);
   }
 
   @Nonnull
   public static org.tensorflow.Tensor<Float> getFloatTensor(@Nullable TensorList data, boolean invertRanks) {
-    double[] buffer = getDoubles(data == null ? null : data.addRef(), invertRanks);
-    assert data != null;
-    long[] shape = RefLongStream
-        .concat(RefLongStream.of(data.length()), RefArrays.stream(data.getDimensions()).mapToLong(x -> x)).toArray();
-    data.freeRef();
+    long[] shape = RefLongStream.concat(
+        RefLongStream.of(data.length()),
+        RefArrays.stream(data.getDimensions()).mapToLong(x -> x)
+    ).toArray();
+    double[] buffer = getDoubles(data, invertRanks);
     @Nonnull org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(shape,
         FloatBuffer.wrap(Util.getFloats(buffer)));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
@@ -135,12 +134,14 @@ public class TFIO {
       invertDimensions = null;
       buffer = data.getData();
     }
+    org.tensorflow.Tensor<Double> tfTensor = org.tensorflow.Tensor.create(
+        Util.toLong(data.getDimensions()),
+        DoubleBuffer.wrap(buffer)
+    );
+    data.freeRef();
     if (null != invertDimensions)
       invertDimensions.freeRef();
-    org.tensorflow.Tensor<Double> temp_03_0010 = org.tensorflow.Tensor.create(Util.toLong(data.getDimensions()),
-        DoubleBuffer.wrap(buffer));
-    data.freeRef();
-    return temp_03_0010;
+    return tfTensor;
   }
 
   @Nonnull
@@ -153,11 +154,11 @@ public class TFIO {
 
   @Nonnull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(@Nullable TensorList data, boolean invertRanks) {
-    double[] buffer = getDoubles(data == null ? null : data.addRef(), invertRanks);
-    assert data != null;
-    long[] shape = RefLongStream
-        .concat(RefLongStream.of(data.length()), RefArrays.stream(data.getDimensions()).mapToLong(x -> x)).toArray();
-    data.freeRef();
+    long[] shape = RefLongStream.concat(
+        RefLongStream.of(data.length()),
+        RefArrays.stream(data.getDimensions()).mapToLong(x -> x)
+    ).toArray();
+    double[] buffer = getDoubles(data, invertRanks);
     org.tensorflow.Tensor<Double> tensor = org.tensorflow.Tensor.create(shape, DoubleBuffer.wrap(buffer));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
@@ -260,18 +261,18 @@ public class TFIO {
     double[] buffer = RecycleBin.DOUBLES.obtain(data.length() * Tensor.length(data.getDimensions()));
     DoubleBuffer inputBuffer = DoubleBuffer.wrap(buffer);
     if (invertRanks) {
-      data.stream().map(x -> {
-        Tensor temp_03_0001 = x.invertDimensions();
-        x.freeRef();
-        return temp_03_0001;
-      }).forEach(t -> {
-        inputBuffer.put(t.getData());
-        t.freeRef();
+      data.stream().map(tensor -> {
+        Tensor invertDimensions = tensor.invertDimensions();
+        tensor.freeRef();
+        return invertDimensions;
+      }).forEach(tensor -> {
+        inputBuffer.put(tensor.getData());
+        tensor.freeRef();
       });
     } else {
-      data.stream().forEach(t -> {
-        inputBuffer.put(t.getData());
-        t.freeRef();
+      data.stream().forEach(tensor -> {
+        inputBuffer.put(tensor.getData());
+        tensor.freeRef();
       });
     }
     data.freeRef();
@@ -288,17 +289,13 @@ public class TFIO {
       int offset = i * Tensor.length(dims);
       if (invertRanks) {
         Tensor returnValue = new Tensor(Tensor.reverse(dims));
-        for (int j = 0; j < returnValue.length(); j++) {
-          returnValue.getData()[j] = doubles[j + offset];
-        }
-        Tensor temp_03_0002 = returnValue.invertDimensions();
+        returnValue.set(j -> doubles[j + offset]);
+        Tensor invertDimensions = returnValue.invertDimensions();
         returnValue.freeRef();
-        return temp_03_0002;
+        return invertDimensions;
       } else {
         Tensor returnValue = new Tensor(dims);
-        for (int j = 0; j < returnValue.length(); j++) {
-          returnValue.getData()[j] = doubles[j + offset];
-        }
+        returnValue.set(j -> doubles[j + offset]);
         return returnValue;
       }
     }).toArray(i -> new Tensor[i]));
@@ -314,18 +311,14 @@ public class TFIO {
     int[] dims = RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
-      for (int j = 0; j < returnValue.length(); j++) {
-        returnValue.getData()[j] = doubles[j];
-      }
+      returnValue.set(j -> doubles[j]);
       RecycleBin.FLOATS.recycle(doubles, doubles.length);
-      Tensor temp_03_0003 = returnValue.invertDimensions();
+      Tensor invertDimensions = returnValue.invertDimensions();
       returnValue.freeRef();
-      return temp_03_0003;
+      return invertDimensions;
     } else {
       Tensor returnValue = new Tensor(dims);
-      for (int j = 0; j < returnValue.length(); j++) {
-        returnValue.getData()[j] = doubles[j];
-      }
+      returnValue.set(j -> doubles[j]);
       RecycleBin.FLOATS.recycle(doubles, doubles.length);
       return returnValue;
     }
@@ -342,9 +335,9 @@ public class TFIO {
         Tensor returnValue = new Tensor(Tensor.reverse(dims));
         RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0,
             returnValue.length());
-        Tensor temp_03_0004 = returnValue.invertDimensions();
+        Tensor invertDimensions = returnValue.invertDimensions();
         returnValue.freeRef();
-        return temp_03_0004;
+        return invertDimensions;
       } else {
         Tensor returnValue = new Tensor(dims);
         RefSystem.arraycopy(doubles, i * returnValue.length(), returnValue.getData(), 0,
@@ -364,9 +357,9 @@ public class TFIO {
       Tensor returnValue = new Tensor(Tensor.reverse(dims));
       RefSystem.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());
       RecycleBin.DOUBLES.recycle(doubles, doubles.length);
-      Tensor temp_03_0005 = returnValue.invertDimensions();
+      Tensor invertDimensions = returnValue.invertDimensions();
       returnValue.freeRef();
-      return temp_03_0005;
+      return invertDimensions;
     } else {
       Tensor returnValue = new Tensor(dims);
       RefSystem.arraycopy(doubles, 0, returnValue.getData(), 0, returnValue.length());

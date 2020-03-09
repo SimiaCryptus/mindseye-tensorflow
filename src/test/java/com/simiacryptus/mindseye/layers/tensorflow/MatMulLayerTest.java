@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class MatMulLayerTest extends RawTFLayerTestBase {
 
-  private final int[] inputDim = {2, 2};
+  private static final int[] inputDim = {2, 2};
 
   @Nonnull
   @Override

@@ -194,10 +194,7 @@ public class TFConverter {
           coord[3], sourceKernel.get(c));
     }, targetKernel.addRef(), sourceKernel.addRef()));
     sourceKernel.freeRef();
-    Tensor temp_05_0013 = convolutionLayer.getKernel();
-    assert temp_05_0013 != null;
-    temp_05_0013.set(targetKernel.addRef());
-    temp_05_0013.freeRef();
+    convolutionLayer.set(targetKernel.addRef());
     targetKernel.freeRef();
     AttrValue stridesArr = graphNode.getNodeDef().getAttrMap().get("strides");
     if (null != stridesArr) {
