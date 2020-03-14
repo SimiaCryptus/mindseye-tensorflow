@@ -26,7 +26,7 @@ import com.simiacryptus.ref.wrappers.RefHashMap;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
-import org.tensorflow.op.core.LRN;
+import org.tensorflow.op.nn.LocalResponseNormalization;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,8 +79,8 @@ public class LRNLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).lRN(ops.withName(getInputNodes().get(0)).placeholder(Float.class),
-          LRN.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
+      ops.withName(getOutputNode()).nn.localResponseNormalization(ops.withName(getInputNodes().get(0)).placeholder(Float.class),
+          LocalResponseNormalization.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);

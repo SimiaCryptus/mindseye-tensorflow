@@ -36,8 +36,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.GraphDef;
-import org.tensorflow.op.core.MatMul;
 import org.tensorflow.op.core.Placeholder;
+import org.tensorflow.op.linalg.MatMul;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,13 +60,13 @@ public class SimpleConvTFMnist {
 
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
-      ops.withName(output).softmax(ops.add(
+      ops.withName(output).nn.softmax(ops.math.add(
           ops.withName(bias).placeholder(Double.class, Placeholder.shape(Shape.make(1, 10))),
-          ops.reshape(ops.transpose(
-              ops.matMul(
+          ops.reshape(ops.linalg.transpose(
+              ops.linalg.matMul(
                   ops.withName(weights).placeholder(Double.class, Placeholder.shape(Shape.make(10, 28 * 28 * 5))),
                   ops.withName("reshape_3").reshape(
-                      ops.conv2D(
+                      ops.nn.conv2d(
                           ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
                           ops.withName(weights_conv1).placeholder(Double.class,
                               Placeholder.shape(Shape.make(5, 5, 1, 5))),

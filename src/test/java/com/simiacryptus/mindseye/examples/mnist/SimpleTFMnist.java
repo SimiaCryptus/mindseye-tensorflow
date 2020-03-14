@@ -36,8 +36,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.GraphDef;
-import org.tensorflow.op.core.MatMul;
 import org.tensorflow.op.core.Placeholder;
+import org.tensorflow.op.linalg.MatMul;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,13 +59,13 @@ public class SimpleTFMnist {
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
       ops.withName(output)
-          .softmax(
-              ops.reshape(ops.transpose(
-                  ops.matMul(
+          .nn.softmax(
+              ops.reshape(ops.linalg.transpose(
+                  ops.linalg.matMul(
                       ops.withName(weights).placeholder(Double.class, Placeholder
                           .shape(Shape.make(10, 28 * 28))),
                       ops.reshape(
-                          ops.add(
+                          ops.math.add(
                               ops.reshape(
                                   ops.withName(bias).placeholder(Double.class,
                                       Placeholder.shape(Shape.make(1, 28, 28))),

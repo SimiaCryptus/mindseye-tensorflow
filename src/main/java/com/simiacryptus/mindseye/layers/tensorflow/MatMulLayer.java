@@ -33,7 +33,7 @@ import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
-import org.tensorflow.op.core.MatMul;
+import org.tensorflow.op.linalg.MatMul;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,8 +62,8 @@ public class MatMulLayer extends TFLayerBase {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
       ops.withName(getOutputNode()).reshape(
-          ops.transpose(
-              ops.matMul(ops.withName("weights").placeholder(Double.class),
+          ops.linalg.transpose(
+              ops.linalg.matMul(ops.withName("weights").placeholder(Double.class),
                   ops.reshape(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
                       ops.constant(new long[]{-1, Tensor.length(getIntputDims())})),
                   MatMul.transposeB(true)),

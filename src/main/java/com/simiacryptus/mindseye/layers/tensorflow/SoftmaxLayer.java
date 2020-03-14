@@ -44,7 +44,7 @@ public class SoftmaxLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).softmax(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
+      ops.withName(getOutputNode()).nn.softmax(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);

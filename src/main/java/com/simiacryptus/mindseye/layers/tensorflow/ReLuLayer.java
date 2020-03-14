@@ -46,7 +46,7 @@ public class ReLuLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).relu(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
+      ops.withName(getOutputNode()).nn.relu(ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
       throw new RuntimeException(e);

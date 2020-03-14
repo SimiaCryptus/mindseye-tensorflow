@@ -36,8 +36,8 @@ import org.tensorflow.Operand;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.DataType;
 import org.tensorflow.framework.GraphDef;
-import org.tensorflow.op.core.MatMul;
 import org.tensorflow.op.core.Placeholder;
+import org.tensorflow.op.linalg.MatMul;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,28 +59,33 @@ public class ConvTFMnist {
   private static byte[] getGraphDef() {
     return TensorflowUtil.makeGraph(ops -> {
       int bands1 = 32;
-      Operand<Double> conv1 = ops.add(
+      Operand<Double> conv1 = ops.math.add(
           ops.withName(bias1).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands1))),
-          ops.relu(ops.maxPool(
-              ops.withName("conv2d_0").conv2D(
+          ops.nn.relu(ops.nn.maxPool(
+              ops.withName("conv2d_0").nn.conv2d(
                   ops.withName(input).placeholder(Double.class, Placeholder.shape(Shape.make(-1, 28, 28, 1))),
-                  ops.withName(ConvTFMnist.conv1).placeholder(Double.class,
-                      Placeholder.shape(Shape.make(5, 5, 1, bands1))),
-                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
+                  ops.withName(ConvTFMnist.conv1).placeholder(Double.class, Placeholder.shape(Shape.make(5, 5, 1, bands1))),
+                  Arrays.asList(1L, 1L, 1L, 1L),
+                  "SAME"),
+              ops.constant(new int[]{1, 2, 2, 1}),
+              ops.constant(new int[]{1, 2, 2, 1}),
+              "SAME")));
       int bands2 = 64;
-      Operand<Double> conv2 = ops.add(
+      Operand<Double> conv2 = ops.math.add(
           ops.withName(bias2).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1, 1, bands2))),
-          ops.relu(ops.maxPool(
-              ops.withName("conv2d_1").conv2D(conv1,
+          ops.nn.relu(ops.nn.maxPool(
+              ops.withName("conv2d_1").nn.conv2d(conv1,
                   ops.withName(ConvTFMnist.conv2).placeholder(Double.class,
                       Placeholder.shape(Shape.make(5, 5, bands1, bands2))),
-                  Arrays.asList(1L, 1L, 1L, 1L), "SAME"),
-              Arrays.asList(1L, 2L, 2L, 1L), Arrays.asList(1L, 2L, 2L, 1L), "SAME")));
-      Operand<Double> fc1 = ops.add(
+                  Arrays.asList(1L, 1L, 1L, 1L),
+                  "SAME"),
+              ops.constant(new int[]{1, 2, 2, 1}),
+              ops.constant(new int[]{1, 2, 2, 1}),
+              "SAME")));
+      Operand<Double> fc1 = ops.math.add(
           ops.withName(bias3).placeholder(Double.class, Placeholder.shape(Shape.make(1, 1024))),
-          ops.relu(ops.transpose(
-              ops.matMul(
+          ops.nn.relu(ops.linalg.transpose(
+              ops.linalg.matMul(
                   ops.withName(ConvTFMnist.fc1).placeholder(Double.class,
                       Placeholder.shape(Shape.make(1024, 7 * 7 * bands2))),
                   ops.reshape(conv2, ops.constant(new long[]{-1, 7 * 7 * bands2})), MatMul.transposeB(true)),

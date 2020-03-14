@@ -58,8 +58,10 @@ public class MaxPoolLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).maxPool(ops.withName(getInputNodes().get(0)).placeholder(Double.class),
-          Arrays.asList(1L, getWidth(), getHeight(), 1L), Arrays.asList(1L, getStrideX(), getStrideY(), 1L),
+      ops.withName(getOutputNode()).nn.maxPool(
+          ops.withName(getInputNodes().get(0)).placeholder(Double.class),
+          ops.constant(new int[]{1, (int) getWidth(), (int) getHeight(), 1}),
+          ops.constant(new int[]{1, (int) getStrideX(), (int) getStrideY(), 1}),
           getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {

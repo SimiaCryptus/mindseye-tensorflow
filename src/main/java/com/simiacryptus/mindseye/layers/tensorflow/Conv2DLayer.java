@@ -56,7 +56,7 @@ public class Conv2DLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).conv2D(ops.withName(getInputNodes().get(0)).placeholder(dtype),
+      ops.withName(getOutputNode()).nn.conv2d(ops.withName(getInputNodes().get(0)).placeholder(dtype),
           ops.withName("kernel").placeholder(dtype), Arrays.asList(1L, (long) getStrideX(), (long) getStrideY(), 1L),
           getPadding());
       return GraphDef.parseFrom(graph.toGraphDef());

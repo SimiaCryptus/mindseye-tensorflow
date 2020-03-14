@@ -47,7 +47,7 @@ public class BiasLayer extends TFLayerBase {
   public GraphDef getGraphDef() {
     try (Graph graph = new Graph()) {
       Ops ops = Ops.create(graph);
-      ops.withName(getOutputNode()).add(ops.withName("bias").placeholder(Double.class),
+      ops.withName(getOutputNode()).math.add(ops.withName("bias").placeholder(Double.class),
           ops.withName(getInputNodes().get(0)).placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
