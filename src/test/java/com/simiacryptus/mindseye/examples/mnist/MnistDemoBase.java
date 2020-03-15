@@ -48,7 +48,7 @@ import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.util.CodeUtil;
 import com.simiacryptus.util.test.LabeledObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tensorflow.framework.GraphDef;

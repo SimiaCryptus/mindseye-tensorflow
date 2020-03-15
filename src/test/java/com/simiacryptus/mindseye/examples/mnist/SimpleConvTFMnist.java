@@ -33,7 +33,7 @@ import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.core.Placeholder;

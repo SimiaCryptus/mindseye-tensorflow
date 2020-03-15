@@ -51,24 +51,24 @@ public class FloatTFMnist {
     return TensorflowUtil.makeGraph(ops -> {
       ops.withName(output)
           .nn.softmax(
-              ops.reshape(
-                  ops.linalg.transpose(
-                      ops.linalg.matMul(ops.withName(weights).placeholder(Float.class, Placeholder
-                              .shape(Shape.make(10, 28 * 28))), ops
-                              .reshape(
-                                  ops.math.add(
-                                      ops.reshape(
-                                          ops.withName(bias).placeholder(Float.class,
-                                              Placeholder.shape(Shape.make(1, 28, 28))),
-                                          ops.constant(new long[]{1, 28, 28})),
-                                      ops.reshape(
-                                          ops.withName(input).placeholder(Float.class,
-                                              Placeholder.shape(Shape.make(-1, 28, 28))),
-                                          ops.constant(new long[]{-1, 28, 28}))),
-                                  ops.constant(new long[]{-1, 28 * 28})),
-                          MatMul.transposeB(true)),
-                      ops.constant(new int[]{1, 0})),
-                  ops.constant(new long[]{-1, 10})));
+          ops.reshape(
+              ops.linalg.transpose(
+                  ops.linalg.matMul(ops.withName(weights).placeholder(Float.class, Placeholder
+                          .shape(Shape.make(10, 28 * 28))), ops
+                          .reshape(
+                              ops.math.add(
+                                  ops.reshape(
+                                      ops.withName(bias).placeholder(Float.class,
+                                          Placeholder.shape(Shape.make(1, 28, 28))),
+                                      ops.constant(new long[]{1, 28, 28})),
+                                  ops.reshape(
+                                      ops.withName(input).placeholder(Float.class,
+                                          Placeholder.shape(Shape.make(-1, 28, 28))),
+                                      ops.constant(new long[]{-1, 28, 28}))),
+                              ops.constant(new long[]{-1, 28 * 28})),
+                      MatMul.transposeB(true)),
+                  ops.constant(new int[]{1, 0})),
+              ops.constant(new long[]{-1, 10})));
     });
   }
 
