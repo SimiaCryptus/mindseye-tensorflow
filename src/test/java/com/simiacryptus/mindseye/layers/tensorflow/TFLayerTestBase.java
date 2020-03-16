@@ -23,16 +23,19 @@ import com.simiacryptus.mindseye.lang.Layer;
 import com.simiacryptus.mindseye.layers.java.MeanSqLossLayer;
 import com.simiacryptus.mindseye.test.LayerTestBase;
 import com.simiacryptus.mindseye.util.TFConverter;
-import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
 import org.junit.After;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.Timeout;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
 
@@ -52,16 +55,19 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return (TFLayerBase) tfLayer.copy();
   }
 
-  @Override
-  public void run(@Nonnull NotebookOutput log) {
-    log.eval(() -> {
-      TFLayerBase tfLayer = getTfLayer();
-      GraphDef graphDef = tfLayer.constGraph();
-      tfLayer.freeRef();
-      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-      return JsonUtil.toJson(graphModel);
+
+  @Test
+  @Timeout(value = 15, unit = TimeUnit.MINUTES)
+  public void graphModel(TestInfo testInfo) {
+    report(testInfo, log -> {
+      log.eval(() -> {
+        TFLayerBase tfLayer = getTfLayer();
+        GraphDef graphDef = tfLayer.constGraph();
+        tfLayer.freeRef();
+        GraphModel graphModel = new GraphModel(graphDef.toByteArray());
+        return JsonUtil.toJson(graphModel);
+      });
     });
-    super.run(log);
   }
 
   @Nonnull

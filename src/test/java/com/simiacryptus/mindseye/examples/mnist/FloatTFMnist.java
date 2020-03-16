@@ -29,6 +29,7 @@ import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.core.Placeholder;
@@ -96,7 +97,7 @@ public class FloatTFMnist {
       try {
         bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
       } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
       TFLayer temp_13_0004 = new TFLayer(bytes, getVariables(), output, input);
       temp_13_0004.setFloat(true);

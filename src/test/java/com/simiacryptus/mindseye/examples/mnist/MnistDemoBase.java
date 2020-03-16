@@ -47,6 +47,7 @@ import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.util.CodeUtil;
+import com.simiacryptus.util.Util;
 import com.simiacryptus.util.test.LabeledObject;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -218,7 +219,7 @@ public abstract class MnistDemoBase {
       try {
         TFLayerBase.eventWriter.close();
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
       TFLayerBase.eventWriter = null;
     }

@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.ref.wrappers.RefHashMap;
+import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -83,7 +84,7 @@ public class LRNLayer extends TFLayerBase {
           LocalResponseNormalization.depthRadius(getRadius()).beta(getBeta()).alpha(getAlpha()).bias(getBias()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 

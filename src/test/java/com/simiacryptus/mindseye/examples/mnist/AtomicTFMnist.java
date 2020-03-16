@@ -98,10 +98,6 @@ public class AtomicTFMnist {
       return network();
     }
 
-    @Override
-    public void run(@Nonnull NotebookOutput log) {
-      super.run(log);
-    }
   }
 
 }

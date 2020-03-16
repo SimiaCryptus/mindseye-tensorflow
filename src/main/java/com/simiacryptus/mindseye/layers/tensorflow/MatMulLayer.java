@@ -71,7 +71,7 @@ public class MatMulLayer extends TFLayerBase {
           ops.constant(RefIntStream.concat(RefIntStream.of(-1), RefArrays.stream(getOutputDims())).toArray()));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 

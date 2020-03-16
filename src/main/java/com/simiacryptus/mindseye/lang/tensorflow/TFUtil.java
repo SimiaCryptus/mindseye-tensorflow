@@ -27,6 +27,7 @@ import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.tensorflow.framework.*;
 
 import javax.annotation.Nonnull;
@@ -52,10 +53,8 @@ public class TFUtil {
     try {
       try {
         waiter.accept(tensorboard);
-      } catch (RuntimeException e) {
-        throw e;
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
     } finally {
       if (tensorboard.isAlive())

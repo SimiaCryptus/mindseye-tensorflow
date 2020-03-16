@@ -78,7 +78,7 @@ public class TFIO {
 
   @Nonnull
   public static org.tensorflow.Tensor<Float> getFloatTensor(@Nonnull Tensor data, boolean invertRanks) {
-    Tensor invertDimensions;
+    final Tensor invertDimensions;
     double[] buffer;
     if (invertRanks) {
       invertDimensions = data.invertDimensions();
@@ -126,7 +126,7 @@ public class TFIO {
   @Nonnull
   public static org.tensorflow.Tensor<Double> getDoubleTensor(@Nonnull Tensor data, boolean invertRanks) {
     double[] buffer;
-    Tensor invertDimensions;
+    final Tensor invertDimensions;
     if (invertRanks) {
       invertDimensions = data.invertDimensions();
       buffer = invertDimensions.getData();

@@ -25,6 +25,7 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefMap;
+import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.GraphDef;
 import org.tensorflow.op.Ops;
@@ -52,7 +53,7 @@ public class BiasAddLayer extends TFLayerBase {
           ops.withName("bias").placeholder(Double.class));
       return GraphDef.parseFrom(graph.toGraphDef());
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 

@@ -106,11 +106,6 @@ public class SimpleCudnnMnist {
       return network();
     }
 
-    @Override
-    public void run(@Nonnull NotebookOutput log) {
-      super.run(log);
-    }
-
     @Nonnull
     @Override
     protected Layer lossLayer() {

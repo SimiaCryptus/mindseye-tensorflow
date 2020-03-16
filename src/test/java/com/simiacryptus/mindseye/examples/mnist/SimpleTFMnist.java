@@ -32,6 +32,7 @@ import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.tensorflow.Shape;
@@ -104,7 +105,7 @@ public class SimpleTFMnist {
       try {
         bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
       } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
       TFLayer temp_18_0004 = new TFLayer(bytes, getVariables(), output, input);
       temp_18_0004.setSummaryOut(statOutput);

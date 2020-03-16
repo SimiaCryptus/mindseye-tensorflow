@@ -32,6 +32,7 @@ import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.tensorflow.Operand;
 import org.tensorflow.Shape;
 import org.tensorflow.framework.DataType;
@@ -125,7 +126,7 @@ public class ConvTFMnist {
       try {
         bytes = instrument(GraphDef.parseFrom(getGraphDef())).toByteArray();
       } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
       TFLayer temp_16_0005 = new TFLayer(bytes, getVariables(), output, input);
       temp_16_0005.setSummaryOut(statOutput);

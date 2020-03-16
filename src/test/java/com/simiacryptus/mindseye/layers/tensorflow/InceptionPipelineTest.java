@@ -19,20 +19,41 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public abstract class InceptionPipelineTest extends TFLayerTestBase {
   public static final RefList<TFLayer> layers = TFConverter.getLayers(ImageNetworkPipeline.inception5h());
 
   public InceptionPipelineTest() {
-    validateDifferentials = false;
-    testTraining = false;
     this.testingBatchSize = 5;
+  }
+
+  @Nullable
+  @Override
+  public BatchingTester getBatchingTester() {
+    return getBatchingTester(1e-2, false, this.testingBatchSize);
+  }
+
+  @Override
+  @Disabled
+  public void derivativeTest(TestInfo testInfo) {
+    super.derivativeTest(testInfo);
+  }
+
+  @Override
+  @Disabled
+  public void trainingTest(TestInfo testInfo) {
+    super.trainingTest(testInfo);
   }
 
   public static class Layer0 extends InceptionPipelineTest {

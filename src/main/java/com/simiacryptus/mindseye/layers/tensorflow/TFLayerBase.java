@@ -31,6 +31,7 @@ import com.simiacryptus.ref.lang.ReferenceCountingBase;
 import com.simiacryptus.ref.wrappers.*;
 import com.simiacryptus.tensorflow.TensorboardEventWriter;
 import com.simiacryptus.tensorflow.TensorflowUtil;
+import com.simiacryptus.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -247,13 +248,13 @@ public abstract class TFLayerBase extends LayerBase {
       try {
         summary = Summary.parseFrom(fwd.outputs.get(1).expect(String.class).bytesValue());
       } catch (InvalidProtocolBufferException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
       try {
         if (null != eventWriter)
           eventWriter.write(summary);
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw Util.throwException(e);
       }
     }
     return resultData;
@@ -384,7 +385,7 @@ public abstract class TFLayerBase extends LayerBase {
             weights.get(weightNodeName));
         org.tensorflow.Tensor<Number> numberTensor = (org.tensorflow.Tensor<Number>) back.outputs
             .get(i + fwdFetches + inputNodes.size());
-        Tensor t;
+        final Tensor t;
         if (numberTensor.dataType() == DataType.FLOAT) {
           t = TFIO.getTensor(numberTensor.expect(Float.class), invertRanks);
         } else {

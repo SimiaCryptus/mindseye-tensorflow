@@ -24,6 +24,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.ref.wrappers.RefHashMap;
 import com.simiacryptus.tensorflow.NodeInstrumentation;
+import com.simiacryptus.util.Util;
 import org.tensorflow.Graph;
 import org.tensorflow.framework.DataType;
 import org.tensorflow.framework.GraphDef;
@@ -58,7 +59,7 @@ public class SummaryLayer extends TFLayerBase {
             : null;
       });
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 

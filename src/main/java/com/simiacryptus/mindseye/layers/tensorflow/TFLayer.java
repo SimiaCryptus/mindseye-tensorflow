@@ -26,6 +26,7 @@ import com.simiacryptus.mindseye.lang.DataSerializer;
 import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.ref.wrappers.RefSet;
+import com.simiacryptus.util.Util;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
@@ -67,7 +68,7 @@ public class TFLayer extends TFLayerBase {
     try {
       return GraphDef.parseFrom(this.graphDef);
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw Util.throwException(e);
     }
   }
 

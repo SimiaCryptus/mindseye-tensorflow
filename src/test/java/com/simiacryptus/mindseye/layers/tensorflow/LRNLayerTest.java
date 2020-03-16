@@ -19,10 +19,15 @@
 
 package com.simiacryptus.mindseye.layers.tensorflow;
 
+import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.ref.lang.RefIgnore;
 import org.junit.After;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class LRNLayerTest extends RawTFLayerTestBase {
@@ -31,7 +36,18 @@ public class LRNLayerTest extends RawTFLayerTestBase {
   private final TFLayerBase tfLayer = createTFLayer();
 
   public LRNLayerTest() {
-    validateDifferentials = false;
+  }
+
+  @Nullable
+  @Override
+  public BatchingTester getBatchingTester() {
+    return getBatchingTester(1e-2, false, this.testingBatchSize);
+  }
+
+  @Override
+  @Disabled
+  public void derivativeTest(TestInfo testInfo) {
+    super.derivativeTest(testInfo);
   }
 
   @Nonnull
@@ -49,17 +65,11 @@ public class LRNLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   protected TFLayerBase createTFLayer() {
-    LRNLayer temp_21_0002 = new LRNLayer();
-    temp_21_0002.setRadius(5);
-    LRNLayer temp_21_0003 = temp_21_0002.addRef();
-    temp_21_0003.setAlpha(1e-4f);
-    LRNLayer temp_21_0004 = temp_21_0003.addRef();
-    temp_21_0004.setBias((float) 2);
-    LRNLayer temp_21_0001 = temp_21_0004.addRef();
-    temp_21_0004.freeRef();
-    temp_21_0003.freeRef();
-    temp_21_0002.freeRef();
-    return temp_21_0001;
+    LRNLayer lrnLayer = new LRNLayer();
+    lrnLayer.setRadius(5);
+    lrnLayer.setAlpha(1e-4f);
+    lrnLayer.setBias((float) 2);
+    return lrnLayer;
   }
 
 }
