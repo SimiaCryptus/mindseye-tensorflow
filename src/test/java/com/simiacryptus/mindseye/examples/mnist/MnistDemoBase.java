@@ -37,7 +37,7 @@ import com.simiacryptus.mindseye.opt.Step;
 import com.simiacryptus.mindseye.opt.TrainingMonitor;
 import com.simiacryptus.mindseye.opt.line.QuadraticSearch;
 import com.simiacryptus.mindseye.opt.orient.LBFGS;
-import com.simiacryptus.mindseye.test.TestSettings;
+import com.simiacryptus.util.test.TestSettings;
 import com.simiacryptus.mindseye.test.data.MNIST;
 import com.simiacryptus.notebook.MarkdownNotebookOutput;
 import com.simiacryptus.notebook.NotebookOutput;
