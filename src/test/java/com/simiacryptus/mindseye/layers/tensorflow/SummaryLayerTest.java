@@ -24,9 +24,14 @@ import com.simiacryptus.mindseye.test.LayerTestBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class SummaryLayerTest extends LayerTestBase {
+
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    return createTFLayer();
+  }
 
   @Nullable
   @Override
@@ -36,14 +41,8 @@ public class SummaryLayerTest extends LayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{5}};
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return createTFLayer();
   }
 
   @Nonnull

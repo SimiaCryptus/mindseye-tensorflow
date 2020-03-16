@@ -23,13 +23,12 @@ import com.simiacryptus.mindseye.lang.Tensor;
 import com.simiacryptus.ref.wrappers.RefMap;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class BiasLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{3, 3}};
   }
 

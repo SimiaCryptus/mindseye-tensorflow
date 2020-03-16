@@ -21,14 +21,11 @@ package com.simiacryptus.mindseye.layers.tensorflow;
 
 import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.ref.lang.RefIgnore;
-import org.junit.After;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class LRNLayerTest extends RawTFLayerTestBase {
 
@@ -44,21 +41,20 @@ public class LRNLayerTest extends RawTFLayerTestBase {
     return getBatchingTester(1e-2, false, this.testingBatchSize);
   }
 
-  @Override
-  @Disabled
-  public void derivativeTest(TestInfo testInfo) {
-    super.derivativeTest(testInfo);
-  }
-
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{2, 3, 20}};
   }
 
-  @After
-  public void cleanup() {
-    super.cleanup();
+  @Override
+  @Disabled
+  public void derivativeTest() {
+    super.derivativeTest();
+  }
+
+  @AfterEach
+  void cleanup() {
     if (null != tfLayer)
       tfLayer.freeRef();
   }

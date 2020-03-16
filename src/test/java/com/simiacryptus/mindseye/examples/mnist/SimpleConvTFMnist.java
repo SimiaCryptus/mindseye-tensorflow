@@ -45,7 +45,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
-import java.util.Random;
 
 import static com.simiacryptus.util.JsonUtil.toJson;
 
@@ -157,6 +156,12 @@ public class SimpleConvTFMnist {
 
   public static class LayerTest extends LayerTestBase {
 
+    @Nonnull
+    @Override
+    public Layer getLayer() {
+      return network();
+    }
+
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
@@ -165,14 +170,8 @@ public class SimpleConvTFMnist {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{28, 28}};
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return network();
     }
 
   }

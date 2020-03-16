@@ -147,7 +147,7 @@ public class TFLayer extends TFLayerBase {
   }
 
   @Override
-  protected boolean floatInputs(String key) {
+  protected boolean floatInputs() {
     return isFloat();
   }
 

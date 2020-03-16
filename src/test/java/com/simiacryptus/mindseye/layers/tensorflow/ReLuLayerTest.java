@@ -20,13 +20,12 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class ReLuLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{{3, 3, 1}};
   }
 

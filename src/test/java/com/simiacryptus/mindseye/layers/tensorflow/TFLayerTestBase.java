@@ -26,15 +26,13 @@ import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.ref.lang.RefIgnore;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.util.JsonUtil;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.Timeout;
 import org.tensorflow.framework.GraphDef;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public abstract class TFLayerTestBase extends LayerTestBase {
@@ -42,6 +40,12 @@ public abstract class TFLayerTestBase extends LayerTestBase {
   private final @Nonnull
   @RefIgnore
   TFLayerBase tfLayer = createTFLayer();
+
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    return new TFConverter().convert(getTfLayer());
+  }
 
   @Nullable
   @Override
@@ -55,30 +59,20 @@ public abstract class TFLayerTestBase extends LayerTestBase {
     return (TFLayerBase) tfLayer.copy();
   }
 
-
   @Test
   @Timeout(value = 15, unit = TimeUnit.MINUTES)
-  public void graphModel(TestInfo testInfo) {
-    report(testInfo, log -> {
-      log.eval(() -> {
-        TFLayerBase tfLayer = getTfLayer();
-        GraphDef graphDef = tfLayer.constGraph();
-        tfLayer.freeRef();
-        GraphModel graphModel = new GraphModel(graphDef.toByteArray());
-        return JsonUtil.toJson(graphModel);
-      });
+  public void graphModel() {
+    getLog().eval(() -> {
+      TFLayerBase tfLayer1 = getTfLayer();
+      GraphDef graphDef = tfLayer1.constGraph();
+      tfLayer1.freeRef();
+      GraphModel graphModel = new GraphModel(graphDef.toByteArray());
+      return JsonUtil.toJson(graphModel);
     });
   }
 
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return new TFConverter().convert(getTfLayer());
-  }
-
-  @After
-  public void cleanup() {
-    super.cleanup();
+  @AfterEach
+  void cleanup() {
     if (null != tfLayer) {
       tfLayer.freeRef();
     }

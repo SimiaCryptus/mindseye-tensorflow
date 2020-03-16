@@ -20,7 +20,6 @@
 package com.simiacryptus.mindseye.layers.tensorflow;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class MatMulLayerTest extends RawTFLayerTestBase {
 
@@ -28,7 +27,7 @@ public class MatMulLayerTest extends RawTFLayerTestBase {
 
   @Nonnull
   @Override
-  public int[][] getSmallDims(Random random) {
+  public int[][] getSmallDims() {
     return new int[][]{inputDim};
   }
 

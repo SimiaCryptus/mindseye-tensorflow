@@ -24,20 +24,19 @@ import com.simiacryptus.mindseye.util.TFConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public abstract class RawTFLayerTestBase extends TFLayerTestBase {
+
+  @Nonnull
+  @Override
+  public Layer getLayer() {
+    return getTfLayer();
+  }
 
   @Nullable
   @Override
   public Layer getReferenceLayer() {
     return new TFConverter().convert(getTfLayer());
-  }
-
-  @Nonnull
-  @Override
-  public Layer getLayer(final int[][] inputSize, Random random) {
-    return getTfLayer();
   }
 
 }

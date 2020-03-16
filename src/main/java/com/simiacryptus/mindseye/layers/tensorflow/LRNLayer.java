@@ -150,7 +150,7 @@ public class LRNLayer extends TFLayerBase {
   }
 
   @Override
-  protected boolean floatInputs(String key) {
+  protected boolean floatInputs() {
     return true;
   }
 

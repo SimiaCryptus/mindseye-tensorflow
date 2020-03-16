@@ -174,14 +174,14 @@ public abstract class TFLayerBase extends LayerBase {
     TensorArray resultData = getOutput(runner, tensors, summaryOut);
     Accumulator accumulator = new Accumulator(runner, summaryOut ? 2 : 1, stateNames, this.getId(), this.getWeights(),
         this.getOutputNode(), this.invertWeights(), this.getInputNodes(),
-        this.floatInputs(this.getOutputNode() + "_delta"), tfsession.getGradients(), tfsession, inputs);
+        this.floatInputs(), tfsession.getGradients(), tfsession, inputs);
     return new Result(resultData, accumulator);
   }
 
   @Nonnull
   protected abstract Set<String> getDataKeys(JsonObject json);
 
-  protected boolean floatInputs(String key) {
+  protected boolean floatInputs() {
     return false;
   }
 
@@ -202,7 +202,7 @@ public abstract class TFLayerBase extends LayerBase {
       @Nonnull
       org.tensorflow.Tensor<? extends Number> tensor;
       boolean invertRanks = invertWeights();
-      if (floatInputs(nodeName)) {
+      if (floatInputs()) {
         tensor = TFIO.getFloatTensor(data, invertRanks);
       } else {
         tensor = TFIO.getDoubleTensor(data, invertRanks);
@@ -218,7 +218,7 @@ public abstract class TFLayerBase extends LayerBase {
       TensorList data = inputs[i].getData();
       @Nonnull
       org.tensorflow.Tensor<? extends Number> tensor;
-      if (floatInputs(inputNode)) {
+      if (floatInputs()) {
         tensor = TFIO.getFloatTensor(data, true);
       } else {
         tensor = TFIO.getDoubleTensor(data, true);
@@ -290,7 +290,7 @@ public abstract class TFLayerBase extends LayerBase {
         weights.freeRef();
         Ops ops = Ops.create(graph);
         String deltaOpName = parent.getOutputNode() + "_delta";
-        Class<? extends Number> dtype = parent.floatInputs(deltaOpName) ? Float.class : Double.class;
+        Class<? extends Number> dtype = parent.floatInputs() ? Float.class : Double.class;
         ops.withName(deltaOpName).placeholder(dtype, Placeholder.shape(Shape.unknown()));
         Output<?>[] temp_00_0007 = graph.addGradients("gradient",
             new Output[]{TensorflowUtil.find(graph, parent.getOutputNode()).output(0)},

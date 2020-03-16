@@ -26,13 +26,10 @@ import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.ref.wrappers.RefMap;
 import com.simiacryptus.tensorflow.GraphModel;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
@@ -45,16 +42,20 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     return getBatchingTester(1e-2, false, this.testingBatchSize);
   }
 
+  @Nonnull
+  @Override
+  public abstract int[][] getSmallDims();
+
   @Override
   @Disabled
-  public void derivativeTest(TestInfo testInfo) {
-    super.derivativeTest(testInfo);
+  public void derivativeTest() {
+    super.derivativeTest();
   }
 
   @Override
   @Disabled
-  public void trainingTest(TestInfo testInfo) {
-    super.trainingTest(testInfo);
+  public void trainingTest() {
+    super.trainingTest();
   }
 
   @Nonnull
@@ -76,15 +77,11 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
     return constLayer;
   }
 
-  @Nonnull
-  @Override
-  public abstract int[][] getSmallDims(Random random);
-
   public static class Small_0 extends Conv2DLayerTest {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{6, 6, 1}};
     }
   }
@@ -93,7 +90,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{5, 5, 1}};
     }
 
@@ -103,7 +100,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{5, 5, 1}};
     }
 
@@ -130,7 +127,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{5, 5, 1}};
     }
 
@@ -157,7 +154,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{5, 5, 2}};
     }
 
@@ -198,7 +195,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{320, 240, 3}};
     }
 
@@ -250,7 +247,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{8, 8, 1}};
     }
 
@@ -283,7 +280,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{9, 9, 1}};
     }
 
@@ -317,7 +314,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{8, 8, 1}};
     }
 
@@ -350,7 +347,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{10, 10, 1}};
     }
 
@@ -364,7 +361,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{11, 11, 1}};
     }
 
@@ -378,7 +375,7 @@ public abstract class Conv2DLayerTest extends RawTFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{9, 9, 1}};
     }
 

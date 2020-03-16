@@ -23,13 +23,10 @@ import com.simiacryptus.mindseye.test.unit.BatchingTester;
 import com.simiacryptus.mindseye.util.TFConverter;
 import com.simiacryptus.ref.wrappers.RefList;
 import com.simiacryptus.tensorflow.ImageNetworkPipeline;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public abstract class InceptionPipelineTest extends TFLayerTestBase {
   public static final RefList<TFLayer> layers = TFConverter.getLayers(ImageNetworkPipeline.inception5h());
@@ -46,21 +43,21 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
   @Override
   @Disabled
-  public void derivativeTest(TestInfo testInfo) {
-    super.derivativeTest(testInfo);
+  public void derivativeTest() {
+    super.derivativeTest();
   }
 
   @Override
   @Disabled
-  public void trainingTest(TestInfo testInfo) {
-    super.trainingTest(testInfo);
+  public void trainingTest() {
+    super.trainingTest();
   }
 
   public static class Layer0 extends InceptionPipelineTest {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{320, 240, 3}};
     }
 
@@ -75,7 +72,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{160, 120, 64}};
     }
 
@@ -89,7 +86,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{80, 60, 192}};
     }
 
@@ -104,7 +101,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{40, 30, 256}};
     }
 
@@ -118,7 +115,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{40, 30, 480}};
     }
 
@@ -132,7 +129,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{20, 15, 508}};
     }
 
@@ -147,7 +144,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{20, 15, 512}};
     }
 
@@ -162,7 +159,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{20, 15, 512}};
     }
 
@@ -177,7 +174,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{20, 15, 528}};
     }
 
@@ -191,7 +188,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{20, 15, 832}};
     }
 
@@ -206,7 +203,7 @@ public abstract class InceptionPipelineTest extends TFLayerTestBase {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{10, 8, 832}};
     }
 

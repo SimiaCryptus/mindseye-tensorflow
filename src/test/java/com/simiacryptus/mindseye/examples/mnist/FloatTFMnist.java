@@ -37,7 +37,6 @@ import org.tensorflow.op.linalg.MatMul;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class FloatTFMnist {
 
@@ -131,6 +130,12 @@ public class FloatTFMnist {
 
   public static class LayerTest extends LayerTestBase {
 
+    @Nonnull
+    @Override
+    public Layer getLayer() {
+      return network();
+    }
+
     @Nullable
     @Override
     public Class<? extends Layer> getReferenceLayerClass() {
@@ -139,14 +144,8 @@ public class FloatTFMnist {
 
     @Nonnull
     @Override
-    public int[][] getSmallDims(Random random) {
+    public int[][] getSmallDims() {
       return new int[][]{{28, 28}};
-    }
-
-    @Nonnull
-    @Override
-    public Layer getLayer(final int[][] inputSize, Random random) {
-      return network();
     }
 
   }

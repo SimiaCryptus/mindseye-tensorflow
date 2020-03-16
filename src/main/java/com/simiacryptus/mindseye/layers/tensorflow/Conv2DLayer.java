@@ -150,7 +150,7 @@ public class Conv2DLayer extends TFLayerBase {
   }
 
   @Override
-  protected boolean floatInputs(String key) {
+  protected boolean floatInputs() {
     return false;
   }
 
