@@ -83,7 +83,7 @@ public abstract class MnistDemoBase {
     File[] listFiles = tensorboardLocation.getParentFile().listFiles();
     if (null != listFiles)
       RefArrays.stream(listFiles).forEach(file -> {
-        RefSystem.out.println("Delete: " + file);
+        System.out.println("Delete: " + file);
         file.delete();
       });
     byte[] graphDef = getGraphDef();
