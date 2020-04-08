@@ -29,7 +29,6 @@ import com.simiacryptus.notebook.NotebookOutput;
 import com.simiacryptus.notebook.NullNotebookOutput;
 import com.simiacryptus.ref.lang.RefUtil;
 import com.simiacryptus.ref.wrappers.RefHashMap;
-import com.simiacryptus.ref.wrappers.RefSystem;
 import com.simiacryptus.tensorflow.GraphModel;
 import com.simiacryptus.tensorflow.TensorflowUtil;
 import com.simiacryptus.util.Util;
