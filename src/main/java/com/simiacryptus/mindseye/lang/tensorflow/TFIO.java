@@ -38,12 +38,12 @@ import java.util.stream.Stream;
 public class TFIO {
 
   @NotNull
-  public static TensorArray getTensorList(@NotNull org.tensorflow.Tensor<?> tensor) {
+  public static TensorArray getTensorList(org.tensorflow.Tensor<?> tensor) {
     return getTensorList(tensor, true);
   }
 
   @NotNull
-  public static TensorArray getTensorList(@NotNull org.tensorflow.Tensor<?> tensor, boolean invertRanks) {
+  public static TensorArray getTensorList(org.tensorflow.Tensor<?> tensor, boolean invertRanks) {
     if (tensor.dataType() == DataType.DOUBLE) {
       return getTensorArray_Double(tensor.expect(Double.class), tensor.shape(), invertRanks);
     } else if (tensor.dataType() == DataType.FLOAT) {
@@ -54,12 +54,12 @@ public class TFIO {
   }
 
   @NotNull
-  public static Tensor getTensor(@NotNull org.tensorflow.Tensor<?> tensor) {
+  public static Tensor getTensor(org.tensorflow.Tensor<?> tensor) {
     return getTensor(tensor, true);
   }
 
   @NotNull
-  public static Tensor getTensor(@NotNull org.tensorflow.Tensor<?> tensor, boolean invertRanks) {
+  public static Tensor getTensor(org.tensorflow.Tensor<?> tensor, boolean invertRanks) {
     if (tensor.dataType() == DataType.DOUBLE) {
       return getTensor_Double(tensor.expect(Double.class), tensor.shape(), invertRanks);
     } else if (tensor.dataType() == DataType.FLOAT) {
@@ -107,7 +107,7 @@ public class TFIO {
         RefArrays.stream(data.getDimensions()).mapToLong(x -> x)
     ).toArray();
     double[] buffer = getDoubles(data, invertRanks);
-    @NotNull org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(shape,
+    org.tensorflow.Tensor<Float> tensor = org.tensorflow.Tensor.create(shape,
         FloatBuffer.wrap(Util.getFloats(buffer)));
     RecycleBin.DOUBLES.recycle(buffer, buffer.length);
     return tensor;
@@ -278,7 +278,7 @@ public class TFIO {
   }
 
   @NotNull
-  private static TensorArray getTensorArray_Float(@NotNull org.tensorflow.Tensor<Float> tensor, @NotNull long[] shape,
+  private static TensorArray getTensorArray_Float(org.tensorflow.Tensor<Float> tensor, @NotNull long[] shape,
                                                   boolean invertRanks) {
     float[] doubles = getFloats(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
@@ -302,7 +302,7 @@ public class TFIO {
   }
 
   @NotNull
-  private static Tensor getTensor_Float(@NotNull org.tensorflow.Tensor<Float> tensor, @NotNull long[] shape, boolean invertRanks) {
+  private static Tensor getTensor_Float(org.tensorflow.Tensor<Float> tensor, @NotNull long[] shape, boolean invertRanks) {
     if (0 == tensor.numElements())
       return new Tensor(RefArrays.stream(shape).mapToInt(x -> (int) x).toArray());
     float[] doubles = getFloats(tensor);
@@ -323,7 +323,7 @@ public class TFIO {
   }
 
   @NotNull
-  private static TensorArray getTensorArray_Double(@NotNull org.tensorflow.Tensor<Double> tensor, @NotNull long[] shape,
+  private static TensorArray getTensorArray_Double(org.tensorflow.Tensor<Double> tensor, @NotNull long[] shape,
                                                    boolean invertRanks) {
     double[] doubles = getDoubles(tensor);
     int[] dims = RefArrays.stream(shape).skip(1).mapToInt(x -> (int) x).toArray();
@@ -348,7 +348,7 @@ public class TFIO {
   }
 
   @NotNull
-  private static Tensor getTensor_Double(@NotNull org.tensorflow.Tensor<Double> tensor, @NotNull long[] shape, boolean invertRanks) {
+  private static Tensor getTensor_Double(org.tensorflow.Tensor<Double> tensor, @NotNull long[] shape, boolean invertRanks) {
     double[] doubles = getDoubles(tensor);
     int[] dims = RefArrays.stream(shape).mapToInt(x -> (int) x).toArray();
     if (invertRanks) {
@@ -366,7 +366,7 @@ public class TFIO {
     }
   }
 
-  private static double[] getDoubles(@NotNull org.tensorflow.Tensor<Double> result) {
+  private static double[] getDoubles(org.tensorflow.Tensor<Double> result) {
     Object deepArray = result.copyTo(createDoubleArray(result.shape()));
     double[] doubles = flattenDoubles(deepArray).toArray();
     free(deepArray);
@@ -374,7 +374,7 @@ public class TFIO {
   }
 
   @NotNull
-  private static float[] getFloats(@NotNull org.tensorflow.Tensor<Float> result) {
+  private static float[] getFloats(org.tensorflow.Tensor<Float> result) {
     if (0 == result.numElements())
       return new float[]{};
     Object deepArray = result.copyTo(createFloatArray(result.shape()));
