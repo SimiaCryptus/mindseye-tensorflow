@@ -30,7 +30,7 @@
 
     <artifactId>mindseye-tensorflow</artifactId>
     <description>TensorFlow Integration</description>
-    <url>https://simiacryptus.github.io/${github.project}/</url>
+
 
     <properties>
 
