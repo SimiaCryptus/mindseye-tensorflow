@@ -29,7 +29,6 @@ import com.simiacryptus.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.tensorflow.DataType;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
