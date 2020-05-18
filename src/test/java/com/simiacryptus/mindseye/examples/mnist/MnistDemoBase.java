@@ -67,7 +67,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.IntToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -249,7 +248,7 @@ public abstract class MnistDemoBase {
           }).collect(Collectors.toList());
       predictionData.freeRef();
       return RefIntStream.range(0, length)
-          .mapToDouble(RefUtil.wrapInterface((IntToDoubleFunction) rowIndex -> {
+          .mapToDouble(RefUtil.wrapInterface(rowIndex -> {
             LabeledObject<Tensor> labeledObject = validation.get(rowIndex);
             int i = predicitonList.get(rowIndex)[0] == parse(labeledObject.label) ? 1 : 0;
             labeledObject.freeRef();
