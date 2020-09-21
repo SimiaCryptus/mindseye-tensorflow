@@ -1,11 +1,11 @@
-../.gitignore
+
 *.gz
-.idea/
+*.hprof
 *.iml
+*.zip
+../.gitignore
+.idea/
 mindseye-tensorflow.iml
 reports/
 target/
 tensorboard/
-*.zip
-*.hprof
-
