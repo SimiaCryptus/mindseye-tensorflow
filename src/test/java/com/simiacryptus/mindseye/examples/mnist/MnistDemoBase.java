@@ -53,7 +53,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tensorflow.framework.GraphDef;
-import smile.plot.swing.PlotCanvas;
+import smile.plot.swing.Canvas;
+import smile.plot.swing.PlotPanel;
 import smile.plot.swing.ScatterPlot;
 
 import javax.annotation.Nonnull;
@@ -186,17 +187,20 @@ public abstract class MnistDemoBase {
     }, RefUtil.addRef(trainingData), recognitionNetwork == null ? null : recognitionNetwork.addRef()));
     RefUtil.freeRef(trainingData);
     if (!history.isEmpty()) {
-      log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotCanvas>) () -> {
-        @Nonnull final PlotCanvas plot = ScatterPlot.plot(history.stream().map(step -> {
+      log.eval(RefUtil.wrapInterface((UncheckedSupplier<PlotPanel>) () -> {
+        @Nonnull final ScatterPlot plot = ScatterPlot.of(history.stream().map(step -> {
           assert step.point != null;
           double[] temp_06_0003 = new double[]{step.iteration, Math.log10(step.point.getMean())};
           step.freeRef();
           return temp_06_0003;
         }).toArray(i -> new double[i][]));
-        plot.setTitle("Convergence Plot");
-        plot.setAxisLabels("Iteration", "log10(Fitness)");
-        plot.setSize(600, 400);
-        return plot;
+        Canvas canvas = new Canvas(new double[]{0,0}, new double[]{1,1});
+        canvas.add(plot);
+        PlotPanel plotPanel = new PlotPanel(canvas);
+        canvas.setTitle("Convergence Plot");
+        canvas.setAxisLabels("Iteration", "log10(Fitness)");
+        plotPanel.setSize(600, 400);
+        return plotPanel;
       }, history.addRef()));
     }
 
