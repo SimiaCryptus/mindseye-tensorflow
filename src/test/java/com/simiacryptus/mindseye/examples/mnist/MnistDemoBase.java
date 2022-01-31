@@ -174,7 +174,7 @@ public abstract class MnistDemoBase {
       IterativeTrainer temp_06_0013 = temp_06_0012.addRef();
       temp_06_0013.setIterationsPerSample(20);
       IterativeTrainer temp_06_0014 = temp_06_0013.addRef();
-      double temp_06_0002 = temp_06_0014.run();
+      double temp_06_0002 = temp_06_0014.run().finalValue;
       temp_06_0014.freeRef();
       temp_06_0013.freeRef();
       temp_06_0012.freeRef();
